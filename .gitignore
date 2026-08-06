@@ -53,9 +53,20 @@ rsconnect/
 *.xlsx
 *.csv.gz
 
+# Summary tables produced by scripts/02 and 03 are small and worth committing
+!reports/tables/*.csv
+
 # Serialized R outputs
 *.rds
 
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Raw data - too large for GitHub, download separately (see reports/data-notes.md)
+data/raw/*
+!data/raw/.gitkeep
+
+# Intermediate objects rebuilt by scripts/01 and scripts/03
+data/processed/*
+!data/processed/.gitkeep

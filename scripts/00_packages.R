@@ -18,7 +18,10 @@
 #   "scales",       # Number formatting in plots
 #   "patchwork",    # Combining ggplot2 plots
 #   "knitr",        # Report generation
-#   "rmarkdown"     # R Markdown rendering
+#   "rmarkdown",    # R Markdown rendering
+#   "data.table",   # Fast reading of the large calendar and reviews files
+#   "stringr",      # String parsing (price, bathrooms_text)
+#   "broom"         # Tidy model output
 # ))
 
 # Load packages used throughout the project
@@ -30,6 +33,9 @@ library(naniar)
 library(ggcorrplot)
 library(scales)
 library(patchwork)
+library(data.table)
+library(stringr)
+library(broom)
 
 # Session information (for reproducibility)
 sessionInfo()

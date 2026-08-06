@@ -1,0 +1,101 @@
+neighbourhood_cleansed,room_type,size,n,median_price,median_revenue,median_occ_pct
+Nillumbik,Entire home/apt,5+ guests,34,391.46,35664,25.5
+Yarra Ranges,Entire home/apt,5+ guests,378,484.75,31917,19.7
+Yarra,Entire home/apt,5+ guests,192,492.915,27409,15.1
+Yarra Ranges,Entire home/apt,3-4 guests,183,318.5,26250,21.4
+Melbourne,Entire home/apt,5+ guests,1817,327,24772,19.7
+Yarra,Entire home/apt,1-2 guests,361,231,21404,24.7
+Yarra,Entire home/apt,3-4 guests,355,324.5,21300,18.1
+Yarra Ranges,Entire home/apt,1-2 guests,327,280,19800,21.4
+Manningham,Entire home/apt,3-4 guests,30,213.4,18351.5,19.7
+Melbourne,Entire home/apt,3-4 guests,2408,268.34,17797.5,18.1
+Greater Dandenong,Entire home/apt,5+ guests,34,346.6,17604,14.8
+Port Phillip,Entire home/apt,5+ guests,323,442.5,17226,9.9
+Maribyrnong,Entire home/apt,5+ guests,131,345,17112,13.2
+Hobsons Bay,Entire home/apt,3-4 guests,49,243,16817,23
+Manningham,Entire home/apt,5+ guests,72,397,16608,9.6
+Hume,Entire home/apt,5+ guests,129,376.54,16500,14.8
+Kingston,Entire home/apt,5+ guests,98,401.2,16164,11.2
+Moreland,Entire home/apt,3-4 guests,135,280,15820,16.4
+Banyule,Entire home/apt,3-4 guests,43,261.2,15672,18.1
+Moreland,Entire home/apt,5+ guests,120,343.83,14847.5,11.5
+Frankston,Entire home/apt,1-2 guests,33,161.5,14535,24.7
+Stonnington,Entire home/apt,5+ guests,136,453.93,14520,6.6
+Boroondara,Entire home/apt,5+ guests,107,445.5,13608,8.2
+Glen Eira,Entire home/apt,3-4 guests,93,256,13440,13.2
+Moreland,Entire home/apt,1-2 guests,122,198.48,13276,18.1
+Melbourne,Entire home/apt,1-2 guests,1320,205.09,13084,16.4
+Whitehorse,Entire home/apt,5+ guests,137,331.3,12987,9.9
+Stonnington,Entire home/apt,3-4 guests,272,283,12970.5,13.2
+Stonnington,Entire home/apt,1-2 guests,285,203,12902,16.4
+Maribyrnong,Entire home/apt,1-2 guests,61,181,12376,18.1
+Frankston,Entire home/apt,5+ guests,80,400.835,12191,8.2
+Frankston,Entire home/apt,3-4 guests,53,250,12123,13.2
+Darebin,Entire home/apt,5+ guests,77,411,12105,6.6
+Maribyrnong,Entire home/apt,3-4 guests,97,257,11746,14.8
+Kingston,Entire home/apt,3-4 guests,62,264.07,11676,13.2
+Casey,Entire home/apt,5+ guests,155,363.5,11640,8.2
+Moonee Valley,Entire home/apt,3-4 guests,88,272.5,11452.5,10.7
+Moonee Valley,Entire home/apt,5+ guests,73,395,10998,9.9
+Knox,Entire home/apt,5+ guests,45,365.5,10944,9.9
+Cardinia,Entire home/apt,1-2 guests,33,251.5,10560,13.2
+Monash,Entire home/apt,5+ guests,153,375.25,10260,6.6
+Monash,Entire home/apt,1-2 guests,36,189.25,10140,14.8
+Bayside,Entire home/apt,3-4 guests,74,295.75,9878,9
+Port Phillip,Entire home/apt,1-2 guests,576,204.25,9851.5,12.3
+Darebin,Entire home/apt,1-2 guests,90,173,9849,14.8
+Moonee Valley,Entire home/apt,1-2 guests,58,179,9786,15.9
+Monash,Entire home/apt,3-4 guests,75,266,9752,9.9
+Boroondara,Entire home/apt,3-4 guests,103,245.5,9702,11
+Port Phillip,Entire home/apt,3-4 guests,627,273.5,9684,9.9
+Cardinia,Entire home/apt,5+ guests,72,399.75,9629,4.9
+Glen Eira,Entire home/apt,1-2 guests,67,190.2,9450,13.7
+Boroondara,Entire home/apt,1-2 guests,54,201.29,9258,10.7
+Wyndham,Entire home/apt,5+ guests,231,392.6,8726,6.6
+Hobsons Bay,Entire home/apt,5+ guests,74,359.335,8712.5,7.1
+Darebin,Entire home/apt,3-4 guests,75,263,8508,8.2
+Glen Eira,Entire home/apt,5+ guests,81,473.77,8416,3.8
+Brimbank,Entire home/apt,3-4 guests,30,221.605,8279,9.9
+Banyule,Entire home/apt,1-2 guests,30,174.5,8175,13.2
+Whittlesea,Entire home/apt,5+ guests,69,380.67,8100,6.6
+Banyule,Entire home/apt,5+ guests,39,322,7840,8.2
+Maroondah,Entire home/apt,5+ guests,51,334,7785,6.6
+Hobsons Bay,Entire home/apt,1-2 guests,48,171.75,7781.5,10.7
+Melton,Entire home/apt,5+ guests,93,338,7648,6.6
+Kingston,Entire home/apt,1-2 guests,32,171.75,7228,11.2
+Bayside,Entire home/apt,5+ guests,124,570.18,6231,3.3
+Bayside,Entire home/apt,1-2 guests,72,220.48,6099,7.4
+Brimbank,Entire home/apt,5+ guests,107,319.88,5824,4.9
+Whitehorse,Entire home/apt,3-4 guests,112,248.625,5646,5.8
+Yarra,Private room,1-2 guests,143,128,4680,9.9
+Whitehorse,Entire home/apt,1-2 guests,65,179,3942,6.6
+Darebin,Private room,1-2 guests,114,99.5,3759,9
+Wyndham,Entire home/apt,3-4 guests,36,229.5,3750,3.3
+Maribyrnong,Private room,1-2 guests,184,84.835,2494.5,7.9
+Knox,Private room,1-2 guests,49,90,2134,3.8
+Frankston,Private room,1-2 guests,37,103,1872,4.9
+Bayside,Private room,1-2 guests,37,138,1849,2.7
+Hobsons Bay,Private room,1-2 guests,67,86,1842,4.9
+Kingston,Private room,1-2 guests,54,108.635,1809,4.9
+Banyule,Private room,1-2 guests,55,86.46,1787,4.9
+Port Phillip,Private room,1-2 guests,247,125,1454,2.2
+Stonnington,Private room,1-2 guests,115,123.8,1428,2.7
+Monash,Private room,1-2 guests,182,102.115,1373.5,3.3
+Glen Eira,Private room,1-2 guests,112,98.425,1297.5,4.9
+Whitehorse,Private room,1-2 guests,133,104,969,1.6
+Boroondara,Private room,1-2 guests,135,102,936,3.3
+Melbourne,Private room,1-2 guests,731,116.33,909,1.6
+Wyndham,Private room,3-4 guests,36,118.5,906,2.5
+Yarra Ranges,Private room,1-2 guests,63,185,900,1.6
+Cardinia,Private room,1-2 guests,43,116,870,1.6
+Whittlesea,Private room,1-2 guests,93,90,792,2.7
+Hume,Private room,1-2 guests,132,81,649,3.3
+Moreland,Private room,1-2 guests,278,102,611,1.6
+Brimbank,Private room,1-2 guests,140,81,398,1.6
+Greater Dandenong,Private room,1-2 guests,77,92.21,384,1.6
+Wyndham,Private room,1-2 guests,314,82.995,0,0
+Manningham,Private room,1-2 guests,59,91,0,0
+Moonee Valley,Private room,1-2 guests,69,124.38,0,0
+Casey,Private room,1-2 guests,114,108.485,0,0
+Melbourne,Private room,3-4 guests,66,182,0,0
+Melton,Private room,1-2 guests,112,103.5,0,0

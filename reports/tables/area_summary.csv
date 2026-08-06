@@ -1,0 +1,31 @@
+neighbourhood_cleansed,n,median_price,median_occ,median_rev
+Melbourne,6463,251,54,14098
+Port Phillip,1805,244,30,8232
+Yarra,1075,266,66,18163
+Yarra Ranges,984,343,63,21037.5
+Stonnington,823,236.5,42,10611
+Moreland,673,172.91,30,3942
+Wyndham,648,159.25,12,1558
+Maribyrnong,500,180.835,42,6412.5
+Monash,471,226,24,4182
+Whitehorse,468,218,19,3594
+Boroondara,406,213.17,24,5033
+Darebin,363,185,36,6480
+Glen Eira,356,208.335,28,5901
+Moonee Valley,354,208.25,14,2860
+Hume,337,187,36,6804
+Brimbank,327,151.8,12,2130
+Casey,317,236,12,2610
+Bayside,316,325.4,18,5518.5
+Melton,268,225.235,6,1413
+Kingston,260,262.66,36,7512
+Hobsons Bay,246,239.875,33,6855
+Whittlesea,211,163,12,2075
+Frankston,207,240,42,10248
+Cardinia,185,270,24,6324
+Manningham,183,240,18,4158
+Banyule,178,189.83,30,5276.5
+Greater Dandenong,155,133.71,12,2034
+Knox,148,185,30,4789.5
+Maroondah,118,258.135,30,6606.5
+Nillumbik,82,286.985,87,24104
