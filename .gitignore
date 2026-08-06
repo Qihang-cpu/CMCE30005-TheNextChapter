@@ -47,3 +47,15 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Large data files
+*.csv
+*.xlsx
+*.csv.gz
+
+# Serialized R outputs
+*.rds
+
+# Operating system files
+.DS_Store
+Thumbs.db
