@@ -4,7 +4,7 @@
 
 - **Subject:** CMCE30005 Business Analytics Challenge, Semester 2 2026
 - **University:** University of Melbourne
-- **Team Members:** EricH896, Qihang-cpu, maksym-xu,
+- **Team Members:** EricH896, Qihang-cpu, maksym-xu, Leloc
 
 ---
 
