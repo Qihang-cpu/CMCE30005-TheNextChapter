@@ -57,6 +57,7 @@ rsconnect/
 !reports/tables/*.csv
 
 # Serialized R outputs
+*.RData
 *.rds
 
 # Operating system files
