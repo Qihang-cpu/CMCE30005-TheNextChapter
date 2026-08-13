@@ -70,3 +70,4 @@ data/raw/*
 # Intermediate objects rebuilt by scripts/01 and scripts/03
 data/processed/*
 !data/processed/.gitkeep
+.positai

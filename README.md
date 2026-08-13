@@ -44,6 +44,14 @@ of that file.
 > [reports/data-notes.md](reports/data-notes.md) for the join keys and the data quality
 > problems worth knowing before you write any new script.
 
+### Key variables and features
+
+
+### Limitations and potential problems 
+
+
+### Assumptions 
+
 ---
 
 ## Running the Analysis
@@ -65,7 +73,25 @@ without re-running the pipeline.
 
 ---
 
-## Repository Structure
+## Data Understanding
+
+---
+
+## Data Prepration
+
+---
+
+## Modeling 
+
+---
+
+## Evaluation
+
+---
+
+## Project Scope
+
+### Repository Structure 
 
 ```text
 CMCE30005-Group2/
@@ -85,5 +111,4 @@ CMCE30005-Group2/
 ```
 
 ---
-
 *Last updated: 6 August 2026*
