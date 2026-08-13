@@ -1,0 +1,93 @@
+# Markdown Basics
+
+Markdown is a lightweight way to format text using plain characters instead of a mouse and toolbar. You'll see it used in GitHub READMEs, class notes, blogs, Slack/Discord messages, and note-taking apps. Once you learn the handful of symbols below, you can write clean, readable documents anywhere plain text is accepted.
+This markdown tutorial file was downloaded from [DILLINGER](https://dillinger.io/), a free, open-source, cloud-based Markdown editor.
+
+---
+
+## Text Formatting
+
+Use `#` symbols at the start of a line for a heading. More `#` = smaller heading (up to 6 levels).
+
+```markdown
+# Heading 1
+## Heading 2
+### Heading 3
+```
+
+Markdown ignores single line breaks. To force a new line, end the previous line with **two spaces**, or leave a completely blank line to start a new paragraph.
+
+Markdown makes it easy to format text. You can write in **bold**, *italic*, or ~~strikethrough~~. Combine them for ***bold italic*** text. Use `inline code` for technical terms.
+
+| You type | You get |
+|---|---|
+| `*italic*` or `_italic_` | *italic* |
+| `**bold**` | **bold** |
+| `***bold italic***` | ***bold italic*** |
+| `~~strikethrough~~` | ~~strikethrough~~ |
+
+## Lists
+
+Unordered lists use dashes (`-`), asterisks (`*`), or plus signs (`+`): 
+
+- Import files from GitHub, Dropbox, or Google Drive
+* Export to Markdown, HTML, or PDF
++ Drag and drop files directly into the editor
+
+Ordered lists are numbered automatically:
+
+1. Write your markdown
+2. Preview the rendered output
+3. Export or save to the cloud
+
+Nested lists work too (indent with 2 spaces):
+
+- Cloud integrations
+  - GitHub repositories
+  - Dropbox folders
+  - Google Drive files
+  - OneDrive and Bitbucket
+- Local features
+  - Auto-save to browser storage
+  - Image paste from clipboard
+
+## Task Lists
+
+- [x] Set up the editor
+- [x] Write some markdown
+- [ ] Connect a cloud service
+- [ ] Export the finished document
+
+## Links and Images
+
+Link to any page with [inline links](https://dillinger.io) or use [reference-style links][dillinger].
+
+Images use a similar syntax but start with an exclamation mark(`!`):
+
+![Placeholder](https://placehold.co/600x200/2B2F36/35D7BB?text=Your+Image+Here)
+
+```markdown 
+use a relative path for locally hosted images or inside a github repository
+![Alt Text](photo.jpg)
+![Alt Text](images/photo.jpg)
+```
+
+## Blockquotes
+
+> Use `>` symbol in the bigining of a line for blockquotes  
+> The art of writing is the art of discovering what you believe.  
+> 
+
+[dillinger]: https://dillinger.io
+
+### Tips for Practicing
+- Use a free online Markdown editor like [Dillinger](https://dillinger.io/) or [StackEdit](https://stackedit.io/) to see your formatted output in real time.
+- GitHub, Reddit, Discord, and Slack all render Markdown ??? try using it in a real message!
+- Don't memorize everything at once. Start with headers, bold/italic, and lists ??? that alone covers 80% of everyday use.
+
+### Other Resources for Reproducible Workflows
+
+You can also use Quarto or R Markdown to create well-formatted, reproducible workflows for your analytics projects. Official tutorials are available at the links below.
+
+1 - [Quarto](https://quarto.org/docs/computations/r.html)  
+2 - [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html)  
