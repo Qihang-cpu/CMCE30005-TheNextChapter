@@ -1,249 +1,241 @@
-# What drives host revenue — pricing or operations?
+# What is associated with modelled listing revenue — price or review activity?
 
-Produced by `scripts/04_revenue_analysis.R`. Supporting tables are in
-`reports/tables/revenue_*.csv`, figures 06–08 in `reports/figures/`.
+Produced by `scripts/04_revenue_analysis.R`. Tables in `reports/tables/revenue_*.csv`,
+figures 06–09 in `reports/figures/`.
 
----
-
-## The question
-
-A prospective host has two levers. They can change what they charge per night,
-and they can change how often the property is booked. Both raise revenue, and
-effort spent on one is effort not spent on the other. The question is which
-lever moves more money in the Melbourne market, and under what conditions.
+> **Terminology.** This dataset observes reviews, not bookings. Nothing below is
+> called a booking. "Review activity" means reviews recorded in the trailing
+> twelve months; "modelled nights" and "modelled revenue" are Inside Airbnb
+> constructs, not nights sold or money earned.
 
 ---
 
-## 1. A finding that dictates the method: revenue is constructed, not measured
+## 1. The revenue field is constructed, not measured
 
-Before modelling anything, we reconstructed the revenue field Inside Airbnb
-publishes. It is not a measured quantity. It is calculated:
+Before modelling, we reconstructed the revenue field Inside Airbnb publishes:
 
 ```
 occupancy = min( reviews_ltm × 2 × max(minimum_nights, 3), 255 )
 revenue   = round( price × occupancy )
 ```
 
-The occupancy formula reproduces the published field **exactly for 100% of the
-14,431 listings** that have a booking in the trailing year. The revenue formula
-matches for 99.1%, with a largest relative discrepancy of 0.154% — that residual
-is rounding to whole dollars, not disagreement.
+The occupancy formula reproduces the published field **exactly for 100%** of the
+14,431 listings with a review in the trailing year; the revenue formula for
+99.1%, the remainder being rounding to whole dollars. The constants are Inside
+Airbnb's stated assumptions: a 50% review rate, a minimum stay length of three
+nights, and a 70%-of-year occupancy ceiling.
 
-The constants encode Inside Airbnb's assumptions: every review is taken to
-represent two stays (a 50% review rate), each stay lasts the greater of the
-host's minimum-night rule and three nights, and annual occupancy is capped at
-255 nights (70% of the year).
+Three consequences follow, and they govern everything below.
 
-**This has three consequences that shape everything below.**
-
-First, regressing revenue on price, review count or minimum nights would be
-circular. Those three variables *are* revenue, by construction. Such a model
-would return a near-perfect R² that measures nothing but our own arithmetic.
-We therefore never regress revenue on its own inputs.
-
-Second, "occupancy" carries no information beyond review count and the
-minimum-night rule. It is those two variables rescaled. Any model of occupancy
-is a model of review counts wearing a disguise, so we model review counts
-directly, where the units are honest.
-
-Third, the revenue *levels* inherit Inside Airbnb's assumptions and should not
-be read as dollars actually earned. What survives is the *ranking* between
-listings, which depends only on price, reviews and the minimum-night rule.
+1. **Revenue is never regressed on price, review count or minimum nights.** Those
+   variables *are* revenue by construction; such a model returns a near-perfect
+   R² that measures only our own arithmetic.
+2. **We model review counts, not occupancy.** Occupancy is the review count
+   rescaled by the host's own minimum-night rule.
+3. **Only rankings are evidence, not dollar levels.** The levels inherit Inside
+   Airbnb's assumptions.
 
 ---
 
-## 2. Where revenue variation actually comes from
+## 2. What the price filter removes
 
-Because `revenue = price × nights` holds exactly, taking logs gives an additive
-identity:
+The analysis keeps only listings with a usable price. That filter is strongly
+related to the outcome, so it is reported rather than left implicit:
 
-```
-log(revenue) = log(price) + log(nights)
-```
-
-and the variance of the left side splits into three shares that sum to one. This
-is arithmetic on an identity, not a fitted model — there is nothing to specify
-wrongly and no causal claim involved.
-
-| Sample | n | Pricing | Volume | Covariance |
-|---|---:|---:|---:|---:|
-| All priced listings with bookings | 14,440 | 22% | 78% | 0% |
-| Entire homes only | 11,756 | 16% | 98% | −14% |
-| Regularly booked (6+ reviews in 12m) | 9,568 | **44%** | **57%** | −2% |
-
-**Across the market, booking volume accounts for roughly three to four times as
-much revenue variation as pricing does.** Two listings chosen at random differ
-far more in how often they are booked than in what they charge — which is
-unsurprising once you notice that Melbourne prices cluster tightly (interquartile
-range $159–$348) while annual bookings run from zero to more than a hundred.
-
-**But the gap closes sharply among listings that are already working.** Restrict
-to properties with at least six bookings a year and pricing rises to 44% against
-volume's 57%. The negative covariance in the entire-home column is the visible
-price–demand tradeoff: dearer homes book less often.
-
-This is the central result, and it is a two-stage story rather than a single
-verdict. *Getting booked* is the dominant problem for a listing that is not yet
-established. *Pricing* becomes nearly as important once it is.
-
----
-
-## 3. The two stages, modelled separately
-
-76.3% of priced listings recorded at least one booking in the trailing year;
-23.7% recorded none. Pooling those two groups is what produces misleading
-headline comparisons, so they are modelled separately.
-
-### Stage one — getting booked at all
-
-Logistic regression on whether a listing had any booking in the trailing year
-(`reports/tables/revenue_extensive_margin.csv`). Odds ratios, all p < 0.001:
-
-| Factor | Odds ratio | Reading |
-|---|---:|---|
-| Minimum stay 28+ nights | 0.09 | **11x less likely to be booked** |
-| Hotel room (vs entire home) | 0.16 | |
-| Minimum stay 7–27 nights | 0.23 | |
-| Superhost | **4.38** | 4.4x more likely |
-| Private room (vs entire home) | 0.33 | |
-| Price (per log unit) | 0.45 | dearer listings book less often |
-
-The minimum-night rule is the single most destructive control a host holds. A
-28-night minimum cuts the odds of being booked at all by roughly eleven times.
-Hosts adopting it to sidestep short-stay regulation are trading away most of
-their demand.
-
-### Stage two — booking more often
-
-Among active listings, OLS on log review count over twelve months
-(`reports/tables/revenue_intensive_margin.csv`). n = 12,651, adjusted R² = 0.299:
-
-| Factor | Effect on booking volume |
-|---|---:|
-| Superhost | +98.1% |
-| Minimum stay 28+ nights | −75.0% |
-| Minimum stay 7–27 nights | −71.5% |
-| Shared room (vs entire home) | −71.1% |
-| Private room (vs entire home) | −61.2% |
-| Price (per log unit) | −44.7% |
-| Overall rating, per point | +41.8% |
-
-An adjusted R² of 0.299 is worth stating plainly: seven-tenths of the variation
-in how often a property is booked is *not* explained by anything in this
-dataset. Photography, listing copy, responsiveness and pricing dynamics through
-the year are all invisible here.
-
----
-
-## 4. Is raising the price self-defeating?
-
-The price coefficient in the volume model is an elasticity: **−0.592**
-(95% CI −0.644 to −0.540). Revenue rises with price whenever the elasticity is
-greater than −1, because the higher rate more than compensates for the nights
-lost.
-
-| Move | Effect on booking volume | Net effect on revenue |
+| Sample | n | No reviews in trailing 12m |
 |---|---:|---:|
-| Raise price 10% | −5.5% | **+4.0%** |
-| Cut price 10% | +6.4% | **−4.2%** |
+| All listings | 25,728 | 39.1% |
+| Priced sample (analysis set) | 18,927 | 23.7% |
+| **Excluded: no usable price** | 6,801 | **82.0%** |
 
-**Discounting to fill the calendar destroys revenue in this market.** A host who
-cuts rates 10% gains bookings but ends up roughly 4% worse off.
+Listings without a price are overwhelmingly inactive. **This is not random
+censoring**, and every activity rate in this document therefore describes priced
+listings and understates inactivity across the market as a whole.
 
-This estimate is observational, not causal. Better properties both charge more
-and book more, and the model controls for size, type, location, amenity count
-and rating but cannot control for quality it never observes. The true causal
-elasticity is likely more negative than −0.592, so the +4.0% figure should be
-read as an upper bound on the gain from raising prices, not a promise.
+---
 
-Because the whole pricing recommendation rests on this one number, it was
-re-estimated dropping the controls most open to challenge — `availability_365`
-is partly an outcome of being booked, and Superhost status is awarded on booking
-performance (`reports/tables/revenue_elasticity_robustness.csv`):
+## 3. Where the variation in modelled revenue sits
 
-| Specification | n | Elasticity | Revenue effect of +10% price |
+Below the 255-night cap the identity is exactly additive in three terms, which
+lets the host's minimum-night policy be separated from review activity rather
+than bundled with it:
+
+```
+log(modelled revenue) = log(price) + log(2 × max(min_nights, 3)) + log(reviews_ltm)
+```
+
+Shares of cross-sectional variance, uncapped listings (92.3% of active listings):
+
+| Sample | n | Price | Stay-length policy | Review activity | Covariance |
+|---|---:|---:|---:|---:|---:|
+| Uncapped listings | 13,316 | 23.6% | 5.0% | 78.9% | −7.5% |
+| Uncapped, entire homes | 10,719 | 17.0% | 6.2% | 99.4% | −22.6% |
+
+Dispersion in review activity accounts for roughly three times as much variation
+in modelled revenue as dispersion in price. The stay-length policy contributes
+only about 5%, so the result is not an artefact of the minimum-night multiplier
+inside Inside Airbnb's formula.
+
+**This is a decomposition of variance in a modelled quantity.** It says where the
+spread sits — not what causes revenue, and not what would happen if a host
+changed anything.
+
+---
+
+## 4. Listing age: the apparent lifecycle is an exposure artefact
+
+A listing younger than a year cannot have accrued twelve months of reviews, so
+raw trailing counts understate new listings. Expressed per month of exposure:
+
+| Listing age | n | Median reviews (12m) | **Median reviews per month** |
 |---|---:|---:|---:|
-| Main specification | 12,651 | −0.592 | +4.0% |
-| Without availability | 12,651 | −0.606 | +3.8% |
-| Without availability or Superhost | 12,651 | −0.666 | +3.2% |
-| Entire homes only | 11,439 | −0.695 | +3.0% |
-| Regularly booked only (6+) | 8,479 | −0.379 | +6.1% |
+| Under 1 year | 4,661 | 6 | **1.27** |
+| 1–2 years | 2,731 | 13 | 1.08 |
+| 2–5 years | 4,497 | 13 | 1.08 |
+| 5+ years | 2,548 | 12 | 1.00 |
 
-**Every specification sits well above −1.** The size of the gain moves, but the
-direction of the recommendation does not depend on the choice of controls.
+The raw counts suggest new listings do badly and established ones do well. **Once
+exposure is accounted for, that pattern disappears and mildly reverses.** An
+earlier version of this analysis interpreted a performance grouping ("6+ reviews")
+as a lifecycle stage and recommended treating the first year as a volume problem.
+That recommendation was not supported, and the exposure-adjusted figures point
+the other way. It has been withdrawn.
 
 ---
 
-## 5. The Superhost gap, corrected
+## 5. Two margins, modelled separately
 
-Comparing median revenue across all listings gives Superhosts a 7.7x advantage.
-**That figure is an artefact and should not be used.** It compares a group that
-is 94% active against one that is 65% active, so most of the gap is simply the
-dormant listings dragging down the regular-host median.
+23.7% of priced listings recorded no review activity. All standard errors are
+clustered by host, since 55.8% of listings belong to multi-property hosts and
+observations within a host are not independent.
 
-| | Regular host | Superhost | Ratio |
+### Achieving any recent review activity (logistic, host-clustered)
+
+| Factor | Odds ratio |
+|---|---:|
+| Minimum stay 28+ nights | 0.09 |
+| Hotel room (vs entire home) | 0.16 |
+| Minimum stay 7–27 nights | 0.23 |
+| Private room (vs entire home) | 0.33 |
+| Price (per log unit) | 0.45 |
+| Superhost | 4.38 |
+
+### Sustaining review activity among active listings (OLS on log reviews)
+
+n = 12,648, adjusted R² = 0.411, 6,250 host clusters.
+
+| Factor | Difference in review count |
+|---|---:|
+| Superhost | +88.2% |
+| Minimum stay 28+ nights | −76.0% |
+| Minimum stay 7–27 nights | −74.4% |
+| Private room (vs entire home) | −54.6% |
+| Overall rating, per point | +46.8% |
+| Price (per log unit) | −43.4% |
+| Listing age (per log year) | +43.3% |
+
+Roughly six-tenths of the variation in review intensity is unexplained.
+Photography, listing copy, host responsiveness and pricing through the year are
+not observable here.
+
+---
+
+## 6. The price–activity association
+
+**This coefficient is not a demand elasticity and is not used to compute any
+counterfactual.** Among comparable active listings, those priced 10% higher
+recorded about **5.3% fewer reviews** over the same window
+(coefficient −0.569, 95% CI −0.668 to −0.470, host-clustered).
+
+Three reasons it cannot be read as the effect of changing a price:
+
+1. **The windows do not align.** The response counts reviews accumulated over the
+   previous twelve months; the regressor is the price observed on a single day at
+   the end of that window. Hosts change prices.
+2. **Price is chosen, not assigned.** Hosts set prices in response to demand they
+   observe and we do not.
+3. **Unobserved quality moves both.** Better properties charge more and are
+   reviewed more; the controls cannot capture fit-out, photography or view.
+
+Stability across specifications (host-clustered):
+
+| Specification | n | Coefficient | SE |
 |---|---:|---:|---:|
-| **All priced listings** | | | |
-| Listings | 11,685 | 7,242 | |
-| Booked at least once | 65.3% | 94.0% | |
-| Median revenue | $3,048 | $23,445 | 7.7x |
-| **Active listings only** | | | |
-| Listings | 7,630 | 6,810 | |
-| Median price | $247.00 | $253.50 | 1.03x |
-| Median reviews (12m) | 6 | 17 | 2.8x |
-| Median revenue | $9,478 | $25,428 | **2.7x** |
+| Main | 12,648 | −0.569 | 0.051 |
+| Without availability | 12,648 | −0.581 | 0.051 |
+| Without availability or Superhost | 12,648 | −0.634 | 0.052 |
+| Entire homes only | 11,436 | −0.648 | 0.060 |
 
-The defensible number is **2.7x**, and its composition is the interesting part:
-Superhosts charge 3% more and are booked 2.8 times as often. The advantage is
-essentially all volume and essentially no price.
-
-**This association cannot be read as an effect of the badge.** Superhost status
-is awarded on booking performance among other criteria, so status and volume are
-two symptoms of the same underlying operation. The honest statement is that
-Superhosts and high-volume listings are the same population, not that earning
-the badge causes bookings.
+Stability across these specifications speaks only to the choice of controls. It
+does not address the timing mismatch, reverse causation or unobserved quality,
+and it is not evidence of a causal price effect.
 
 ---
 
-## 6. What this means for the client
+## 7. Superhosts
 
-**Do not compete on price.** With demand elasticity at −0.592, discounting
-loses money. Price at or slightly above the local median for comparable
-properties and hold it.
+Descriptive comparison only:
 
-**Do not set a long minimum stay.** A 28-night minimum reduces the odds of being
-booked at all by a factor of eleven and cuts volume by three quarters among
-those still booked. It is the most damaging single setting available.
+| | Regular host | Superhost |
+|---|---:|---:|
+| Listings | 11,685 | 7,242 |
+| With recent review activity | 65.3% | 94.0% |
+| *Active listings only* | | |
+| Median price | $247.00 | $253.50 |
+| Median reviews (12m) | 6 | 17 |
+| Median modelled revenue | $9,478 | $25,428 |
 
-**Treat the first year as a volume problem, not a pricing problem.** For a
-listing not yet established, volume drives 78% of revenue variation. Once it is
-booking regularly, pricing carries 44% and deserves real attention. The right
-sequence is to establish occupancy first, then optimise rate.
+Among active listings the ratio is **2.7x**, of which almost all is review
+activity and about 3% is price. Comparing across all listings would give 7.7x,
+but that contrasts a 94%-active group with a 65%-active one; an earlier version
+of this analysis reported the 7.7x figure and it has been corrected.
 
-**Where the two levers meet** (figure 08): among the cheapest quartile, moving
-from 1–2 bookings a year to 16+ takes median revenue from $936 to $20,850 — a
-22-fold gain. Among listings with 1–2 bookings, moving from the cheapest to the
-dearest quartile takes $936 to $4,478 — under 5-fold. Volume is the larger lever,
-but note that the two compound: the top-right cell reaches $77,044.
+Superhost status is awarded partly on booking performance, so this compares two
+outcomes. It is **not** evidence that earning the badge raises revenue, and we do
+not recommend it as an intervention.
 
 ---
 
-## 7. Limitations
+## 8. What can and cannot be said
 
-1. Revenue and occupancy are Inside Airbnb constructs built on a 50% review rate
-   and a three-night minimum stay. Levels are assumptions; only rankings are
-   evidence.
-2. Review count proxies bookings. Guests who do not review are invisible, and
-   the review rate may itself differ between Superhosts and regular hosts —
-   which would inflate the volume gap reported in section 5.
-3. All models are cross-sectional. Coefficients are associations.
-4. The price elasticity is not causal, for the reason given in section 4.
-5. Superhost status is endogenous to booking performance and cannot be treated
-   as a treatment.
-6. Thirteen columns in the source file are entirely empty, including
-   `instant_bookable`, `host_response_time` and `host_response_rate` — the three
-   variables that would have measured host responsiveness directly. The
-   operations side of this question is therefore measured more weakly than the
+**Supported by this analysis**
+
+- Inside Airbnb's revenue and occupancy fields are deterministic constructs, and
+  we can reproduce them exactly.
+- Dispersion in modelled revenue sits about three times more in review activity
+  than in price, and the minimum-night multiplier contributes little.
+- Listings currently requiring 28+ nights show far lower recent review activity
+  than otherwise comparable listings.
+- Superhosts and high-activity listings are the same population.
+
+**Not supported, and deliberately absent**
+
+- Any claim that raising or cutting a price would change a given listing's
+  revenue by a stated amount.
+- Any lifecycle claim about a listing's first year.
+- Any claim that hosts set 28-night minimums to avoid the short-stay levy. The
+  Victorian levy does apply to stays under 28 days, which makes this a plausible
+  hypothesis worth testing against data on when hosts changed their rules — but
+  this snapshot records only the current setting, and weak demand could equally
+  have prompted a switch to longer lets.
+- Any recommendation about where to buy, which would require acquisition costs
+  this dataset does not contain.
+
+---
+
+## 9. Limitations
+
+1. Revenue and occupancy are constructs; only rankings are evidence.
+2. Reviews proxy bookings imperfectly. Guests who do not review are invisible,
+   and if review rates differ between Superhosts and regular hosts, the activity
+   gap in section 7 is overstated.
+3. The priced sample excludes listings that are 82% inactive — non-random
+   censoring that biases every activity rate downward.
+4. All models are cross-sectional; every coefficient is an association.
+5. Thirteen source columns are entirely empty, including `host_response_time` and
+   `host_response_rate`, so the operations side is measured more weakly than the
    pricing side.
-7. A single June snapshot. Prices carry no seasonal adjustment applied later in
-   the year.
+6. A single June snapshot, with no seasonal adjustment.
+7. The positive-count model is OLS on log reviews. A zero-truncated negative
+   binomial would suit the count structure better; the trade-off is
+   interpretability, and the ranking of factors is unlikely to change.

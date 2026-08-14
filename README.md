@@ -18,10 +18,10 @@ The stakeholder is the prospective host; the question matters because entry cost
 and location are effectively irreversible once committed.
 
 The central question we take to the data is **whether revenue is driven by
-pricing or by operations**. The short answer is that it depends on the stage:
-booking volume accounts for 78% of revenue variation across the market, but only
-57% among listings that are already booking regularly, where pricing rises to
-44%. Full argument in [reports/revenue-analysis.md](reports/revenue-analysis.md).
+pricing or by operations**. Inside Airbnb's revenue field turns out to be a
+deterministic construct, so the analysis decomposes that identity rather than
+regressing on it: dispersion in review activity accounts for about three times
+as much variation in modelled revenue as dispersion in price. Full argument in [reports/revenue-analysis.md](reports/revenue-analysis.md).
 
 Market structure, the hedonic price model and demand seasonality are in
 [reports/findings.md](reports/findings.md), with open questions for the team at
@@ -111,7 +111,7 @@ CMCE30005-Group2/
 │   ├── data-notes.md
 │   ├── methodology.md
 │   ├── findings.md          # Market structure, price model, seasonality
-│   └── revenue-analysis.md  # Pricing vs operations
+│   └── revenue-analysis.md  # Price vs review activity
 ├── README.md
 ├── .gitignore
 └── CMCE30005-Group2.Rproj

@@ -21,7 +21,8 @@
 #   "rmarkdown",    # R Markdown rendering
 #   "data.table",   # Fast reading of the large calendar and reviews files
 #   "stringr",      # String parsing (price, bathrooms_text)
-#   "broom"         # Tidy model output
+#   "broom",        # Tidy model output
+#   "sandwich"      # Score/bread extractors for clustered standard errors
 # ))
 
 # Load packages used throughout the project
@@ -36,6 +37,7 @@ library(patchwork)
 library(data.table)
 library(stringr)
 library(broom)
+library(sandwich)
 
 # Session information (for reproducibility)
 sessionInfo()

@@ -1,0 +1,5 @@
+specification,n,coefficient,clustered_se
+Main specification,12648,-0.569,0.051
+Without availability,12648,-0.581,0.051
+Without availability or Superhost,12648,-0.634,0.052
+Entire homes only,11436,-0.648,0.06

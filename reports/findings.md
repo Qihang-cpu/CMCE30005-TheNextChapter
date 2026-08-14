@@ -1,5 +1,10 @@
 # Interim findings
 
+> **Superseded in part.** The revenue question is now answered in
+> [revenue-analysis.md](revenue-analysis.md), which corrects the Superhost figure
+> and withdraws the lifecycle and pricing recommendations that appeared here.
+> Where the two disagree, revenue-analysis.md is current.
+
 All figures come from `scripts/01`–`03`; the underlying tables are in
 `reports/tables/` and the charts in `reports/figures/`. Sample definitions and
 caveats are in `methodology.md`.
@@ -15,7 +20,7 @@ caveats are in `methodology.md`.
 
 Median values by LGA, priced sample (`reports/tables/area_summary.csv`):
 
-| LGA | Listings | Median price | Median nights booked | Median annual revenue |
+| LGA | Listings | Median price | Median modelled nights | Median modelled revenue |
 |---|---|---|---|---|
 | Melbourne | 6,463 | $251 | 54 | $14,098 |
 | Port Phillip | 1,805 | $244 | 30 | $8,232 |
@@ -120,8 +125,8 @@ location.
 - ~~Should we model revenue directly rather than price?~~ Done — see
   [revenue-analysis.md](revenue-analysis.md). Revenue turned out to be a
   constructed field, which changed the method: the identity is decomposed rather
-  than regressed. Booking volume drives 78% of revenue variation market-wide but
-  only 57% among listings already booking regularly.
+  than regressed. Dispersion in review activity accounts for about three times
+  as much variation in modelled revenue as dispersion in price.
 - The review text (1.03 million comments) is untouched. Sentiment or topic
   analysis could explain what separates a 4.9 listing from a 4.7 one.
 - Regulatory angle: Victoria's short-stay levy took effect in 2025 and the 28+

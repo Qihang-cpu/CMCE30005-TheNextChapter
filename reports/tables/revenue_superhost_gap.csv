@@ -1,5 +1,5 @@
-scope,superhost,listings,median_price,median_reviews_ltm,median_revenue
-all,FALSE,11685,234.5,2,3048
-all,TRUE,7242,254,15,23445
-active,FALSE,7630,247,6,9478
-active,TRUE,6810,253.5,17,25428
+scope,superhost,listings,pct_with_recent_activity,median_price,median_reviews_ltm,median_modelled_revenue
+all priced listings,FALSE,11685,65.3,234.5,2,3048
+all priced listings,TRUE,7242,94,254,15,23445
+active listings only,FALSE,7630,100,247,6,9478
+active listings only,TRUE,6810,100,253.5,17,25428

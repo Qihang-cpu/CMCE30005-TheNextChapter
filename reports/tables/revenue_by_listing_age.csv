@@ -1,0 +1,6 @@
+age_band,listings,median_reviews_ltm,median_reviews_per_month,median_price
+,3,1,1,240
+under 1 year,4661,6,1.27,254
+1-2 years,2731,13,1.08,255
+2-5 years,4497,13,1.08,255.5
+5+ years,2548,12,1,226.885

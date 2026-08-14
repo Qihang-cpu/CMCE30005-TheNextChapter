@@ -54,31 +54,41 @@ verified reproduces the published values exactly. Three rules follow:
 
 - **Never regress revenue on price, review count or minimum nights.** They are
   revenue by construction; the fit would be tautological.
-- **Model review counts, not occupancy.** Occupancy is review count rescaled by
-  the host's own minimum-night rule, so modelling it builds a policy multiplier
-  into the response variable.
+- **Model review counts, not occupancy.** Occupancy is the review count rescaled
+  by the host's own minimum-night rule.
 - **Read rankings, not levels.** Dollar amounts inherit Inside Airbnb's
   assumptions about review rates and stay lengths.
 
-Given that, the design is:
+The design is then:
 
-1. **Variance decomposition.** `log(revenue) = log(price) + log(nights)` holds
-   exactly, so the variance splits into pricing, volume and covariance shares
-   that sum to one. This is arithmetic on an identity, with nothing to specify
-   and no causal claim.
-2. **A two-part (hurdle) model.** 23.7% of priced listings record no bookings.
-   Pooling them with active listings is what produces inflated group
-   comparisons, so the extensive margin (any booking at all, logistic) and the
-   intensive margin (how many, OLS on log reviews) are estimated separately.
-3. **Elasticity with robustness checks.** The price coefficient in the volume
-   model drives the pricing recommendation, so it is re-estimated across five
-   specifications, dropping the controls most open to challenge
-   (`reports/tables/revenue_elasticity_robustness.csv`).
+1. **Three-way variance decomposition.** Below the 255-night cap,
+   `log(revenue) = log(price) + log(stay multiplier) + log(reviews)` holds
+   exactly, so the host's minimum-night policy is separated from review activity
+   instead of being bundled into a single "volume" term. This is arithmetic on
+   an identity — no specification, no causal claim.
+2. **Sample censoring is reported, not assumed away.** The priced sample excludes
+   6,801 listings that are 82% inactive, against 23.7% in the analysis set. Every
+   activity rate is therefore conditional on having a usable price.
+3. **A two-part model.** The extensive margin (any recent review activity,
+   logistic) and the intensive margin (review count among active listings, OLS on
+   logs) are estimated separately, because pooling them produces inflated group
+   comparisons.
+4. **Host-clustered standard errors throughout.** 55.8% of listings belong to
+   multi-property hosts, so listings are not independent observations. Clustering
+   roughly doubles the standard errors relative to the classical ones.
+5. **Exposure-adjusted listing age.** Listings under a year old cannot accrue
+   twelve months of reviews, so age comparisons use reviews per month of exposure.
 
-Two endogeneity problems are disclosed rather than solved. `availability_365` is
-partly an outcome of being booked, and Superhost status is awarded partly on
-booking performance, so neither can be read causally. Dropping both moves the
-elasticity from -0.592 to -0.666 — the conclusion is unchanged.
+**Terminology is deliberate.** The data observe reviews, not bookings. The
+analysis says "review activity", "modelled nights" and "modelled revenue"
+throughout, and never calls a coefficient an elasticity.
+
+**What the design does not fix.** The price coefficient is a cross-sectional
+association: the response accumulates over twelve months while the regressor is
+a single-day snapshot at the end of that window, price is chosen by the host in
+response to unobserved demand, and quality that drives both is not measured.
+Robustness across control sets does not address any of this, so no counterfactual
+is computed from it.
 
 ## Limitations to state in the report
 
