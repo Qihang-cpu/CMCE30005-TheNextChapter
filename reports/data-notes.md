@@ -33,8 +33,16 @@ These cost us time, so they are worth knowing before writing any new script.
    `bedrooms` (4,679 missing), all `review_scores_*` (4,477), and others.
 2. **`price` is text**, formatted `$1,234.00`. Strip `$` and commas before
    converting. 6,553 listings (25.5%) have no price at all.
-3. **`instant_bookable` is 100% missing** in this snapshot — every value is `"NA"`.
-   It cannot be used and is excluded from the model.
+3. **Thirteen columns are entirely empty** in this snapshot — every value is
+   `"NA"`. They are dropped in cleaning rather than carried through:
+   `calendar_updated`, `host_acceptance_rate`, `host_neighbourhood`,
+   `host_response_rate`, `host_response_time`, `host_since`,
+   `host_thumbnail_url`, `host_total_listings_count`, `instant_bookable`,
+   `license`, `neighborhood_overview`, `neighbourhood`,
+   `neighbourhood_group_cleansed`.
+   Note that this removes every direct measure of host responsiveness. Host
+   tenure survives only because `hosts_time_as_host_years` and
+   `hosts_time_as_host_months` are populated even though `host_since` is not.
 4. **The calendar file has no price column**, contrary to the project brief. It
    carries only availability and the min/max night rules, so all price analysis
    relies on the listings snapshot.
@@ -44,9 +52,22 @@ These cost us time, so they are worth knowing before writing any new script.
    physical line count of listings_airbnb.csv (62,204) is far higher than its
    record count (25,728). Any parser must handle quoted newlines — `fread` and
    `read_csv` both do; naive line splitting does not.
-7. **`estimated_occupancy_l365d` and `estimated_revenue_l365d` are Inside Airbnb
-   estimates** derived from review volume, not booking records. They understate
-   true occupancy and should only be used to compare listings against each other.
+7. **`estimated_occupancy_l365d` and `estimated_revenue_l365d` are constructed
+   fields, not measurements.** They are computed as
+
+   ```
+   occupancy = min( reviews_ltm x 2 x max(minimum_nights, 3), 255 )
+   revenue   = round( price x occupancy )
+   ```
+
+   We verified this against the data: the occupancy formula reproduces the
+   published field exactly for 100% of listings with a booking, and the revenue
+   formula for 99.1% (the rest is rounding to whole dollars).
+
+   The practical consequence is that **regressing revenue on price, review count
+   or minimum nights is circular** — those variables are revenue by
+   construction, and such a model returns a meaningless near-perfect fit. Model
+   the components instead. See `revenue-analysis.md` section 1.
 
 ## Derived variables
 

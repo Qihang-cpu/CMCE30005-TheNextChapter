@@ -1,0 +1,4 @@
+sample,n,var_log_revenue,price_share,volume_share,covariance_share
+All priced listings with bookings,14440,1.618,0.217,0.778,0.005
+Entire homes only,11756,1.224,0.16,0.976,-0.136
+Regularly booked (6+ reviews in 12m),9568,0.653,0.444,0.571,-0.015

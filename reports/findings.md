@@ -60,18 +60,23 @@ not.
 | | Regular host | Superhost |
 |---|---|---|
 | Listings | 11,685 | 7,242 |
-| Median price | $234.50 | $254.00 |
-| Median rating | 4.75 | 4.91 |
-| Median nights booked per year | 12 | **96** |
-| Median annual revenue | $3,048 | **$23,445** |
+| Booked at least once in 12m | 65.3% | 94.0% |
+| Median price, active listings | $247.00 | $253.50 |
+| Median bookings (reviews) in 12m | 6 | 17 |
+| Median annual revenue, active listings | $9,478 | **$25,428** |
 
-Superhosts earn 7.7 times the revenue of regular hosts. Yet once listing
-attributes are held constant, the Superhost coefficient is **−6.0%** — they
-charge slightly *less* for a comparable property.
+Among listings that are actually being booked, Superhosts earn **2.7 times** the
+revenue of regular hosts while charging only 3% more. The advantage is volume,
+not price — and once listing attributes are held constant, the Superhost price
+coefficient is in fact **−6.0%**.
 
-The gap is therefore almost entirely occupancy, not price. For a new operator
-this reorders the priorities: reaching Superhost standard (response rate,
-ratings, cancellation record) is worth far more than defending a nightly rate.
+> **Correction.** An earlier version of this file reported a 7.7x revenue gap.
+> That figure compared medians across *all* listings, including the 34.7% of
+> regular-host listings with no bookings at all, and overstates the difference.
+> The comparable figure is 2.7x. See `revenue-analysis.md` section 5.
+
+Note also that Superhost status is awarded partly on booking performance, so
+this is an association between two outcomes rather than an effect of the badge.
 
 ## 5. Demand is strongly seasonal
 

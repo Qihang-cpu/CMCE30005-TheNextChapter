@@ -47,12 +47,19 @@ num_cols <- c("bedrooms", "beds", "minimum_nights", "maximum_nights",
               "review_scores_cleanliness", "review_scores_checkin",
               "review_scores_communication", "review_scores_location",
               "review_scores_value", "reviews_per_month",
-              "estimated_revenue_l365d", "host_total_listings_count")
+              "estimated_revenue_l365d")
 listings[, (num_cols) := lapply(.SD, function(x) suppressWarnings(as.numeric(x))),
          .SDcols = num_cols]
 
-listings[, host_response_rate_num := as.numeric(str_remove(host_response_rate, "%")) / 100]
-listings[, host_acceptance_rate_num := as.numeric(str_remove(host_acceptance_rate, "%")) / 100]
+# Host tenure. host_since is empty in this snapshot, but the years/months pair
+# survives and reconstructs the same information.
+listings[, host_tenure_years := hosts_time_as_host_years + hosts_time_as_host_months / 12]
+
+# Thirteen columns are entirely empty in this snapshot and are dropped rather
+# than carried through as all-NA: calendar_updated, host_acceptance_rate,
+# host_neighbourhood, host_response_rate, host_response_time, host_since,
+# host_thumbnail_url, host_total_listings_count, instant_bookable, license,
+# neighborhood_overview, neighbourhood, neighbourhood_group_cleansed.
 
 # minimum_nights of 28 or more is effectively a long-stay listing and sits in a
 # different market to nightly short-stay accommodation
@@ -69,15 +76,16 @@ cat("Listings with usable price:", listings[priced == TRUE, .N],
             listings[is.na(price_num), .N],
             listings[!is.na(price_num) & (price_num < 30 | price_num > 1500), .N]))
 
-keep_cols <- c("id", "host_id", "host_since", "host_is_superhost",
-               "host_response_rate_num", "host_acceptance_rate_num",
-               "host_listings_count", "calculated_host_listings_count",
+keep_cols <- c("id", "host_id", "host_is_superhost", "host_tenure_years",
+               "host_identity_verified", "host_listings_count",
+               "calculated_host_listings_count",
                "neighbourhood_cleansed", "latitude", "longitude",
                "property_type", "room_type", "accommodates", "bedrooms", "beds",
                "bathrooms_num", "shared_bath", "n_amenities",
                "price_num", "priced", "minimum_nights", "min_nights_grp",
-               "availability_365", "availability_90",
-               "number_of_reviews", "number_of_reviews_ltm", "reviews_per_month",
+               "availability_365", "availability_90", "availability_eoy",
+               "number_of_reviews", "number_of_reviews_ltm",
+               "number_of_reviews_ly", "reviews_per_month",
                "review_scores_rating", "review_scores_location",
                "review_scores_value", "estimated_occupancy_l365d",
                "estimated_revenue_l365d", "first_review", "last_review")

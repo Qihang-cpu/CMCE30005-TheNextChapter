@@ -17,10 +17,15 @@ decide **where to invest, what property type to operate, and how to price it**.
 The stakeholder is the prospective host; the question matters because entry cost
 and location are effectively irreversible once committed.
 
-The analysis so far covers market structure, a hedonic price model, demand
-seasonality, and revenue by segment. Interim results are in
-[reports/findings.md](reports/findings.md), with open questions for the team at the end
-of that file.
+The central question we take to the data is **whether revenue is driven by
+pricing or by operations**. The short answer is that it depends on the stage:
+booking volume accounts for 78% of revenue variation across the market, but only
+57% among listings that are already booking regularly, where pricing rises to
+44%. Full argument in [reports/revenue-analysis.md](reports/revenue-analysis.md).
+
+Market structure, the hedonic price model and demand seasonality are in
+[reports/findings.md](reports/findings.md), with open questions for the team at
+the end of that file.
 
 ---
 
@@ -64,6 +69,7 @@ source("scripts/00_packages.R")          # once, to install and load packages
 source("scripts/01_data_cleaning.R")     # ~2 min, writes data/processed/
 source("scripts/02_exploratory_analysis.R")
 source("scripts/03_price_model.R")
+source("scripts/04_revenue_analysis.R")
 ```
 
 Script 01 additionally requires `data.table` and `stringr`; script 03 requires
@@ -104,7 +110,8 @@ CMCE30005-Group2/
 │   ├── tables/     # Summary tables and model output
 │   ├── data-notes.md
 │   ├── methodology.md
-│   └── findings.md # Interim results
+│   ├── findings.md          # Market structure, price model, seasonality
+│   └── revenue-analysis.md  # Pricing vs operations
 ├── README.md
 ├── .gitignore
 └── CMCE30005-Group2.Rproj
