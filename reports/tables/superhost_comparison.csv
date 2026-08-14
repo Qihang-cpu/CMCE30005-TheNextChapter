@@ -1,3 +1,5 @@
-host_is_superhost,n,median_price,median_rating,median_revenue,median_occ
-f,11685,234.5,4.75,3048,12
-t,7242,254,4.91,23445,96
+scope,host_is_superhost,n,pct_active,median_price,median_rating,median_revenue,median_occ
+all listings,f,11685,65.3,234.5,4.75,3048,12
+all listings,t,7242,94,254,4.91,23445,96
+active listings only,f,7630,100,247,4.75,9478,36
+active listings only,t,6810,100,253.5,4.91,25428,108

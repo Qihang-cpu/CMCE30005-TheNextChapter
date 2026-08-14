@@ -1,0 +1,6 @@
+specification,n,elasticity,std_error,revenue_effect_10pct_rise
+Main specification,12651,-0.592,0.026,4
+Without availability,12651,-0.606,0.026,3.8
+Without availability or Superhost,12651,-0.666,0.028,3.2
+Entire homes only,11439,-0.695,0.03,3
+Regularly booked only (6+),8479,-0.379,0.022,6.1

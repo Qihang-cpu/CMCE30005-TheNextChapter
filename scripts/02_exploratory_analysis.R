@@ -103,7 +103,8 @@ p <- ggplot(rev_data, aes(price_num, estimated_occupancy_l365d / 365)) +
   scale_x_log10(labels = dollar) +
   scale_y_continuous(labels = percent) +
   labs(title = "Price vs estimated occupancy - entire homes with recent activity",
-       subtitle = "Each point is a listing; occupancy estimated from trailing-365d bookings",
+       subtitle = paste("Each point is a listing. Occupancy is an Inside Airbnb construct",
+                        "derived from review counts - see reports/data-notes.md"),
        x = "Price per night (log scale)", y = "Estimated occupancy")
 ggsave("reports/figures/05_price_vs_occupancy.png", p, width = 8, height = 6, dpi = 150)
 
@@ -127,12 +128,32 @@ print(head(seg, 12))
 
 # ---- 7. Superhost comparison -------------------------------------------------
 
+# Split by whether the listing was booked at all. Pooling the two overstates the
+# Superhost gap, because a third of regular-host listings record no bookings and
+# drag that median down. See reports/revenue-analysis.md section 5.
+priced[, is_active := number_of_reviews_ltm > 0]
+
 sh <- priced[, .(n = .N,
-                 median_price = median(price_num),
-                 median_rating = median(review_scores_rating, na.rm = TRUE),
-                 median_revenue = median(estimated_revenue_l365d, na.rm = TRUE),
-                 median_occ = median(estimated_occupancy_l365d, na.rm = TRUE)),
+                 pct_active = round(100 * mean(is_active), 1),
+                 median_price = as.numeric(median(price_num)),
+                 median_rating = as.numeric(median(review_scores_rating, na.rm = TRUE)),
+                 median_revenue = as.numeric(median(estimated_revenue_l365d, na.rm = TRUE)),
+                 median_occ = as.numeric(median(estimated_occupancy_l365d, na.rm = TRUE))),
              by = host_is_superhost]
+sh[, scope := "all listings"]
+
+sh_active <- priced[is_active == TRUE,
+                    .(n = .N,
+                      pct_active = 100,
+                      median_price = as.numeric(median(price_num)),
+                      median_rating = as.numeric(median(review_scores_rating, na.rm = TRUE)),
+                      median_revenue = as.numeric(median(estimated_revenue_l365d, na.rm = TRUE)),
+                      median_occ = as.numeric(median(estimated_occupancy_l365d, na.rm = TRUE))),
+                    by = host_is_superhost]
+sh_active[, scope := "active listings only"]
+
+sh <- rbind(sh, sh_active)
+setcolorder(sh, "scope")
 print(sh)
 fwrite(sh, "reports/tables/superhost_comparison.csv")
 

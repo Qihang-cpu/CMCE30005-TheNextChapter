@@ -117,8 +117,11 @@ location.
 
 ## Open questions for the team
 
-- Should we model revenue directly rather than price? Price is only half the
-  decision and the Superhost finding suggests revenue is where the story is.
+- ~~Should we model revenue directly rather than price?~~ Done — see
+  [revenue-analysis.md](revenue-analysis.md). Revenue turned out to be a
+  constructed field, which changed the method: the identity is decomposed rather
+  than regressed. Booking volume drives 78% of revenue variation market-wide but
+  only 57% among listings already booking regularly.
 - The review text (1.03 million comments) is untouched. Sentiment or topic
   analysis could explain what separates a 4.9 listing from a 4.7 one.
 - Regulatory angle: Victoria's short-stay levy took effect in 2025 and the 28+

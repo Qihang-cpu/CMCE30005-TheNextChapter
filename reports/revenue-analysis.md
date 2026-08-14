@@ -116,7 +116,7 @@ their demand.
 ### Stage two — booking more often
 
 Among active listings, OLS on log review count over twelve months
-(`reports/tables/revenue_intensive_margin.csv`). n = 12,660, adjusted R² = 0.299:
+(`reports/tables/revenue_intensive_margin.csv`). n = 12,651, adjusted R² = 0.299:
 
 | Factor | Effect on booking volume |
 |---|---:|
@@ -155,6 +155,22 @@ and book more, and the model controls for size, type, location, amenity count
 and rating but cannot control for quality it never observes. The true causal
 elasticity is likely more negative than −0.592, so the +4.0% figure should be
 read as an upper bound on the gain from raising prices, not a promise.
+
+Because the whole pricing recommendation rests on this one number, it was
+re-estimated dropping the controls most open to challenge — `availability_365`
+is partly an outcome of being booked, and Superhost status is awarded on booking
+performance (`reports/tables/revenue_elasticity_robustness.csv`):
+
+| Specification | n | Elasticity | Revenue effect of +10% price |
+|---|---:|---:|---:|
+| Main specification | 12,651 | −0.592 | +4.0% |
+| Without availability | 12,651 | −0.606 | +3.8% |
+| Without availability or Superhost | 12,651 | −0.666 | +3.2% |
+| Entire homes only | 11,439 | −0.695 | +3.0% |
+| Regularly booked only (6+) | 8,479 | −0.379 | +6.1% |
+
+**Every specification sits well above −1.** The size of the gain moves, but the
+direction of the recommendation does not depend on the choice of controls.
 
 ---
 

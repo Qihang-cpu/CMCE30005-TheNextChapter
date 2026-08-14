@@ -143,8 +143,9 @@ vol[, pct_effect := round(100 * (exp(estimate) - 1), 1)]
 fwrite(vol, "reports/tables/revenue_intensive_margin.csv")
 
 cat("\n=== 4. Intensive margin: log(reviews in trailing 12m) ===\n")
+# nobs(), not nrow(): lm drops the rows with a missing minimum-nights group
 cat(sprintf("n = %s, adjusted R-squared = %.3f\n",
-            comma(nrow(act_sample)), summary(m_volume)$adj.r.squared))
+            comma(nobs(m_volume)), summary(m_volume)$adj.r.squared))
 cat("\nStrongest effects (p < 0.001, |effect| > 5%):\n")
 print(vol[p.value < 0.001 & abs(pct_effect) > 5 & term != "(Intercept)",
           .(term, pct_effect, p.value = signif(p.value, 2))][order(-abs(pct_effect))])
@@ -167,6 +168,41 @@ cat(sprintf("Net effect of a 10%% price rise on revenue: %+.1f%%\n",
 cat("An elasticity above -1 means the rate increase outweighs the nights lost.\n")
 cat("This is an observational estimate: better properties both charge and book\n")
 cat("more, so the true causal elasticity is likely more negative than this.\n\n")
+
+# Robustness: the elasticity is the one number the recommendation turns on, so
+# it is re-estimated dropping the controls most open to challenge. availability
+# is partly an outcome of being booked, and Superhost status is awarded on
+# booking performance; both are removed in turn.
+base_rhs <- paste("log(price_num) + room_type + accommodates + bedrooms +",
+                  "bathrooms_num + n_amenities + superhost + host_tenure_years +",
+                  "log1p(calculated_host_listings_count) + review_scores_rating +",
+                  "min_nights_grp + lga")
+
+robust_specs <- list(
+  list("Main specification", paste("log(number_of_reviews_ltm) ~", base_rhs, "+ availability_365"), act_sample),
+  list("Without availability", paste("log(number_of_reviews_ltm) ~", base_rhs), act_sample),
+  list("Without availability or Superhost",
+       paste("log(number_of_reviews_ltm) ~", sub("[+] superhost", "", base_rhs)), act_sample),
+  list("Entire homes only",
+       paste("log(number_of_reviews_ltm) ~", sub("[+] room_type", "", base_rhs), "+ availability_365"),
+       act_sample[room_type == "Entire home/apt"]),
+  list("Regularly booked only (6+)", paste("log(number_of_reviews_ltm) ~", base_rhs, "+ availability_365"),
+       act_sample[number_of_reviews_ltm >= 6])
+)
+
+robust <- rbindlist(lapply(robust_specs, function(sp) {
+  fit <- lm(as.formula(sp[[2]]), data = sp[[3]])
+  co <- summary(fit)$coefficients["log(price_num)", ]
+  data.table(specification = sp[[1]], n = nobs(fit),
+             elasticity = round(co[1], 3), std_error = round(co[2], 3),
+             revenue_effect_10pct_rise = round(100 * (1.10 * 1.10 ^ co[1] - 1), 1))
+}))
+
+cat("Robustness of the price elasticity:\n")
+print(robust)
+cat("Every specification sits well above -1, so the direction of the\n")
+cat("recommendation does not depend on the choice of controls.\n\n")
+fwrite(robust, "reports/tables/revenue_elasticity_robustness.csv")
 
 elast_tab <- data.table(elasticity = round(elast, 3),
                         ci_low = round(ci[1], 3), ci_high = round(ci[2], 3),
