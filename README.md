@@ -37,6 +37,14 @@ the end of that file.
   Melbourne and surrounding local government areas
 
 ### Data Files
+The data used in the project is obtained from Inside Airbnb, the platform collects and publishes Airbnb listing information for 
+research and market analysis.
+| File | Description | Role in Analysis |
+|---|---|---:|
+| `listings_airbnb.csv` |property characteristics, host information, <br> location, nightly price, availability <br> and review scores| The main dataset |
+| `calendar_airbnb.csv` | Daily availability for future dates, 17 Jun 2026 – 30 Jun 2027 | Used to examine market availability <br> and potential demand patterns|
+| `reviews_airbnb.csv` | All guest reviews, Aug 2010 – Jun 2026 |Proxy for market demand |
+
 
 | File | Description | Size |
 |---|---|---:|
@@ -50,12 +58,123 @@ the end of that file.
 > problems worth knowing before you write any new script.
 
 ### Key variables and features
-
+For this project, variables relevant to the business problem were retained and organised into five groups:
+| Dimension | Selected Variables | Business Meaning |
+|---|---|---:|
+| Location | 'neighbourhood_cleansed', 'latitude', 'longitude' | To identify geographic differences in Airbnb prices and market conditions |
+| Property | 'property_type', 'room_type', 'accommodates', 'bedrooms', <br> 'beds', 'bathrooms_num', 'n_amenities' | Describes the physical characteristics and capacity of each property |
+| Host | 'host_is_superhost', 'host_tenure_years', 'host_identity_verified', <br>'host_identity_verified', 'host_listings_count' |To get host experience and professionalisation  |
+| Price and Availability | 'price_num', 'minimum_nights', 'availability_365',<br> 'availability_90' | To get listing  price, booking restrictions and market availability|
+| Reviews| 'number_of_reviews', 'reviews_per_month', 'reviews_scores_rating',<br> 'review_scores_location', 'review_scores_value', 'estimated_occupancy_1365d', 'estimated_revenue_1365d' | Provides customer activity, preceived quality <br>and historical listing performance|
 
 ### Limitations and potential problems 
 
+1. There are missing values in several forms and thirteen variables that are completely empty in the Melbourne snapshot 
+were excluded from the analytical dataset, including fields such as 'host_since', 'host_response_rate', 'instant_bookable', 'license' and varaibles 
+like 'bathroom'.
+
+2. There are too many variables in the raw data, the calendar dataset contains a substantially larger volume of observations 
+than the listings dataset, with approximately 9.4 million rows. This makes it really hard to get a specific project question. 
+
+3.Issues with the format of the original data are also existed, like Nightly price was originally stored as text but not the numeric form.
 
 ### Assumptions 
+
+1. Listings with valid nightly prices between AUD 30 and AUD 1,500 are assumed to represent the relevant Melbourne short-term Airbnb market.
+
+2. Airbnb price, occupancy and revenue distributions may contain extreme values, so the median provides a more representative measure of a typical listing than the mean.
+
+3. The number of active Airbnb listings in an area is used as an indicator of Airbnb supply and market concentration. A listing with at least one review in the last 12 months 
+is assumed to have recent market activity and is classified as an active listing.
+
+4. Monthly review volume is assumed to provide a reasonable proxy for guest demand. However, it does not represent actual bookings because not every guest leaves a review.
+
+5. Review activity from July 2023 to June 2026 provides a sufficiently representative period for identifying recurring seasonal demand patterns.
+
+6. Inside Airbnb's estimated occupancy is assumed to provide a useful indicator for comparing relative listing performance, but it is not treated as directly observed occupancy.
+
+---
+
+## Analytics Task
+
+The analytics task required to address our business problem is:
+###Which Greater Melbourne LGA and dwelling type offers the highest probability of achieving a <br> 50% first-year cash-on-cash ROI while maintaining non-negative operating cash flow?
+
+The reason choosing the task:
+1，According to the background, The main objective is to develop the most suitable plan for the client rather than simply identifying the location with the highest rental income. 
+Since the client manages multiple properties, the profitability of different property types also needs to be considered. So we take dwelling type into the consideration.
+2. In addition, cash flow is an important factor, the market suggestions made by us need to benefit our client, especially the funds. Therefore, the analysis should focus 
+on striving for the maximum profit without incurring losses. That is the reason why we need to make sure there is a non-negative operating cash flow under 50% first-year cash-on-cash ROI.
+
+## Data Prepration
+
+1. Change the form of data:
+Several variables that may have been imported in inconsistent formats, so we explicitly converted them to numeric values.
+The converted variables:
+'bedrooms beds' 
+'minimum_nights' 
+'maximum_nights' 
+'review_scores_rating'
+'review_scores_accuracy' 
+'review_scores_cleanliness' 
+'review_scores_checkin' 
+'review_scores_communication' 
+'review_scores_location' 
+'review_scores_value' 
+'reviews_per_month' 
+'estimated_revenue_l365d'
+
+
+2. Solve the missing values: 
+For the file 'listings_airbnb.csv' contains missing information represented in several different forms, we standardised all the different representations of NA as null values
+during the import process. 
+
+Then, For variables with reliable alternative fields, missing or inconsistent values are reconstructed using valid information available from corresponding alternative variables.
+For example, missing bathroom information was reconstructed from 'bathrooms_text' rather than statistically imputed. That means we only retained the numerical part of the number of bathrooms.
+For "Half-bath", there are no ordinary numbers in the string, we use '0.5' to represent it. 
+
+For the variables that are completely empty, we just delete all of them. 
+
+For Amenities, we count the number of separators between amenity items and add one to estimate the total number of amenities. Empty or missing amenity lists are assigned a count of zero.
+
+For the key variables like 'price', 'revenue', and 'occupancy', we did not conduct statistical filling but only excluded in the correlation analysis. For example, we will only use the
+listing that has a price during analysis, the missing price will not be taken into consideration.
+
+For the predictor with the common part missing, we keep the null value.
+
+3. The outliers:
+The processing of outliers mainly focuses on the nightly price (price_num)。
+We build a rather reasonable price range for the analysis, we set the minimum price as 30 dollars because normally if the cost per night is less than 30 dollars, it is generally 
+considered an incorrect entry when it comes to living expenses in Melbourne. The maximum price is 1500 dollars, there are only a few luxury listings will have a nightly price that is over 
+1500. These listings will significantly increase the price distribution and affect the judgment of the general Airbnb market. So we did not take them in.
+
+From the perspective of current affairs, we assume the total price distribution is right-skewed, so we use log scale to make the lower and higher price range is more easily to be observed.
+
+4. Integrated variable：
+- Due to there are too many variables in the files, the cleaned dataset retained variables relevant to the intended market and financial analysis. The final listing-level variables cover five main dimensions:
+
+| Location |
+| Property | 
+| Host | 
+| Price and Availability |
+| Reviews|
+
+The variables used are showed in the key variable part above.
+
+- For the calendar data, we compressed an extremely large daily calendar dataset into monthly market indicators suitable for analysis and 90-day availability indicators at the listing level.
+
+We did not use every variables in the file `calendar_airbnb.csv`, but choose three variables that are important to our analystic question:
+'listing_id', 
+'date', 
+'available'(t for available, f for unavailable)
+
+For the variable date, we converted the dates of each day into months to subsequent monthly aggregation and reduces the amount of data at the same time.
+
+
+- For the review data, we also only use the two variables 'listing_id' and 'date' in the file `reviews_airbnb.csv`. 
+We conducted two types of aggregations based on these two variables. The first type of aggregation mainly uses date here to summarize all reviews by month for analyzing demand seasonality.
+The second type of aggregation uses listing_id grouping, along with the number of reviews each listing has and the date of the most recent review. 
+
 
 ---
 
@@ -79,13 +198,6 @@ without re-running the pipeline.
 
 ---
 
-## Data Understanding
-
----
-
-## Data Prepration
-
----
 
 ## Modeling 
 
