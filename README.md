@@ -40,14 +40,14 @@ the end of that file.
 The data used in the project is obtained from Inside Airbnb, the platform collects and publishes Airbnb listing information for 
 research and market analysis.
 | File | Description | Role in Analysis |
-|---|---|---:|
-| `listings_airbnb.csv` |property characteristics, host information, location, nightly price, availability and review scores| The main dataset |
+|:---:|:---:|:---:|
+| `listings_airbnb.csv` | property characteristics, host information, location, nightly price, availability and review scores| The main dataset |
 | `calendar_airbnb.csv` | Daily availability for future dates, 17 Jun 2026 – 30 Jun 2027 | Used to examine market availability and potential demand patterns|
 | `reviews_airbnb.csv` | All guest reviews, Aug 2010 – Jun 2026 | Proxy for market demand |
 
 
 | File | Description | Size |
-|---|---|---:|
+|:---:|:---:|:---:|
 | `listings_airbnb.csv` | One row per active listing, ~90 attributes | 68 MB |
 | `calendar_airbnb.csv` | Daily availability, 17 Jun 2026 – 30 Jun 2027 | 361 MB |
 | `reviews_airbnb.csv` | All guest reviews, Aug 2010 – Jun 2026 | 266 MB |
@@ -60,7 +60,7 @@ research and market analysis.
 ### 2.2 Key variables and features
 For this project, variables relevant to the business problem were retained and organised into five groups:
 | Dimension | Selected Variables | Business Meaning |
-|---|---|---:|
+|:---:|:---:|:---:|
 | Location | 'neighbourhood_cleansed', 'latitude', 'longitude' | To identify geographic differences in Airbnb prices and market conditions |
 | Property | 'property_type', 'room_type', 'accommodates', 'bedrooms', <br> 'beds', 'bathrooms_num', 'n_amenities' | Describes the physical characteristics and capacity of each property |
 | Host | 'host_is_superhost', 'host_tenure_years', 'host_identity_verified', <br>'host_identity_verified', 'host_listings_count' | To get host experience and professionalisation  |
@@ -101,8 +101,10 @@ The analytics task required to address our business problem is:
 ### Which Greater Melbourne LGA and dwelling type offers the highest probability of achieving a <br> 50% first-year cash-on-cash ROI while maintaining non-negative operating cash flow?
 
 The reason choosing the task:
+
 1，According to the background, The main objective is to develop the most suitable plan for the client rather than simply identifying the location with the highest rental income. 
 Since the client manages multiple properties, the profitability of different property types also needs to be considered. So we take dwelling type into the consideration.
+
 2. In addition, cash flow is an important factor, the market suggestions made by us need to benefit our client, especially the funds. Therefore, the analysis should focus 
 on striving for the maximum profit without incurring losses. That is the reason why we need to make sure there is a non-negative operating cash flow under 50% first-year cash-on-cash ROI.
 
