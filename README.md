@@ -102,7 +102,7 @@ The analytics task required to address our business problem is:
 
 The reason choosing the task:
 
-1，According to the background, The main objective is to develop the most suitable plan for the client rather than simply identifying the location with the highest rental income. 
+1. According to the background, The main objective is to develop the most suitable plan for the client rather than simply identifying the location with the highest rental income. 
 Since the client manages multiple properties, the profitability of different property types also needs to be considered. So we take dwelling type into the consideration.
 
 2. In addition, cash flow is an important factor, the market suggestions made by us need to benefit our client, especially the funds. Therefore, the analysis should focus 
@@ -111,20 +111,20 @@ on striving for the maximum profit without incurring losses. That is the reason 
 ## 4 Data Prepration
 
 ### 4.1 Change the form of data:<br>
-Several variables that may have been imported in inconsistent formats, so we explicitly converted them to numeric values.
-The converted variables:
-'bedrooms beds' <br>
-'minimum_nights' <br>
-'maximum_nights' <br>
-'review_scores_rating' <br>
-'review_scores_accuracy' <br>
-'review_scores_cleanliness' <br>
-'review_scores_checkin' <br>
-'review_scores_communication' <br>
-'review_scores_location' <br>
-'review_scores_value' <br>
-'reviews_per_month' <br>
-'estimated_revenue_l365d'
+  Several variables that may have been imported in inconsistent formats, so we explicitly converted them to numeric values.
+  The converted variables:<br>
+  'bedrooms beds' <br>
+  'minimum_nights' <br>
+  'maximum_nights' <br>
+  'review_scores_rating' <br>
+  'review_scores_accuracy' <br>
+  'review_scores_cleanliness' <br>
+  'review_scores_checkin' <br>
+  'review_scores_communication' <br>
+  'review_scores_location' <br>
+  'review_scores_value' <br>
+  'reviews_per_month' <br>
+  'estimated_revenue_l365d'
 
 
 ### 4.2 Solve the missing values: <br>
@@ -146,12 +146,12 @@ listing that has a price during analysis, the missing price will not be taken in
 
 ### 4.3 The outliers: <br>
 
-The processing of outliers mainly focuses on the nightly price (price_num).
+- The processing of outliers mainly focuses on the nightly price (price_num).
 We build a rather reasonable price range for the analysis, we set the minimum price as 30 dollars because normally if the cost per night is less than 30 dollars, it is generally 
 considered an incorrect entry when it comes to living expenses in Melbourne. The maximum price is 1500 dollars, there are only a few luxury listings will have a nightly price that is over 
 1500. These listings will significantly increase the price distribution and affect the judgment of the general Airbnb market. So we did not take them in.
 
-From the perspective of current affairs, we assume the total price distribution is right-skewed, so we use log scale to make the lower and higher price range is more easily to be observed.
+- From the perspective of current affairs, we assume the total price distribution is right-skewed, so we use log scale to make the lower and higher price range is more easily to be observed.
 
 ### 4.4 Integrated variable：<br>
 
