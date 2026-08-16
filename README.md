@@ -98,7 +98,7 @@ is assumed to have recent market activity and is classified as an active listing
 ## 3 Analytics Task
 
 The analytics task required to address our business problem is:
-### Which Greater Melbourne LGA and dwelling type offers the highest probability of achieving a <br> 50% first-year cash-on-cash ROI while maintaining non-negative operating cash flow?
+### Which Greater Melbourne LGA and dwelling type offers the highest probability of achieving a 50% first-year cash-on-cash ROI while maintaining non-negative operating cash flow?
 
 The reason choosing the task:
 
@@ -146,10 +146,9 @@ listing that has a price during analysis, the missing price will not be taken in
 
 ### 4.3 The outliers: <br>
 
-- The processing of outliers mainly focuses on the nightly price (price_num).
-We build a rather reasonable price range for the analysis, we set the minimum price as 30 dollars because normally if the cost per night is less than 30 dollars, it is generally 
-considered an incorrect entry when it comes to living expenses in Melbourne. The maximum price is 1500 dollars, there are only a few luxury listings will have a nightly price that is over 
-1500. These listings will significantly increase the price distribution and affect the judgment of the general Airbnb market. So we did not take them in.
+- The processing of outliers mainly focuses on the nightly price (price_num). We build a rather reasonable price range for the analysis, we set the minimum price as 30 dollars because normally if the 
+cost per night is less than 30 dollars, it is generally considered an incorrect entry when it comes to living expenses in Melbourne. The maximum price is 1500 dollars, there are only a few luxury 
+listings will have a nightly price that is over 1500. These listings will significantly increase the price distribution and affect the judgment of the general Airbnb market. So we did not take them in.
 
 - From the perspective of current affairs, we assume the total price distribution is right-skewed, so we use log scale to make the lower and higher price range is more easily to be observed.
 
