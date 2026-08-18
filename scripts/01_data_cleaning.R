@@ -32,6 +32,11 @@ cat("Raw listings:", nrow(listings), "\n")
 # price is stored as text, e.g. "$1,234.00"
 listings[, price_num := as.numeric(str_remove_all(price, "[$,]"))]
 
+# two listings at the same nightly price are not comparable if one sleeps
+# two and the other eight
+listings[, price_per_person  := round(price_num / accommodates, 2)]
+listings[, price_per_bedroom := round(price_num / pmax(bedrooms, 1), 2)]
+
 # the bathrooms column is empty; the real information sits in bathrooms_text,
 # e.g. "1.5 shared baths", "Half-bath"
 listings[, bathrooms_num := as.numeric(str_extract(bathrooms_text, "[0-9.]+"))]
@@ -41,6 +46,12 @@ listings[, shared_bath := str_detect(tolower(bathrooms_text), "shared") %in% TRU
 # amenities is a JSON-style list; the item count is a simple richness measure
 listings[, n_amenities := str_count(amenities, '",\\s*"') + 1L]
 listings[amenities %in% c("[]", NA), n_amenities := 0L]
+
+# individual amenities worth testing on their own
+listings[, has_wifi         := grepl("Wifi", amenities, fixed = TRUE)]
+listings[, has_pool         := grepl("Pool", amenities, fixed = TRUE)]
+listings[, has_aircon       := grepl("Air conditioning", amenities, fixed = TRUE)]
+listings[, has_free_parking := grepl("Free parking", amenities, fixed = TRUE)]
 
 num_cols <- c("bedrooms", "beds", "minimum_nights", "maximum_nights",
               "review_scores_rating", "review_scores_accuracy",
@@ -71,6 +82,11 @@ listings[, min_nights_grp := cut(minimum_nights, c(0, 1, 6, 27, Inf),
 # outliers that distort the price distribution.
 listings[, priced := !is.na(price_num) & price_num >= 30 & price_num <= 1500]
 
+# flags, not deletions: an outlier is a statement about the distribution,
+# not about the truth of the value
+listings[, never_reviewed   := number_of_reviews == 0]
+listings[, always_available := availability_365 == 365]
+
 cat("Listings with usable price:", listings[priced == TRUE, .N],
     sprintf("(dropped %d missing, %d outside $30-$1500)\n",
             listings[is.na(price_num), .N],
@@ -82,6 +98,9 @@ keep_cols <- c("id", "host_id", "host_is_superhost", "host_tenure_years",
                "neighbourhood_cleansed", "latitude", "longitude",
                "property_type", "room_type", "accommodates", "bedrooms", "beds",
                "bathrooms_num", "shared_bath", "n_amenities",
+               "has_wifi", "has_pool", "has_aircon", "has_free_parking",
+               "price_per_person", "price_per_bedroom",
+               "never_reviewed", "always_available",
                "price_num", "priced", "minimum_nights", "min_nights_grp",
                "availability_365", "availability_90", "availability_eoy",
                "number_of_reviews", "number_of_reviews_ltm",
