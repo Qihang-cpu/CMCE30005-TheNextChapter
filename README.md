@@ -285,25 +285,25 @@ $$
 *Because the outcome is binary, a Logistic Regression model is used.*
 The first model examines the probability that a listing records any review activity during the trailing 12 months.
 
-* **Dependent Variable:**<br>
-| Value | Description |
-|:---|:---|
-| 1 | the listing recorded at least one review during the previous 12 months |
-| 0 | the listing recorded no recent review activity |
+  * **Dependent Variable:**<br>
+    | Value | Description |
+    |:---|:---|
+    | 1 | the listing recorded at least one review during the previous 12 months |
+    | 0 | the listing recorded no recent review activity |
 
-* **Independent Variable:**<br>
-| Category | Variables | Description |
-|:---|:---|:---|
-| Price | log(price) | Represent the nightly price of Airbnb listings. |
-| Property | room_type, accommodates, bedrooms, bathrooms_num, n_amenities | Description of the property assets |
-| Host | superhost, host_tenure_years, log1p(calculated_host_listings_count) | Description of the host |
-| Location | lga | Location of the property in Great Melbourne |
-| Availability | min_nights_grp, availability_365 | Indicates the situation of the listing |
+  * **Independent Variable:**<br>
+    | Category | Variables | Description |
+    |:---|:---|:---|
+    | Price | log(price) | Represent the nightly price of Airbnb listings. |
+    | Property | room_type, accommodates, bedrooms, bathrooms_num, n_amenities | Description of the property assets |
+    | Host | superhost, host_tenure_years, log1p(calculated_host_listings_count) | Description of the host |
+    | Location | lga | Location of the property in Great Melbourne |
+    | Availability | min_nights_grp, availability_365 | Indicates the situation of the listing |
 
 
-* **Statistical Treatment:**
-  * Standard errors are clustered by host.
-  * Listings owned by the same host may therefore not be statistically independent, so we use Host-clustered standard errors to make sure the host is the independent cluster
+  * **Statistical Treatment:**
+    * Standard errors are clustered by host.
+    * Listings owned by the same host may therefore not be statistically independent, so we use Host-clustered standard errors to make sure the host is the independent cluster
 
 
 - **Model 2: OLS Regression on log reviews**<br>
@@ -329,19 +329,19 @@ $$
 +\epsilon_i
 $$
 
-* **Dependent Variable:**
-$log(number_of_reviews_ltm)$
+  * **Dependent Variable:**
+$log(number_of_reviews_ltm)$ <br>
 It describes the intensity of review activity of an already active Airbnb listing over the past 12 months.
 
-* **Independent Variable:**<br>
-  | Category | Variables | Description |
-  |:---|:---|:---|
-  | Price | log(price) | Represent the nightly price of Airbnb listings. |
-  | Property | room_type, accommodates, bedrooms, bathrooms_num, n_amenities | Description of the property assets |
-  | Host | superhost, host_tenure_years, log1p(calculated_host_listings_count) | Description of the host |
-  | Location | lga | Location of the property in Great Melbourne |
-  | Availability | min_nights_grp, availability_365 | Indicates the situation of the listing |
-  | Reviews | log(listing_age_years), review_scores_rating | Controls for how long the listing has been active on Airbnb and its observed guest rating |
+  * **Independent Variable:**<br>
+    | Category | Variables | Description |
+    |:---|:---|:---|
+    | Price | log(price) | Represent the nightly price of Airbnb listings. |
+    | Property | room_type, accommodates, bedrooms, bathrooms_num, n_amenities | Description of the property assets |
+    | Host | superhost, host_tenure_years, log1p(calculated_host_listings_count) | Description of the host |
+    | Location | lga | Location of the property in Great Melbourne |
+    | Availability | min_nights_grp, availability_365 | Indicates the situation of the listing |
+    | Reviews | log(listing_age_years), review_scores_rating | Controls for how long the listing has been active on Airbnb and its observed guest rating |
 
 ### 5.5 Analysis task and Business Problem
 
