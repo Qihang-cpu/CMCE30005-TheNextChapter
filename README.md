@@ -250,7 +250,7 @@ The outcome can be defined as:
   * First-year cash-on-cash ROI ≥ 50%
   * Operating cash flow remains non-negative throughout the seasonal cycle
 
--Unsuccessful property
+- Unsuccessful property
   * The property fails to satisfy one or both of these conditions.
 
 
@@ -259,11 +259,11 @@ The outcome can be defined as:
 We used a two-part modelling regressions approach to investigate the factors associated with Airbnb listing activity. Rather than directly modelling estimated revenue, 
 the analysis focuses on review activity because the revenue and occupancy variables published by Inside Airbnb are constructed from price, minimum-night requirements and review counts.
 
-- How we do the regression:
+- **How we do the regression:**
   * We use the first Logistic Regression to detect whether a listing can generate any recent review activities
   * For the second regression, we choose OLS Regression on log reviews to analyze in the already active listings which factors are related to the strength of the review activity.
 
-- Model 1: Logistic Regression
+- **Model 1: Logistic Regression**
 
 $$
 \text{logit}\left[P(Active_i = 1)\right] =
@@ -285,13 +285,13 @@ $$
 *Because the outcome is binary, a Logistic Regression model is used.*
 The first model examines the probability that a listing records any review activity during the trailing 12 months.
 
-Dependent Variable:<br>
+**Dependent Variable:**<br>
 | Value | Description |
 |:---|:---|
 | 1 | the listing recorded at least one review during the previous 12 months |
 | 0 | the listing recorded no recent review activity |
 
-* Independent Variable:
+**Independent Variable:**<br>
 | Category | Variables | Description |
 |:---|:---|:---|
 | Price | log(price) | Represent the nightly price of Airbnb listings. |
@@ -301,14 +301,13 @@ Dependent Variable:<br>
 | Availability | min_nights_grp, availability_365 | Indicates the situation of the listing |
 
 
-* Statistical Treatment:
+**Statistical Treatment:**
   ** Standard errors are clustered by host.
   ** Listings owned by the same host may therefore not be statistically independent, so we use Host-clustered standard errors to make sure the host is the independent cluster
 
 
-- Model 2: OLS Regression on log reviews
-Model 2 only analyzes Airbnb listings that already have recent review activities, it what to detect the question ** Among Airbnb listings that are already active, what listing, host, 
-pricing and operating characteristics are associated with higher or lower review activity? **
+- **Model 2: OLS Regression on log reviews**
+Model 2 only analyzes Airbnb listings that already have recent review activities, it what to detect the question **Among Airbnb listings that are already active, what listing, host, pricing and operating characteristics are associated with higher or lower review activity?**
 
 $$
 \log(Reviews_i) =
@@ -330,11 +329,11 @@ $$
 +\epsilon_i
 $$
 
-* Dependent Variable:
+* **Dependent Variable:**
 $log(number_of_reviews_ltm)$
 It describes the intensity of review activity of an already active Airbnb listing over the past 12 months.
 
-* Independent Variable:
+* **Independent Variable:**<br>
 | Category | Variables | Description |
 |:---|:---|:---|
 | Price | log(price) | Represent the nightly price of Airbnb listings. |
