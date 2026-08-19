@@ -1,4 +1,4 @@
-# CMCE30005 Business Analytics Challenge
+# CMCE30005 Business Analytics Challenge Project Plan
 
 ## TheNextChapter — Group 2
 
@@ -13,7 +13,7 @@
 *Proposed framing — to be confirmed by the team.*
 
 The analytics task required to address our business problem is:
-*** Which Greater Melbourne LGA and dwelling type offers the highest probability of achieving a 50% first-year cash-on-cash ROI while maintaining non-negative operating cash flow? ***
+***Which Greater Melbourne LGA and dwelling type offers the highest probability of achieving a 50% first-year cash-on-cash ROI while maintaining non-negative operating cash flow?***
 
 
 A client intends to list several properties on Airbnb in Melbourne and needs to
