@@ -12,6 +12,10 @@
 
 *Proposed framing — to be confirmed by the team.*
 
+The analytics task required to address our business problem is:
+*** Which Greater Melbourne LGA and dwelling type offers the highest probability of achieving a 50% first-year cash-on-cash ROI while maintaining non-negative operating cash flow? ***
+
+
 A client intends to list several properties on Airbnb in Melbourne and needs to
 decide **where to invest, what property type to operate, and how to price it**.
 The stakeholder is the prospective host; the question matters because entry cost
@@ -46,7 +50,7 @@ research and market analysis.
 | `reviews_airbnb.csv` | All guest reviews, Aug 2010 – Jun 2026 | Proxy for market demand |
 
 
-| File | Description | Size |
+| File | Description | Role in Analysis |
 |:---:|:---:|:---:|
 | `listings_airbnb.csv` | One row per active listing, ~90 attributes | 68 MB |
 | `calendar_airbnb.csv` | Daily availability, 17 Jun 2026 – 30 Jun 2027 | 361 MB |
@@ -199,8 +203,156 @@ Script 01 additionally requires `data.table` and `stringr`; script 03 requires
 `reports/tables/`, both of which are committed so results can be reviewed
 without re-running the pipeline.
 
----
 
+### 5.1 Descriptive Analytics
+- Nightly price distribution
+* Examine the overall distribution of Airbnb nightly prices.
+* A log scale is used because prices are highly dispersed across listings.
+
+- Supply and performance by LGA
+* Calculate the number of listings in each Local Government Area.
+* Compare median nightly price, median estimated occupancy and median estimated annual revenue across LGAs.
+
+- Price by property characteristics
+* Compare nightly prices across different accommodation capacities and room types.
+* This helps identify how property size and accommodation format are related to pricing.
+
+- Revenue by market segment
+* Group listings by LGA, room type and accommodation capacity.
+* Calculate the number of comparable listings, median price, median revenue and median occupancy for each segment.
+
+### 5.2 Exploratory Data Analysis
+
+- Demand seasonality
+* Monthly review volume from July 2023 to June 2026 is used as a proxy for Airbnb demand.
+* Review activity is used instead of forward calendar availability
+
+- Seasonality index
+* A monthly seasonality index is calculated using average review activity across three years.
+* This identifies relatively strong and weak demand months.
+
+- Price and occupancy relationship
+* Examine the relationship between nightly price and estimated occupancy for active entire-home listings.
+* This helps identify whether higher prices may be associated with lower booking activity.
+
+- Market segmentation
+* Compare different combinations of location, room type and accommodation capacity.
+* Segments with fewer than 30 observations are excluded from the exploratory comparison to reduce the influence of very small groups.
+
+- Superhost comparison
+* Compare Superhost and non-Superhost listings in terms of price, ratings, revenue and occupancy.
+* Active listings are analysed separately to reduce distortion caused by listings with no recent booking activity.
+
+### 5.3 Classification
+
+The outcome can be defined as:
+- Successful property
+* First-year cash-on-cash ROI ≥ 50%
+* Operating cash flow remains non-negative throughout the seasonal cycle
+
+-Unsuccessful property
+* The property fails to satisfy one or both of these conditions.
+
+
+### 5.4 Regression
+
+We used a two-part modelling regressions approach to investigate the factors associated with Airbnb listing activity. Rather than directly modelling estimated revenue, 
+the analysis focuses on review activity because the revenue and occupancy variables published by Inside Airbnb are constructed from price, minimum-night requirements and review counts.
+
+- How we do the regression:
+* We use the first Logistic Regression to detect whether a listing can generate any recent review activities
+* For the second regression, we choose OLS Regression on log reviews to analyze in the already active listings which factors are related to the strength of the review activity.
+
+- Model 1: Logistic Regression
+
+$$
+\text{logit}\left[P(Active_i = 1)\right]
+=
+\beta_0
++\beta_1 \log(Price_i)
++\beta_2 RoomType_i
++\beta_3 Accommodates_i
++\beta_4 Bedrooms_i
++\beta_5 Bathrooms_i
++\beta_6 Amenities_i
++\beta_7 Superhost_i
++\beta_8 HostTenure_i
++\beta_9 \log(1 + HostListings_i)
++\beta_{10} MinimumStay_i
++\beta_{11} Availability365_i
++\beta_{12} LGA_i
+$$
+
+* Because the outcome is binary, a Logistic Regression model is used.*
+The first model examines the probability that a listing records any review activity during the trailing 12 months.
+
+* Dependent Variable:
+| Value | Description |
+|:---|:---|
+| 1 | the listing recorded at least one review during the previous 12 months |
+| 0 | the listing recorded no recent review activity |
+
+* Independent Variable:
+| Category | Variables | Description |
+|:---|:---|:---|
+| Price | log(price) | Represent the nightly price of Airbnb listings. |
+| Property | room_type, accommodates, bedrooms, bathrooms_num, n_amenities | Description of the property assets |
+| Host | superhost, host_tenure_years, log1p(calculated_host_listings_count) | Description of the host |
+| Location | lga | Location of the property in Great Melbourne |
+| Availability | min_nights_grp, availability_365 | Indicates the situation of the listing |
+
+
+* Statistical Treatment:
+** Standard errors are clustered by host.
+** Listings owned by the same host may therefore not be statistically independent, so we use Host-clustered standard errors to make sure the host is the independent cluster
+
+
+- Model 2: OLS Regression on log reviews
+Model 2 only analyzes Airbnb listings that already have recent review activities, it what to detect the question ** Among Airbnb listings that are already active, what listing, host, 
+pricing and operating characteristics are associated with higher or lower review activity? **
+
+$$
+\log(Reviews_i)
+=
+\beta_0
++\beta_1 \log(Price_i)
++\beta_2 RoomType_i
++\beta_3 Accommodates_i
++\beta_4 Bedrooms_i
++\beta_5 Bathrooms_i
++\beta_6 Amenities_i
++\beta_7 Superhost_i
++\beta_8 HostTenure_i
++\beta_9 \log(ListingAge_i)
++\beta_{10} \log(1+HostListings_i)
++\beta_{11} Rating_i
++\beta_{12} MinimumStay_i
++\beta_{13} Availability365_i
++\beta_{14} LGA_i
++\epsilon_i
+$$
+
+* Dependent Variable:
+$log(number_of_reviews_ltm)$
+It describes the intensity of review activity of an already active Airbnb listing over the past 12 months.
+
+* Independent Variable:
+| Category | Variables | Description |
+|:---|:---|:---|
+| Price | log(price) | Represent the nightly price of Airbnb listings. |
+| Property | room_type, accommodates, bedrooms, bathrooms_num, n_amenities | Description of the property assets |
+| Host | superhost, host_tenure_years, log1p(calculated_host_listings_count) | Description of the host |
+| Location | lga | Location of the property in Great Melbourne |
+| Availability | min_nights_grp, availability_365 | Indicates the situation of the listing |
+| Reviews | log(listing_age_years), review_scores_rating | Controls for how long the listing has been active on Airbnb and its observed guest rating |
+
+### 5.5 Analysis task and Business Problem
+
+The selected analytics task is appropriate because the business problem requires us to identify which Airbnb property characteristics are associated with stronger market activity and therefore greater revenue potential.
+By controlling for pricing, property characteristics, host characteristics, operating settings and location, the models help identify which factors are associated with stronger listing activity. 
+This provides useful evidence for comparing property segments and supports the broader rental-arbitrage decision, while recognising that the results describe associations rather than causal effects.
+
+---
 
 ## 6 Modeling 
 
