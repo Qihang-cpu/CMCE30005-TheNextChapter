@@ -334,14 +334,14 @@ $log(number_of_reviews_ltm)$
 It describes the intensity of review activity of an already active Airbnb listing over the past 12 months.
 
 * **Independent Variable:**<br>
-| Category | Variables | Description |
-|:---|:---|:---|
-| Price | log(price) | Represent the nightly price of Airbnb listings. |
-| Property | room_type, accommodates, bedrooms, bathrooms_num, n_amenities | Description of the property assets |
-| Host | superhost, host_tenure_years, log1p(calculated_host_listings_count) | Description of the host |
-| Location | lga | Location of the property in Great Melbourne |
-| Availability | min_nights_grp, availability_365 | Indicates the situation of the listing |
-| Reviews | log(listing_age_years), review_scores_rating | Controls for how long the listing has been active on Airbnb and its observed guest rating |
+  | Category | Variables | Description |
+  |:---|:---|:---|
+  | Price | log(price) | Represent the nightly price of Airbnb listings. |
+  | Property | room_type, accommodates, bedrooms, bathrooms_num, n_amenities | Description of the property assets |
+  | Host | superhost, host_tenure_years, log1p(calculated_host_listings_count) | Description of the host |
+  | Location | lga | Location of the property in Great Melbourne |
+  | Availability | min_nights_grp, availability_365 | Indicates the situation of the listing |
+  | Reviews | log(listing_age_years), review_scores_rating | Controls for how long the listing has been active on Airbnb and its observed guest rating |
 
 ### 5.5 Analysis task and Business Problem
 
