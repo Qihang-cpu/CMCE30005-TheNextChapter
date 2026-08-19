@@ -206,52 +206,52 @@ without re-running the pipeline.
 
 ### 5.1 Descriptive Analytics
 - Nightly price distribution
-* Examine the overall distribution of Airbnb nightly prices.
-* A log scale is used because prices are highly dispersed across listings.
+  * Examine the overall distribution of Airbnb nightly prices.
+  * A log scale is used because prices are highly dispersed across listings.
 
 - Supply and performance by LGA
-* Calculate the number of listings in each Local Government Area.
-* Compare median nightly price, median estimated occupancy and median estimated annual revenue across LGAs.
+  * Calculate the number of listings in each Local Government Area.
+  * Compare median nightly price, median estimated occupancy and median estimated annual revenue across LGAs.
 
 - Price by property characteristics
-* Compare nightly prices across different accommodation capacities and room types.
-* This helps identify how property size and accommodation format are related to pricing.
+  * Compare nightly prices across different accommodation capacities and room types.
+  * This helps identify how property size and accommodation format are related to pricing.
 
 - Revenue by market segment
-* Group listings by LGA, room type and accommodation capacity.
-* Calculate the number of comparable listings, median price, median revenue and median occupancy for each segment.
+  * Group listings by LGA, room type and accommodation capacity.
+  * Calculate the number of comparable listings, median price, median revenue and median occupancy for each segment.
 
 ### 5.2 Exploratory Data Analysis
 
 - Demand seasonality
-* Monthly review volume from July 2023 to June 2026 is used as a proxy for Airbnb demand.
-* Review activity is used instead of forward calendar availability
+  * Monthly review volume from July 2023 to June 2026 is used as a proxy for Airbnb demand.
+  * Review activity is used instead of forward calendar availability
 
 - Seasonality index
-* A monthly seasonality index is calculated using average review activity across three years.
-* This identifies relatively strong and weak demand months.
+  * A monthly seasonality index is calculated using average review activity across three years.
+  * This identifies relatively strong and weak demand months.
 
 - Price and occupancy relationship
-* Examine the relationship between nightly price and estimated occupancy for active entire-home listings.
-* This helps identify whether higher prices may be associated with lower booking activity.
+  * Examine the relationship between nightly price and estimated occupancy for active entire-home listings.
+  * This helps identify whether higher prices may be associated with lower booking activity.
 
 - Market segmentation
-* Compare different combinations of location, room type and accommodation capacity.
-* Segments with fewer than 30 observations are excluded from the exploratory comparison to reduce the influence of very small groups.
+  * Compare different combinations of location, room type and accommodation capacity.
+  * Segments with fewer than 30 observations are excluded from the exploratory comparison to reduce the influence of very small groups.
 
 - Superhost comparison
-* Compare Superhost and non-Superhost listings in terms of price, ratings, revenue and occupancy.
-* Active listings are analysed separately to reduce distortion caused by listings with no recent booking activity.
+  * Compare Superhost and non-Superhost listings in terms of price, ratings, revenue and occupancy.
+  * Active listings are analysed separately to reduce distortion caused by listings with no recent booking activity.
 
 ### 5.3 Classification
 
 The outcome can be defined as:
 - Successful property
-* First-year cash-on-cash ROI ≥ 50%
-* Operating cash flow remains non-negative throughout the seasonal cycle
+  * First-year cash-on-cash ROI ≥ 50%
+  * Operating cash flow remains non-negative throughout the seasonal cycle
 
 -Unsuccessful property
-* The property fails to satisfy one or both of these conditions.
+  * The property fails to satisfy one or both of these conditions.
 
 
 ### 5.4 Regression
@@ -260,14 +260,13 @@ We used a two-part modelling regressions approach to investigate the factors ass
 the analysis focuses on review activity because the revenue and occupancy variables published by Inside Airbnb are constructed from price, minimum-night requirements and review counts.
 
 - How we do the regression:
-* We use the first Logistic Regression to detect whether a listing can generate any recent review activities
-* For the second regression, we choose OLS Regression on log reviews to analyze in the already active listings which factors are related to the strength of the review activity.
+  * We use the first Logistic Regression to detect whether a listing can generate any recent review activities
+  * For the second regression, we choose OLS Regression on log reviews to analyze in the already active listings which factors are related to the strength of the review activity.
 
 - Model 1: Logistic Regression
 
 $$
-\text{logit}\left[P(Active_i = 1)\right]
-=
+\text{logit}\left[P(Active_i = 1)\right] =
 \beta_0
 +\beta_1 \log(Price_i)
 +\beta_2 RoomType_i
@@ -283,10 +282,10 @@ $$
 +\beta_{12} LGA_i
 $$
 
-* Because the outcome is binary, a Logistic Regression model is used.*
+*Because the outcome is binary, a Logistic Regression model is used.*
 The first model examines the probability that a listing records any review activity during the trailing 12 months.
 
-* Dependent Variable:
+Dependent Variable:<br>
 | Value | Description |
 |:---|:---|
 | 1 | the listing recorded at least one review during the previous 12 months |
@@ -303,8 +302,8 @@ The first model examines the probability that a listing records any review activ
 
 
 * Statistical Treatment:
-** Standard errors are clustered by host.
-** Listings owned by the same host may therefore not be statistically independent, so we use Host-clustered standard errors to make sure the host is the independent cluster
+  ** Standard errors are clustered by host.
+  ** Listings owned by the same host may therefore not be statistically independent, so we use Host-clustered standard errors to make sure the host is the independent cluster
 
 
 - Model 2: OLS Regression on log reviews
@@ -312,8 +311,7 @@ Model 2 only analyzes Airbnb listings that already have recent review activities
 pricing and operating characteristics are associated with higher or lower review activity? **
 
 $$
-\log(Reviews_i)
-=
+\log(Reviews_i) =
 \beta_0
 +\beta_1 \log(Price_i)
 +\beta_2 RoomType_i
