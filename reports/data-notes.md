@@ -80,3 +80,17 @@ Created in `scripts/01_data_cleaning.R`:
 | `bathrooms_num`, `shared_bath` | parsed from `bathrooms_text` |
 | `n_amenities` | count of items in the amenities list |
 | `min_nights_grp` | 1 / 2-6 / 7-27 / 28+ nights |
+
+
+## External data: DFFH median rents
+
+`data/external/dffh_median_rents_sep2025.csv` holds official quarterly median
+rents by LGA and dwelling type from the Homes Victoria Rental Report
+(https://www.dffh.vic.gov.au/publications/rental-report), September quarter
+2025 — the latest published edition, which lags our June 2026 entry date by
+three quarters. The `uplifted_to_jun2026` column compounds each segment's own
+Sep-24 to Sep-25 growth (clipped to 0–8% to damp thin-market noise) over that
+lag. There is no official 1-bedroom-house series; analyses bound it by the
+1BR-flat and 2BR-house series and say so wherever it is used. Note the DFFH
+tables use the LGA's current name Merri-bek where Inside Airbnb still says
+Moreland.

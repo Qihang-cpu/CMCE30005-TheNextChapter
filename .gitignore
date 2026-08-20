@@ -72,3 +72,6 @@ data/raw/*
 data/processed/*
 !data/processed/.gitkeep
 .positai
+
+# Official reference tables (small, versioned)
+!data/external/*.csv
