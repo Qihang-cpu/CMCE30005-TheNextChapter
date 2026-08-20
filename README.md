@@ -196,6 +196,8 @@ source("scripts/01_data_cleaning.R")     # ~2 min, writes data/processed/
 source("scripts/02_exploratory_analysis.R")
 source("scripts/03_price_model.R")
 source("scripts/04_revenue_analysis.R")
+source("scripts/05_rent_data.R")        # downloads official DFFH rents
+source("scripts/06_segment_roi_screen.R")
 ```
 
 Script 01 additionally requires `data.table` and `stringr`; script 03 requires

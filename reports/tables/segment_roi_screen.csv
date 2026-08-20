@@ -1,9 +1,9 @@
-lga,br,ptype,n_listings,n_active_priced,weekly_rent,rent_bounded,P50_revenue,P75_revenue,outlay,annual_cost,roi50,roi75,zone
-Yarra Ranges,1,house,324,268,583,TRUE,25014,51582,18332,38716,-79,62,viable
-Yarra Ranges,2,house,180,141,583,FALSE,28782,55440,25332,38716,-43,59,viable
-Yarra,2,house,187,90,783,FALSE,35124,59958,26132,49116,-58,35,marginal
-Melbourne,2,house,70,35,692,FALSE,20925,52304,25768,44384,-93,25,marginal
-Moreland,2,apartment,120,59,540,FALSE,24552,37640,25160,36480,-50,0,marginal
+lga,bedrooms,dwelling_class,n_scoped,n_active_priced,weekly_rent,rent_is_upper_bound,p50_revenue,p75_revenue,upfront_cash,annual_cost,roi_at_p50,roi_at_p75,zone
+Yarra Ranges,1,house,324,268,583,TRUE,25014,51582,18332,38716,-79,62,viable (>=50%)
+Yarra Ranges,2,house,180,141,583,FALSE,28782,55440,25332,38716,-43,59,viable (>=50%)
+Yarra,2,house,187,90,783,FALSE,35124,59958,26132,49116,-58,35,marginal (0-50%)
+Melbourne,2,house,70,35,692,FALSE,20925,52304,25768,44384,-93,25,marginal (0-50%)
+Moreland,2,apartment,120,59,540,FALSE,24552,37640,25160,36480,-50,0,marginal (0-50%)
 Melbourne,2,apartment,3362,2361,753,FALSE,24210,48450,26012,47556,-93,-2,below break-even
 Yarra,2,apartment,338,204,715,FALSE,26049,46388,25860,45580,-79,-2,below break-even
 Yarra,1,apartment,552,292,545,FALSE,21948,37172,18180,36740,-85,-4,below break-even

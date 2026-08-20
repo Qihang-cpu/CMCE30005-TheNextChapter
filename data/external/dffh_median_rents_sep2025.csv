@@ -1,25 +1,61 @@
-lga,dwelling,median_weekly_rent_sep2025,median_weekly_rent_sep2024,yoy_growth_pct,growth_clipped_pct,uplifted_to_jun2026
-Melbourne,1BR flat,570.0,550.0,3.6,3.6,585
-Merri-bek,1BR flat,450.0,450.0,0.0,0.0,450
-Yarra,1BR flat,525.0,500.0,5.0,5.0,545
-Yarra Ranges,1BR flat,370.0,420.0,-11.9,0.0,370
-Port Phillip,1BR flat,485.0,470.0,3.2,3.2,497
-Stonnington,1BR flat,500.0,465.0,7.5,7.5,528
-Melbourne,2BR flat,730.0,700.0,4.3,4.3,753
-Merri-bek,2BR flat,540.0,540.0,0.0,0.0,540
-Yarra,2BR flat,700.0,680.0,2.9,2.9,715
-Yarra Ranges,2BR flat,530.0,480.0,10.4,8.0,561
-Port Phillip,2BR flat,650.0,627.0,3.7,3.7,668
-Stonnington,2BR flat,675.0,645.0,4.7,4.7,698
-Melbourne,2BR house,678.0,660.0,2.7,2.7,692
-Merri-bek,2BR house,600.0,588.0,2.0,2.0,609
-Yarra,2BR house,750.0,708.0,5.9,5.9,783
-Yarra Ranges,2BR house,550.0,500.0,10.0,8.0,583
-Port Phillip,2BR house,750.0,750.0,0.0,0.0,750
-Stonnington,2BR house,763.0,750.0,1.7,1.7,773
-Melbourne,3BR house,900.0,850.0,5.9,5.9,939
-Merri-bek,3BR house,695.0,650.0,6.9,6.9,731
-Yarra,3BR house,995.0,950.0,4.7,4.7,1030
-Yarra Ranges,3BR house,605.0,600.0,0.8,0.8,609
-Port Phillip,3BR house,1040.0,998.0,4.2,4.2,1073
-Stonnington,3BR house,1010.0,950.0,6.3,6.3,1057
+lga,dwelling,quarter,median_weekly_rent,quarter_year_ago,median_year_ago,yoy_growth_pct,growth_used_pct,uplifted_to_jun2026
+Bayside,1BR flat,Sep 2025,495,Sep 2024,450,10,8,524
+Bayside,2BR flat,Sep 2025,650,Sep 2024,600,8.3,8,689
+Bayside,2BR house,Sep 2025,695,Sep 2024,650,6.9,6.9,731
+Bayside,3BR house,Sep 2025,900,Sep 2024,895,0.6,0.6,904
+Boroondara,1BR flat,Sep 2025,470,Sep 2024,430,9.3,8,498
+Boroondara,2BR flat,Sep 2025,600,Sep 2024,575,4.3,4.3,619
+Boroondara,2BR house,Sep 2025,688,Sep 2024,675,1.9,1.9,698
+Boroondara,3BR house,Sep 2025,850,Sep 2024,800,6.2,6.2,890
+Darebin,1BR flat,Sep 2025,420,Sep 2024,400,5,5,436
+Darebin,2BR flat,Sep 2025,530,Sep 2024,525,1,1,534
+Darebin,2BR house,Sep 2025,580,Sep 2024,618,-6.1,0,580
+Darebin,3BR house,Sep 2025,680,Sep 2024,640,6.2,6.2,712
+Glen Eira,1BR flat,Sep 2025,430,Sep 2024,420,2.4,2.4,438
+Glen Eira,2BR flat,Sep 2025,600,Sep 2024,587,2.2,2.2,610
+Glen Eira,2BR house,Sep 2025,650,Sep 2024,625,4,4,669
+Glen Eira,3BR house,Sep 2025,800,Sep 2024,780,2.6,2.6,815
+Kingston,1BR flat,Sep 2025,410,Sep 2024,410,0,0,410
+Kingston,2BR flat,Sep 2025,550,Sep 2024,520,5.8,5.8,574
+Kingston,2BR house,Sep 2025,585,Sep 2024,590,-0.8,0,585
+Kingston,3BR house,Sep 2025,690,Sep 2024,675,2.2,2.2,701
+Maribyrnong,1BR flat,Sep 2025,440,Sep 2024,420,4.8,4.8,456
+Maribyrnong,2BR flat,Sep 2025,533,Sep 2024,530,0.6,0.6,535
+Maribyrnong,2BR house,Sep 2025,580,Sep 2024,590,-1.7,0,580
+Maribyrnong,3BR house,Sep 2025,650,Sep 2024,638,1.9,1.9,659
+Melbourne,1BR flat,Sep 2025,570,Sep 2024,550,3.6,3.6,585
+Melbourne,2BR flat,Sep 2025,730,Sep 2024,700,4.3,4.3,753
+Melbourne,2BR house,Sep 2025,678,Sep 2024,660,2.7,2.7,692
+Melbourne,3BR house,Sep 2025,900,Sep 2024,850,5.9,5.9,939
+Merri-bek,1BR flat,Sep 2025,450,Sep 2024,450,0,0,450
+Merri-bek,2BR flat,Sep 2025,540,Sep 2024,540,0,0,540
+Merri-bek,2BR house,Sep 2025,600,Sep 2024,588,2,2,609
+Merri-bek,3BR house,Sep 2025,695,Sep 2024,650,6.9,6.9,731
+Monash,1BR flat,Sep 2025,495,Sep 2024,416,19,8,524
+Monash,2BR flat,Sep 2025,600,Sep 2024,570,5.3,5.3,624
+Monash,2BR house,Sep 2025,589,Sep 2024,540,9.1,8,624
+Monash,3BR house,Sep 2025,650,Sep 2024,650,0,0,650
+Moonee Valley,1BR flat,Sep 2025,450,Sep 2024,400,12.5,8,477
+Moonee Valley,2BR flat,Sep 2025,525,Sep 2024,520,1,1,529
+Moonee Valley,2BR house,Sep 2025,610,Sep 2024,620,-1.6,0,610
+Moonee Valley,3BR house,Sep 2025,700,Sep 2024,650,7.7,7.7,740
+Port Phillip,1BR flat,Sep 2025,485,Sep 2024,470,3.2,3.2,497
+Port Phillip,2BR flat,Sep 2025,650,Sep 2024,627,3.7,3.7,668
+Port Phillip,2BR house,Sep 2025,750,Sep 2024,750,0,0,750
+Port Phillip,3BR house,Sep 2025,1040,Sep 2024,998,4.2,4.2,1073
+Stonnington,1BR flat,Sep 2025,500,Sep 2024,465,7.5,7.5,528
+Stonnington,2BR flat,Sep 2025,675,Sep 2024,645,4.7,4.7,698
+Stonnington,2BR house,Sep 2025,763,Sep 2024,750,1.7,1.7,773
+Stonnington,3BR house,Sep 2025,1010,Sep 2024,950,6.3,6.3,1057
+Whitehorse,1BR flat,Sep 2025,450,Sep 2024,455,-1.1,0,450
+Whitehorse,2BR flat,Sep 2025,600,Sep 2024,580,3.4,3.4,615
+Whitehorse,2BR house,Sep 2025,580,Sep 2024,550,5.5,5.5,604
+Whitehorse,3BR house,Sep 2025,650,Sep 2024,610,6.6,6.6,682
+Yarra,1BR flat,Sep 2025,525,Sep 2024,500,5,5,545
+Yarra,2BR flat,Sep 2025,700,Sep 2024,680,2.9,2.9,715
+Yarra,2BR house,Sep 2025,750,Sep 2024,708,5.9,5.9,783
+Yarra,3BR house,Sep 2025,995,Sep 2024,950,4.7,4.7,1030
+Yarra Ranges,1BR flat,Sep 2025,370,Sep 2024,420,-11.9,0,370
+Yarra Ranges,2BR flat,Sep 2025,530,Sep 2024,480,10.4,8,561
+Yarra Ranges,2BR house,Sep 2025,550,Sep 2024,500,10,8,583
+Yarra Ranges,3BR house,Sep 2025,605,Sep 2024,600,0.8,0.8,609

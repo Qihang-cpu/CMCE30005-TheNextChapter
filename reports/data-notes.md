@@ -97,6 +97,8 @@ Moreland.
 
 ## Segment ROI screen
 
+Produced by `scripts/06_segment_roi_screen.R` from the cleaned listings and the
+official rents that `scripts/05_rent_data.R` downloads and projects forward.
 `reports/tables/segment_roi_screen.csv` holds the preliminary screen over all 39
 eligible segments (LGA x dwelling class x 1-2 bedrooms, at least 50 scoped
 listings each, 15 LGAs). Every segment matched a DFFH rent series, so none drop
