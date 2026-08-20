@@ -62,7 +62,10 @@ rents <- rbindlist(list(
   read_sheet("2br House", "2BR house"),
   read_sheet("3br House", "3BR house")
 ))
-rents <- rents[!is.na(lga) & !is.na(median_weekly_rent)]
+# The sheets carry regional subtotal rows alongside the LGAs
+SUBTOTALS <- c("Group Total", "Victoria", "Metro", "Non-metro",
+               "Metropolitan", "Regional Victoria", "Total")
+rents <- rents[!is.na(lga) & !is.na(median_weekly_rent) & !lga %in% SUBTOTALS]
 
 rents[, yoy_growth := median_weekly_rent / median_year_ago - 1]
 rents[, growth_used := pmin(pmax(fifelse(is.na(yoy_growth), 0, yoy_growth), 0), GROWTH_CAP)]

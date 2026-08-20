@@ -1,8 +1,8 @@
 # ============================================================
 # CMCE30005 Business Analytics Challenge
 # Script: 06_segment_roi_screen.R
-# Purpose: Preliminary first-year cash-on-cash ROI screen for every
-#          eligible LGA x dwelling-class x 1-2-bedroom segment
+# Purpose: Preliminary first-year cash-on-cash ROI screen for every eligible
+#          LGA x dwelling-type segment that DFFH publishes a rent series for
 # Author: TheNextChapter (Group 2)
 # Date: 20 August 2026
 # ============================================================
@@ -40,21 +40,34 @@ listings <- readRDS("data/processed/listings_clean.rds")
 
 # ---- Scope and segment eligibility -------------------------------------------
 
-# The client brief is 1-2 bedrooms. 3-bedroom segments are screened alongside as
-# a documented scope test, flagged in the output rather than silently included.
+# Scope is set by the rent data. DFFH publishes four series - 1BR flat, 2BR flat,
+# 2BR house, 3BR house. One-bedroom houses have no series of their own, so their
+# rent is derived below from the 2BR-house median scaled by the same LGA's own
+# one-to-two-bedroom step in the flat series (median step 0.78 across 52 LGAs).
+# Three-bedroom apartments are dropped outright: deriving them would need a
+# dwelling-type step rather than a bedroom step, on a much smaller base.
+RENT_SERIES <- c("1BR flat", "2BR flat", "2BR house", "3BR house", "1BR house")
+
 scoped <- listings[room_type == "Entire home/apt" & bedrooms %in% 1:3]
 scoped[, dwelling_class := fifelse(property_type %in% APARTMENT_TYPES,
                                    "apartment", "house")]
+scoped[, rent_series := fifelse(dwelling_class == "apartment",
+                                paste0(bedrooms, "BR flat"),
+                                paste0(bedrooms, "BR house"))]
+
+excluded <- scoped[!rent_series %in% RENT_SERIES]
+cat(sprintf("Excluded, rent not derivable: %s listings (%s)\n",
+            comma(nrow(excluded)),
+            paste(sort(unique(excluded$rent_series)), collapse = ", ")))
+scoped <- scoped[rent_series %in% RENT_SERIES]
 
 eligible <- scoped[, .(n_scoped = .N),
-                   by = .(lga = neighbourhood_cleansed, bedrooms, dwelling_class)
-                   ][n_scoped >= MIN_LISTINGS]
+                   by = .(lga = neighbourhood_cleansed, bedrooms, dwelling_class,
+                          rent_series)][n_scoped >= MIN_LISTINGS]
 
-cat(sprintf("Funnel: %s raw -> %s scoped 1-3BR entire homes -> %d segments (%d LGAs)\n",
+cat(sprintf("Funnel: %s raw -> %s with an official rent series -> %d segments (%d LGAs)\n",
             comma(nrow(listings)), comma(nrow(scoped)), nrow(eligible),
             uniqueN(eligible$lga)))
-cat(sprintf("  of which in client scope (1-2BR): %d segments\n",
-            nrow(eligible[bedrooms %in% 1:2])))
 
 # Revenue percentiles use the active, priced subset: a listing with no recent
 # activity carries no information about what the segment can earn.
@@ -75,15 +88,31 @@ rents <- fread("data/external/dffh_median_rents_sep2025.csv")
 # Inside Airbnb still uses the LGA's former name
 seg[, lga_official := fifelse(lga == "Moreland", "Merri-bek", lga)]
 
-# There is no official 1-bedroom-house series, so those segments take the
-# 2BR-house rent as a deliberately conservative upper bound.
-seg[, rent_series := fifelse(dwelling_class == "apartment", paste0(bedrooms, "BR flat"),
-                      fifelse(bedrooms >= 3, "3BR house", "2BR house"))]
-seg[, rent_is_upper_bound := dwelling_class == "house" & bedrooms == 1]
+# Derived 1BR-house rents: the 2BR-house median scaled by that LGA's own
+# one-to-two-bedroom step in the flat series.
+steps <- dcast(rents[dwelling %in% c("1BR flat", "2BR flat", "2BR house")],
+               lga ~ dwelling, value.var = "uplifted_to_jun2026")
+setnames(steps, c("lga", "flat_1br", "flat_2br", "house_2br"))
+steps <- steps[!is.na(flat_1br) & !is.na(flat_2br) & !is.na(house_2br)]
+steps[, step_raw := flat_1br / flat_2br]
+# Clipped to the interquartile range of the step across all LGAs, on the same
+# reasoning as the rent-growth clip: a thin local flat market should not be able
+# to swing a derived house rent.
+STEP_LO <- quantile(steps$step_raw, 0.25)
+STEP_HI <- quantile(steps$step_raw, 0.75)
+steps[, step_used := pmin(pmax(step_raw, STEP_LO), STEP_HI)]
+steps[, derived := round(house_2br * step_used)]
+cat(sprintf("Bedroom step (1BR flat / 2BR flat): median %.2f, clipped to %.2f-%.2f, %d LGAs\n",
+            median(steps$step_raw), STEP_LO, STEP_HI, nrow(steps)))
 
-seg <- merge(seg, rents[, .(lga_official = lga, rent_series = dwelling,
-                            weekly_rent = uplifted_to_jun2026)],
-             by = c("lga_official", "rent_series"), all.x = TRUE)
+rent_lookup <- rbind(
+  rents[, .(lga_official = lga, rent_series = dwelling,
+            weekly_rent = uplifted_to_jun2026, rent_derived = FALSE)],
+  steps[, .(lga_official = lga, rent_series = "1BR house",
+            weekly_rent = derived, rent_derived = TRUE)]
+)
+
+seg <- merge(seg, rent_lookup, by = c("lga_official", "rent_series"), all.x = TRUE)
 
 unmatched <- seg[is.na(weekly_rent), .N]
 cat(sprintf("Segments matched to an official rent series: %d of %d\n",
@@ -105,13 +134,15 @@ seg[, net_cash_p50 := round(p50_revenue * (1 - HOST_FEE) - annual_cost)]
 seg[, net_cash_p75 := round(p75_revenue * (1 - HOST_FEE) - annual_cost)]
 seg[, roi_at_p50 := round(100 * net_cash_p50 / upfront_cash)]
 seg[, roi_at_p75 := round(100 * net_cash_p75 / upfront_cash)]
-seg[, in_client_scope := bedrooms %in% 1:2]
+seg[, in_client_scope := bedrooms %in% 1:2]   # client brief; 3BR kept as a scope test
 
 seg[, zone := fifelse(is.na(roi_at_p75), "no revenue data",
               fifelse(roi_at_p75 >= 50, "viable (>=50%)",
               fifelse(roi_at_p75 >= 0,  "marginal (0-50%)", "below break-even")))]
 
-cat("\nSegments by zone, at P75 performance (client scope, 1-2BR):\n")
+cat("\nSegments by zone, at P75 performance (all screened):\n")
+print(seg[, .N, by = zone][order(-N)])
+cat("\nClient scope only (1-2BR):\n")
 print(seg[in_client_scope == TRUE, .N, by = zone][order(-N)])
 
 # Ranking by ratio and by dollars is not the same ordering, so both are shown.
@@ -130,7 +161,7 @@ print(seg[bedrooms == 3 & roi_at_p75 >= 50,
 
 setorder(seg, -roi_at_p75, na.last = TRUE)
 out <- seg[, .(lga, bedrooms, dwelling_class, in_client_scope, n_scoped, n_active_priced,
-               weekly_rent, rent_is_upper_bound,
+               rent_series, weekly_rent, rent_derived,
                p50_revenue = round(p50_revenue), p75_revenue = round(p75_revenue),
                upfront_cash, annual_cost, net_cash_p50, net_cash_p75,
                roi_at_p50, roi_at_p75, zone)]
@@ -145,8 +176,8 @@ cat(sprintf("\nBest: %s %dBR %s at %+d%% ($%s)   Worst: %s %dBR %s at %+d%%\n",
 
 # ---- Figure: best and worst segments -----------------------------------------
 
-in_scope <- out[in_client_scope == TRUE & !is.na(roi_at_p75)]
-plot_dt <- rbind(head(in_scope, 5), tail(in_scope, 4))
+ranked_all <- out[!is.na(roi_at_p75)]
+plot_dt <- rbind(head(ranked_all, 5), tail(ranked_all, 4))
 plot_dt[, label := sprintf("%s %dBR %s", fifelse(lga == "Moreland", "Merri-bek", lga),
                            bedrooms, fifelse(dwelling_class == "house", "hse", "apt"))]
 plot_dt[, label := factor(label, levels = rev(label))]
@@ -161,11 +192,11 @@ p <- ggplot(plot_dt, aes(roi_at_p75, label, fill = band)) +
   scale_fill_manual(values = c("Viable (>=50%)" = "#2E7D4F",
                                "Marginal (0-50%)" = "#B07C1F",
                                "Below break-even" = "#A6453A")) +
-  scale_x_continuous(limits = c(-110, 90), breaks = seq(-100, 80, 40),
+  scale_x_continuous(limits = c(-115, 135), breaks = seq(-100, 120, 40),
                      labels = function(x) paste0(x, "%")) +
   labs(title = "First-year ROI at P75 performance",
-       subtitle = sprintf("Best and worst of %d in-scope 1-2BR segments; P75 is the 75th percentile, not a ceiling",
-                          nrow(in_scope)),
+       subtitle = sprintf("Best and worst of %d segments with an official rent series; P75 is the 75th percentile, not a ceiling",
+                          nrow(ranked_all)),
        x = NULL, y = NULL, fill = NULL) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom", panel.grid.major.y = element_blank())

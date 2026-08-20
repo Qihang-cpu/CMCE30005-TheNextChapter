@@ -99,12 +99,24 @@ Moreland.
 
 Produced by `scripts/06_segment_roi_screen.R` from the cleaned listings and the
 official rents that `scripts/05_rent_data.R` downloads and projects forward.
-`reports/tables/segment_roi_screen.csv` holds the preliminary screen over all 39
-eligible segments (LGA x dwelling class x 1-2 bedrooms, at least 50 scoped
-listings each, 15 LGAs). Every segment matched a DFFH rent series, so none drop
-at that step. Revenue percentiles come from the active, priced subset within
-each segment; where that subset is small the percentile is indicative only. The
-five 1-bedroom-house segments have no official 1BR-house rent series and use the
-2BR-house series as a conservative upper bound. At P75 performance under
-baseline costs, 2 segments clear a 50% first-year cash-on-cash return, 3 more
-are positive, and 34 sit below break-even.
+
+Scope follows the rent data. DFFH publishes four series - 1BR flat, 2BR flat,
+2BR house, 3BR house - and a segment is only screened if a like-for-like rent
+exists or can be derived on a defensible basis:
+
+- Apartments and 2-3 bedroom houses map straight onto a published series.
+- One-bedroom houses have no series. Their rent is derived as the LGA's own
+  2BR-house median scaled by that same LGA's one-to-two-bedroom step in the
+  flat series (median step 0.78, clipped to the 0.72-0.82 interquartile range so
+  a thin local flat market cannot swing a house rent). These rows carry
+  `rent_derived = TRUE`.
+- Three-bedroom apartments are excluded: deriving them needs a dwelling-type
+  step rather than a bedroom step, on a much smaller base (961 listings).
+
+Revenue percentiles come from the active, priced subset of each segment; where
+that subset is small the percentile is indicative only. `in_client_scope` marks
+the 1-2 bedroom brief, with 3-bedroom segments screened alongside as a
+documented scope test rather than silently dropped.
+
+At P75 performance under baseline costs, 3 of 57 segments clear a 50% first-year
+cash-on-cash return, 7 more are positive, and 47 sit below break-even.
