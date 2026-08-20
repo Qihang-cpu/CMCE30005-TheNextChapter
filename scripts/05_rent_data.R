@@ -59,6 +59,7 @@ read_sheet <- function(sheet, label) {
 rents <- rbindlist(list(
   read_sheet("1br flat",  "1BR flat"),
   read_sheet("2br Flat",  "2BR flat"),
+  read_sheet("3br Flat",  "3BR flat"),
   read_sheet("2br House", "2BR house"),
   read_sheet("3br House", "3BR house")
 ))

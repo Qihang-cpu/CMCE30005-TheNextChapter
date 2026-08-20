@@ -88,21 +88,35 @@ rents <- fread("data/external/dffh_median_rents_sep2025.csv")
 # Inside Airbnb still uses the LGA's former name
 seg[, lga_official := fifelse(lga == "Moreland", "Merri-bek", lga)]
 
-# Derived 1BR-house rents: the 2BR-house median scaled by that LGA's own
-# one-to-two-bedroom step in the flat series.
-steps <- dcast(rents[dwelling %in% c("1BR flat", "2BR flat", "2BR house")],
-               lga ~ dwelling, value.var = "uplifted_to_jun2026")
-setnames(steps, c("lga", "flat_1br", "flat_2br", "house_2br"))
-steps <- steps[!is.na(flat_1br) & !is.na(flat_2br) & !is.na(house_2br)]
-steps[, step_raw := flat_1br / flat_2br]
-# Clipped to the interquartile range of the step across all LGAs, on the same
-# reasoning as the rent-growth clip: a thin local flat market should not be able
-# to swing a derived house rent.
+# Derived 1BR-house rents. DFFH publishes no 1BR-house series, so the rent is
+# the LGA's 2BR-house median scaled down by a one-to-two-bedroom step.
+#
+# The step is observable only for flats, and flats are not houses: comparing the
+# two-to-three-bedroom step where BOTH are published shows flats rise more per
+# bedroom than houses (median 1.20 vs 1.15, higher in 40 of 51 LGAs, paired
+# t = 3.4). Applying a flat step to a house therefore understates the house rent
+# and flatters ROI. The flat step is calibrated by the house-to-flat ratio
+# measured at the two-to-three step, then clipped to its interquartile range.
+wide <- dcast(rents[dwelling %in% c("1BR flat", "2BR flat", "3BR flat",
+                                    "2BR house", "3BR house")],
+              lga ~ dwelling, value.var = "uplifted_to_jun2026")
+setnames(wide, make.names(names(wide)))
+
+cal <- wide[!is.na(X2BR.flat) & !is.na(X3BR.flat) &
+            !is.na(X2BR.house) & !is.na(X3BR.house)]
+CALIB <- median((cal$X2BR.house / cal$X3BR.house) /
+                (cal$X2BR.flat  / cal$X3BR.flat))
+cat(sprintf("Dwelling-type calibration of the bedroom step: %.3f (%d LGAs)\n",
+            CALIB, nrow(cal)))
+
+steps <- wide[!is.na(X1BR.flat) & !is.na(X2BR.flat) & !is.na(X2BR.house)]
+steps[, step_raw := (X1BR.flat / X2BR.flat) * CALIB]
 STEP_LO <- quantile(steps$step_raw, 0.25)
 STEP_HI <- quantile(steps$step_raw, 0.75)
 steps[, step_used := pmin(pmax(step_raw, STEP_LO), STEP_HI)]
-steps[, derived := round(house_2br * step_used)]
-cat(sprintf("Bedroom step (1BR flat / 2BR flat): median %.2f, clipped to %.2f-%.2f, %d LGAs\n",
+steps[, derived := round(X2BR.house * step_used)]
+setnames(steps, "lga", "lga")
+cat(sprintf("Calibrated bedroom step: median %.2f, clipped to %.2f-%.2f, %d LGAs\n",
             median(steps$step_raw), STEP_LO, STEP_HI, nrow(steps)))
 
 rent_lookup <- rbind(

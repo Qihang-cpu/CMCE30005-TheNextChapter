@@ -106,10 +106,20 @@ exists or can be derived on a defensible basis:
 
 - Apartments and 2-3 bedroom houses map straight onto a published series.
 - One-bedroom houses have no series. Their rent is derived as the LGA's own
-  2BR-house median scaled by that same LGA's one-to-two-bedroom step in the
-  flat series (median step 0.78, clipped to the 0.72-0.82 interquartile range so
-  a thin local flat market cannot swing a house rent). These rows carry
-  `rent_derived = TRUE`.
+  2BR-house median scaled down by a one-to-two-bedroom step. The step is
+  observable only for flats, and flats are not houses: where both are published,
+  flats rise more per bedroom than houses (two-to-three-bedroom step 1.20 versus
+  1.15 at the median, higher in 40 of 51 LGAs, paired t = 3.4). An uncalibrated
+  flat step therefore understates house rent and flatters ROI. The step is
+  calibrated by the house-to-flat ratio measured at the two-to-three step
+  (factor 1.023) and clipped to its interquartile range, giving a median step of
+  0.79 (0.74-0.84). These rows carry `rent_derived = TRUE`.
+
+  For the largest affected segment, Yarra Ranges 1BR houses, the three
+  approaches give: 2BR-house rent used as an upper bound, $583/week and 62% ROI;
+  an uncalibrated flat step, $420 and 112%; the calibrated step, $429 and 109%.
+  The upper bound understates the segment badly; the calibration removes a
+  smaller bias in the opposite direction.
 - Three-bedroom apartments are excluded: deriving them needs a dwelling-type
   step rather than a bedroom step, on a much smaller base (961 listings).
 

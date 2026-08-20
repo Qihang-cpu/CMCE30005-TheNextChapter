@@ -1,13 +1,13 @@
 lga,bedrooms,dwelling_class,in_client_scope,n_scoped,n_active_priced,rent_series,weekly_rent,rent_derived,p50_revenue,p75_revenue,upfront_cash,annual_cost,net_cash_p50,net_cash_p75,roi_at_p50,roi_at_p75,zone
-Yarra Ranges,1,house,TRUE,324,268,1BR house,420,TRUE,25014,51582,17680,30240,-5976,19795,-34,112,viable (>=50%)
+Yarra Ranges,1,house,TRUE,324,268,1BR house,429,TRUE,25014,51582,17716,30708,-6444,19327,-36,109,viable (>=50%)
 Yarra Ranges,3,house,FALSE,191,150,3BR house,609,FALSE,37144,62446,33436,40068,-4038,20504,-12,61,viable (>=50%)
 Yarra Ranges,2,house,TRUE,180,141,2BR house,583,FALSE,28782,55440,25332,38716,-10797,15061,-43,59,viable (>=50%)
 Yarra,3,house,FALSE,126,68,3BR house,1030,FALSE,38649,79885,35120,61960,-24470,15528,-70,44,marginal (0-50%)
 Hume,3,house,FALSE,55,35,3BR house,500,FALSE,21120,49050,33000,34400,-13914,13178,-42,40,marginal (0-50%)
 Yarra,2,house,TRUE,187,90,2BR house,783,FALSE,35124,59958,26132,49116,-15045,9043,-58,35,marginal (0-50%)
-Yarra,1,house,TRUE,92,50,1BR house,597,TRUE,24708,45574,18388,39444,-15477,4763,-84,26,marginal (0-50%)
 Melbourne,2,house,TRUE,70,35,2BR house,692,FALSE,20925,52304,25768,44384,-24087,6350,-93,25,marginal (0-50%)
-Port Phillip,1,house,TRUE,64,29,1BR house,558,TRUE,21164,42960,18232,37416,-16887,4255,-93,23,marginal (0-50%)
+Yarra,1,house,TRUE,92,50,1BR house,610,TRUE,24708,45574,18440,40120,-16153,4087,-88,22,marginal (0-50%)
+Port Phillip,1,house,TRUE,64,29,1BR house,571,TRUE,21164,42960,18284,38092,-17563,3579,-96,20,marginal (0-50%)
 Moreland,2,apartment,TRUE,120,59,2BR flat,540,FALSE,24552,37640,25160,36480,-12665,31,-50,0,marginal (0-50%)
 Melbourne,2,apartment,TRUE,3362,2361,2BR flat,753,FALSE,24210,48450,26012,47556,-24072,-560,-93,-2,below break-even
 Yarra,2,apartment,TRUE,338,204,2BR flat,715,FALSE,26049,46388,25860,45580,-20312,-584,-79,-2,below break-even
@@ -18,9 +18,9 @@ Melbourne,3,house,FALSE,53,27,3BR house,939,FALSE,24144,54606,34756,57228,-33808
 Moonee Valley,1,apartment,TRUE,63,32,1BR flat,477,FALSE,18057,31893,17908,33204,-15689,-2268,-88,-13,below break-even
 Moonee Valley,2,apartment,TRUE,80,50,2BR flat,529,FALSE,15736,33021,25116,35908,-20644,-3878,-82,-15,below break-even
 Kingston,3,house,FALSE,67,33,3BR house,701,FALSE,20672,40176,33804,44852,-24800,-5881,-73,-17,below break-even
-Melbourne,1,house,TRUE,65,26,1BR house,538,TRUE,11892,34285,18152,36376,-24841,-3120,-137,-17,below break-even
 Moreland,1,apartment,TRUE,161,93,1BR flat,450,FALSE,14523,29750,17800,31800,-17713,-2942,-100,-17,below break-even
 Stonnington,2,house,TRUE,67,35,2BR house,773,FALSE,27560,45294,26092,48596,-21863,-4661,-84,-18,below break-even
+Melbourne,1,house,TRUE,65,26,1BR house,550,TRUE,11892,34285,18200,37000,-25465,-3744,-140,-21,below break-even
 Moreland,2,house,TRUE,102,52,2BR house,609,FALSE,15798,35725,25436,40068,-24744,-5415,-97,-21,below break-even
 Glen Eira,2,apartment,TRUE,87,55,2BR flat,610,FALSE,21138,35660,25440,40120,-19616,-5530,-77,-22,below break-even
 Moreland,3,house,FALSE,85,41,3BR house,731,FALSE,26103,38560,33924,46412,-21092,-9009,-62,-27,below break-even
@@ -32,10 +32,10 @@ Maribyrnong,3,house,FALSE,76,46,3BR house,659,FALSE,17599,32910,33636,42668,-255
 Maribyrnong,2,house,TRUE,76,41,2BR house,580,FALSE,13200,31140,25320,38560,-25756,-8354,-102,-33,below break-even
 Port Phillip,2,apartment,TRUE,714,360,2BR flat,668,FALSE,18060,35178,25672,43136,-25618,-9013,-100,-35,below break-even
 Darebin,1,apartment,TRUE,104,44,1BR flat,436,FALSE,12506,25161,17744,31072,-18941,-6666,-107,-38,below break-even
-Darebin,1,house,TRUE,50,34,1BR house,474,TRUE,18489,27129,17896,33048,-15114,-6733,-84,-38,below break-even
 Whitehorse,3,house,FALSE,52,32,3BR house,682,FALSE,22066,32040,33728,43864,-22459,-12785,-67,-38,below break-even
 Maribyrnong,1,apartment,TRUE,75,42,1BR flat,456,FALSE,13654,25848,17824,32112,-18868,-7039,-106,-39,below break-even
 Boroondara,2,apartment,TRUE,110,60,2BR flat,619,FALSE,15254,31252,25476,40588,-25792,-10274,-101,-40,below break-even
+Darebin,1,house,TRUE,50,34,1BR house,484,TRUE,18489,27129,17936,33568,-15634,-7253,-87,-40,below break-even
 Casey,3,house,FALSE,61,46,3BR house,550,FALSE,11699,22746,33200,37000,-25652,-14936,-77,-45,below break-even
 Monash,2,apartment,TRUE,89,62,2BR flat,624,FALSE,14848,30414,25496,40848,-26445,-11346,-104,-45,below break-even
 Frankston,3,house,FALSE,50,37,3BR house,594,FALSE,15006,23931,33376,39288,-24732,-16075,-74,-48,below break-even
