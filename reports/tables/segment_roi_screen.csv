@@ -1,0 +1,40 @@
+lga,br,ptype,n_listings,n_active_priced,weekly_rent,rent_bounded,P50_revenue,P75_revenue,outlay,annual_cost,roi50,roi75,zone
+Yarra Ranges,1,house,324,268,583,TRUE,25014,51582,18332,38716,-79,62,viable
+Yarra Ranges,2,house,180,141,583,FALSE,28782,55440,25332,38716,-43,59,viable
+Yarra,2,house,187,90,783,FALSE,35124,59958,26132,49116,-58,35,marginal
+Melbourne,2,house,70,35,692,FALSE,20925,52304,25768,44384,-93,25,marginal
+Moreland,2,apartment,120,59,540,FALSE,24552,37640,25160,36480,-50,0,marginal
+Melbourne,2,apartment,3362,2361,753,FALSE,24210,48450,26012,47556,-93,-2,below break-even
+Yarra,2,apartment,338,204,715,FALSE,26049,46388,25860,45580,-79,-2,below break-even
+Yarra,1,apartment,552,292,545,FALSE,21948,37172,18180,36740,-85,-4,below break-even
+Maribyrnong,2,apartment,78,49,535,FALSE,17712,35985,25140,36220,-76,-5,below break-even
+Moonee Valley,1,apartment,63,32,477,FALSE,18057,31893,17908,33204,-88,-13,below break-even
+Moonee Valley,2,apartment,80,50,529,FALSE,15736,33021,25116,35908,-82,-15,below break-even
+Moreland,1,apartment,161,93,450,FALSE,14523,29750,17800,31800,-100,-17,below break-even
+Stonnington,2,house,67,35,773,FALSE,27560,45294,26092,48596,-84,-18,below break-even
+Moreland,2,house,102,52,609,FALSE,15798,35725,25436,40068,-97,-21,below break-even
+Glen Eira,2,apartment,87,55,610,FALSE,21138,35660,25440,40120,-77,-22,below break-even
+Yarra,1,house,92,50,783,TRUE,24708,45574,19132,49116,-131,-26,below break-even
+Melbourne,1,apartment,2379,1579,585,FALSE,19320,34569,18340,38820,-109,-29,below break-even
+Darebin,2,apartment,59,24,534,FALSE,14136,29637,25136,36168,-89,-30,below break-even
+Port Phillip,1,house,64,29,750,TRUE,21164,42960,19000,47400,-141,-30,below break-even
+Maribyrnong,2,house,76,41,580,FALSE,13200,31140,25320,38560,-102,-33,below break-even
+Port Phillip,2,apartment,714,360,668,FALSE,18060,35178,25672,43136,-100,-35,below break-even
+Darebin,1,apartment,104,44,436,FALSE,12506,25161,17744,31072,-107,-38,below break-even
+Maribyrnong,1,apartment,75,42,456,FALSE,13654,25848,17824,32112,-106,-39,below break-even
+Boroondara,2,apartment,110,60,619,FALSE,15254,31252,25476,40588,-101,-40,below break-even
+Monash,2,apartment,89,62,624,FALSE,14848,30414,25496,40848,-104,-45,below break-even
+Kingston,2,house,50,28,585,FALSE,11741,27176,25340,38820,-108,-49,below break-even
+Stonnington,1,apartment,490,275,528,FALSE,14850,27537,18112,35856,-118,-50,below break-even
+Port Phillip,1,apartment,938,491,497,FALSE,14784,25858,17988,34244,-111,-51,below break-even
+Darebin,2,house,85,28,580,FALSE,15758,25459,25320,38560,-92,-55,below break-even
+Melbourne,1,house,65,26,692,TRUE,11892,34285,18768,44384,-175,-59,below break-even
+Stonnington,2,apartment,287,156,698,FALSE,18768,30172,25792,44696,-103,-60,below break-even
+Glen Eira,1,apartment,67,34,438,FALSE,10384,20859,17752,31176,-119,-62,below break-even
+Port Phillip,2,house,146,63,750,FALSE,17930,31344,26000,47400,-115,-65,below break-even
+Darebin,1,house,50,34,580,TRUE,18489,27129,18320,38560,-113,-67,below break-even
+Bayside,2,apartment,54,33,689,FALSE,17760,25236,25756,44228,-105,-77,below break-even
+Boroondara,1,apartment,84,45,498,FALSE,11856,20988,17992,34296,-127,-77,below break-even
+Bayside,1,apartment,69,36,524,FALSE,12537,20428,18096,35648,-130,-87,below break-even
+Whitehorse,2,apartment,131,81,615,FALSE,7170,18870,25460,40380,-131,-87,below break-even
+Whitehorse,1,apartment,76,42,450,FALSE,10824,16389,17800,31800,-120,-89,below break-even

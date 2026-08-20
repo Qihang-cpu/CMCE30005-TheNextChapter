@@ -94,3 +94,15 @@ lag. There is no official 1-bedroom-house series; analyses bound it by the
 1BR-flat and 2BR-house series and say so wherever it is used. Note the DFFH
 tables use the LGA's current name Merri-bek where Inside Airbnb still says
 Moreland.
+
+## Segment ROI screen
+
+`reports/tables/segment_roi_screen.csv` holds the preliminary screen over all 39
+eligible segments (LGA x dwelling class x 1-2 bedrooms, at least 50 scoped
+listings each, 15 LGAs). Every segment matched a DFFH rent series, so none drop
+at that step. Revenue percentiles come from the active, priced subset within
+each segment; where that subset is small the percentile is indicative only. The
+five 1-bedroom-house segments have no official 1BR-house rent series and use the
+2BR-house series as a conservative upper bound. At P75 performance under
+baseline costs, 2 segments clear a 50% first-year cash-on-cash return, 3 more
+are positive, and 34 sit below break-even.
