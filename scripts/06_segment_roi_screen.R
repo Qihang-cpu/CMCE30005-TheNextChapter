@@ -161,7 +161,10 @@ seg[, roi_at_p90 := round(100 * net_cash_p90 / upfront_cash)]
 # only the long-let income they give up.
 seg[, owner_uplift_p75 := round(p75_revenue * (1 - HOST_FEE) - OPERATING - weekly_rent * 52)]
 seg[, owner_uplift_p90 := round(p90_revenue * (1 - HOST_FEE) - OPERATING - weekly_rent * 52)]
-seg[, in_client_scope := bedrooms %in% 1:2]   # client brief; 3BR kept as a scope test
+# The main screen covers the four configurations DFFH publishes a rent for, so
+# no segment depends on a derived cost. 1BR houses use a derived rent and are
+# marked for sensitivity analysis instead.
+seg[, dffh_published := !(dwelling_class == "house" & bedrooms == 1)]
 
 seg[, zone := fifelse(is.na(roi_at_p75), "no revenue data",
               fifelse(roi_at_p75 >= 50, "viable (>=50%)",
@@ -169,8 +172,18 @@ seg[, zone := fifelse(is.na(roi_at_p75), "no revenue data",
 
 cat("\nSegments by zone, at P75 performance (all screened):\n")
 print(seg[, .N, by = zone][order(-N)])
-cat("\nClient scope only (1-2BR):\n")
-print(seg[in_client_scope == TRUE, .N, by = zone][order(-N)])
+cat("\nMain screen only (configurations with a published rent):\n")
+print(seg[dffh_published == TRUE, .N, by = zone][order(-N)])
+
+# The capital ceiling is a decision, not a fixed constraint, so its consequence
+# is priced: what does each extra dollar of per-property capital reach?
+cat("\nWhat each per-property capital ceiling reaches (published configurations):\n")
+pub <- seg[dffh_published == TRUE & !is.na(roi_at_p75)]
+print(rbindlist(lapply(c(20000, 26000, 30000, 36000), function(cap) {
+  a <- pub[upfront_cash <= cap]
+  data.table(ceiling = cap, reachable = nrow(a), clearing_50 = sum(a$roi_at_p75 >= 50),
+             best_net_cash = if (nrow(a)) max(a$net_cash_p75) else NA_integer_)
+})))
 
 # The percentile matters more than the segment for apartments, so both are shown.
 cat("\nHow much execution is required - segments clearing 50% ROI:\n")
@@ -195,8 +208,9 @@ print(seg[bedrooms == 3 & roi_at_p75 >= 50,
           .(lga, dwelling_class, upfront_cash, net_cash_p75, roi_at_p75)][order(-net_cash_p75)])
 
 setorder(seg, -roi_at_p75, na.last = TRUE)
-out <- seg[, .(lga, bedrooms, dwelling_class, in_client_scope, n_scoped, n_active_priced,
+out <- seg[, .(lga, bedrooms, dwelling_class, n_scoped, n_active_priced,
                rent_series, weekly_rent, rent_derived,
+               dffh_published,
                p50_revenue = round(p50_revenue), p75_revenue = round(p75_revenue),
                p90_revenue = round(p90_revenue),
                upfront_cash, annual_cost, net_cash_p50, net_cash_p75, net_cash_p90,
@@ -213,7 +227,7 @@ cat(sprintf("\nBest: %s %dBR %s at %+d%% ($%s)   Worst: %s %dBR %s at %+d%%\n",
 
 # ---- Figure: best and worst segments -----------------------------------------
 
-ranked_all <- out[!is.na(roi_at_p75)]
+ranked_all <- out[dffh_published == TRUE & !is.na(roi_at_p75)]
 plot_dt <- rbind(head(ranked_all, 5), tail(ranked_all, 4))
 plot_dt[, label := sprintf("%s %dBR %s", fifelse(lga == "Moreland", "Merri-bek", lga),
                            bedrooms, fifelse(dwelling_class == "house", "hse", "apt"))]
@@ -232,7 +246,7 @@ p <- ggplot(plot_dt, aes(roi_at_p75, label, fill = band)) +
   scale_x_continuous(limits = c(-115, 135), breaks = seq(-100, 120, 40),
                      labels = function(x) paste0(x, "%")) +
   labs(title = "First-year ROI at P75 performance",
-       subtitle = sprintf("Best and worst of %d segments with an official rent series; P75 is the 75th percentile, not a ceiling",
+       subtitle = sprintf("Best and worst of %d segments with a published rent; P75 is the 75th percentile, not a ceiling",
                           nrow(ranked_all)),
        x = NULL, y = NULL, fill = NULL) +
   theme_minimal(base_size = 12) +

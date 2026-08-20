@@ -124,9 +124,18 @@ exists or can be derived on a defensible basis:
   step rather than a bedroom step, on a much smaller base (961 listings).
 
 Revenue percentiles come from the active, priced subset of each segment; where
-that subset is small the percentile is indicative only. `in_client_scope` marks
-the 1-2 bedroom brief, with 3-bedroom segments screened alongside as a
-documented scope test rather than silently dropped.
+that subset is small the percentile is indicative only. `dffh_published` marks the four
+configurations DFFH publishes a rent for - 1BR flat, 2BR flat, 2BR house, 3BR
+house - which form the main screen. One-bedroom houses use a derived rent and
+are reported as sensitivity rather than carried into the recommendation, so no
+segment in the main screen rests on a cost we had to estimate.
+
+The per-property capital ceiling is treated as a decision rather than a fixed
+constraint, because it determines which market the operator can reach at all:
+$20k reaches 12 segments and none clear the hurdle; $26k reaches 31 and one
+clears; $36k reaches 52 and two clear, the additional one carrying the highest
+net cash in the screen. The marginal $8.1k of capital returns about $5.4k a
+year.
 
 At P75 performance under baseline costs, 3 of 57 segments clear a 50% first-year
 cash-on-cash return, 7 more are positive, and 47 sit below break-even.
