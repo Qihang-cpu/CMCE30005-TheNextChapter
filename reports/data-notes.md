@@ -130,3 +130,13 @@ documented scope test rather than silently dropped.
 
 At P75 performance under baseline costs, 3 of 57 segments clear a 50% first-year
 cash-on-cash return, 7 more are positive, and 47 sit below break-even.
+
+## What the data cannot tell us: ownership
+
+Nothing in the 90 listing columns records whether a host owns the property or
+leases it. `license` is empty for all 25,728 rows and `property_type` describes
+the dwelling, not the tenure. The screen therefore prices one model explicitly -
+an operator paying market rent - and reports owner economics separately as a
+counterfactual, where the rent line is replaced by forgone long-let income. No
+claim is made about how much of the observed supply is owner-operated, because
+the data cannot support one.
