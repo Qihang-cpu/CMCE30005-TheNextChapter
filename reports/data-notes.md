@@ -149,3 +149,14 @@ an operator paying market rent - and reports owner economics separately as a
 counterfactual, where the rent line is replaced by forgone long-let income. No
 claim is made about how much of the observed supply is owner-operated, because
 the data cannot support one.
+
+## Amenity index: what "time-valid" would and would not mean
+
+The neighbourhood amenity index is built from Google Places in June 2026.
+Timestamping and caching the queries records when we pulled the data; it does
+not establish that a given venue was trading at each historical snapshot date.
+The index is therefore treated as a June 2026 measurement assumed to be
+approximately time-stable over the nine-month window, and the assumption is
+sensitivity-tested rather than asserted. Scraped review volumes, which move
+much faster than venue counts, stay out of the temporal models entirely and are
+used only for June cross-sectional exploration.
