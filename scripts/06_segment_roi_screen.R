@@ -75,7 +75,8 @@ revenue <- scoped[number_of_reviews_ltm > 0 & priced == TRUE &
                   !is.na(estimated_revenue_l365d),
                   .(n_active_priced = .N,
                     p50_revenue = quantile(estimated_revenue_l365d, 0.50),
-                    p75_revenue = quantile(estimated_revenue_l365d, 0.75)),
+                    p75_revenue = quantile(estimated_revenue_l365d, 0.75),
+                    p90_revenue = quantile(estimated_revenue_l365d, 0.90)),
                   by = .(lga = neighbourhood_cleansed, bedrooms, dwelling_class)]
 
 seg <- merge(eligible, revenue, by = c("lga", "bedrooms", "dwelling_class"),
@@ -97,26 +98,30 @@ seg[, lga_official := fifelse(lga == "Moreland", "Merri-bek", lga)]
 # t = 3.4). Applying a flat step to a house therefore understates the house rent
 # and flatters ROI. The flat step is calibrated by the house-to-flat ratio
 # measured at the two-to-three step, then clipped to its interquartile range.
-wide <- dcast(rents[dwelling %in% c("1BR flat", "2BR flat", "3BR flat",
-                                    "2BR house", "3BR house")],
-              lga ~ dwelling, value.var = "uplifted_to_jun2026")
-setnames(wide, make.names(names(wide)))
+# Steps are estimated from the raw September 2025 medians, not the projected
+# ones: each series is projected by its own growth rate, which would distort the
+# ratios between series. The projected 2BR-house rent is what the step is
+# applied to.
+raw <- dcast(rents[dwelling %in% c("1BR flat", "2BR flat", "3BR flat",
+                                   "2BR house", "3BR house")],
+             lga ~ dwelling, value.var = "median_weekly_rent")
+setnames(raw, make.names(names(raw)))
+proj <- rents[dwelling == "2BR house", .(lga, house_2br_projected = uplifted_to_jun2026)]
 
-cal <- wide[!is.na(X2BR.flat) & !is.na(X3BR.flat) &
-            !is.na(X2BR.house) & !is.na(X3BR.house)]
-CALIB <- median((cal$X2BR.house / cal$X3BR.house) /
-                (cal$X2BR.flat  / cal$X3BR.flat))
-cat(sprintf("Dwelling-type calibration of the bedroom step: %.3f (%d LGAs)\n",
-            CALIB, nrow(cal)))
+cal <- raw[!is.na(X2BR.flat) & !is.na(X3BR.flat) &
+           !is.na(X2BR.house) & !is.na(X3BR.house)]
+cal[, ratio := (X2BR.house / X3BR.house) / (X2BR.flat / X3BR.flat)]
+CALIB <- median(cal$ratio)
+cat(sprintf("Dwelling-type calibration: %.3f (median across %d LGAs, %d above 1)\n",
+            CALIB, nrow(cal), sum(cal$ratio > 1)))
 
-steps <- wide[!is.na(X1BR.flat) & !is.na(X2BR.flat) & !is.na(X2BR.house)]
+steps <- merge(raw[!is.na(X1BR.flat) & !is.na(X2BR.flat)], proj, by = "lga")
 steps[, step_raw := (X1BR.flat / X2BR.flat) * CALIB]
 STEP_LO <- quantile(steps$step_raw, 0.25)
 STEP_HI <- quantile(steps$step_raw, 0.75)
 steps[, step_used := pmin(pmax(step_raw, STEP_LO), STEP_HI)]
-steps[, derived := round(X2BR.house * step_used)]
-setnames(steps, "lga", "lga")
-cat(sprintf("Calibrated bedroom step: median %.2f, clipped to %.2f-%.2f, %d LGAs\n",
+steps[, derived := round(house_2br_projected * step_used)]
+cat(sprintf("Calibrated bedroom step: median %.3f, clipped to %.3f-%.3f, %d LGAs\n",
             median(steps$step_raw), STEP_LO, STEP_HI, nrow(steps)))
 
 rent_lookup <- rbind(
@@ -139,15 +144,23 @@ cat(sprintf("Segments matched to an official rent series: %d of %d\n",
 #   ROI           = (revenue net of host fee - annual cost) / upfront cash
 
 seg[, upfront_cash := FITOUT[as.character(bedrooms)] + weekly_rent * BOND_WEEKS + LAUNCH]
-seg[, annual_cost  := weekly_rent * 52 + UTILITIES + CONSUMABLES + INSURANCE + TOOLS]
+OPERATING <- UTILITIES + CONSUMABLES + INSURANCE + TOOLS
+seg[, annual_cost  := weekly_rent * 52 + OPERATING]
 
 # Absolute annual cash matters alongside the ratio: cash-on-cash ROI has a
 # denominator the operator controls, so a cheaper fit-out can rank above a
 # segment that simply earns more. Both are reported and both are used.
 seg[, net_cash_p50 := round(p50_revenue * (1 - HOST_FEE) - annual_cost)]
 seg[, net_cash_p75 := round(p75_revenue * (1 - HOST_FEE) - annual_cost)]
+seg[, net_cash_p90 := round(p90_revenue * (1 - HOST_FEE) - annual_cost)]
 seg[, roi_at_p50 := round(100 * net_cash_p50 / upfront_cash)]
 seg[, roi_at_p75 := round(100 * net_cash_p75 / upfront_cash)]
+seg[, roi_at_p90 := round(100 * net_cash_p90 / upfront_cash)]
+
+# How good does the operator have to be? Owners face a different sum: no rent,
+# only the long-let income they give up.
+seg[, owner_uplift_p75 := round(p75_revenue * (1 - HOST_FEE) - OPERATING - weekly_rent * 52)]
+seg[, owner_uplift_p90 := round(p90_revenue * (1 - HOST_FEE) - OPERATING - weekly_rent * 52)]
 seg[, in_client_scope := bedrooms %in% 1:2]   # client brief; 3BR kept as a scope test
 
 seg[, zone := fifelse(is.na(roi_at_p75), "no revenue data",
@@ -158,6 +171,14 @@ cat("\nSegments by zone, at P75 performance (all screened):\n")
 print(seg[, .N, by = zone][order(-N)])
 cat("\nClient scope only (1-2BR):\n")
 print(seg[in_client_scope == TRUE, .N, by = zone][order(-N)])
+
+# The percentile matters more than the segment for apartments, so both are shown.
+cat("\nHow much execution is required - segments clearing 50% ROI:\n")
+print(seg[, .(segments = .N,
+              at_p75 = sum(roi_at_p75 >= 50), at_p90 = sum(roi_at_p90 >= 50),
+              owner_better_p75 = sum(owner_uplift_p75 > 0),
+              owner_better_p90 = sum(owner_uplift_p90 > 0)),
+          by = dwelling_class])
 
 # Ranking by ratio and by dollars is not the same ordering, so both are shown.
 cat("\nRatio versus dollars - top 5 by each, all bedroom counts:\n")
@@ -177,8 +198,10 @@ setorder(seg, -roi_at_p75, na.last = TRUE)
 out <- seg[, .(lga, bedrooms, dwelling_class, in_client_scope, n_scoped, n_active_priced,
                rent_series, weekly_rent, rent_derived,
                p50_revenue = round(p50_revenue), p75_revenue = round(p75_revenue),
-               upfront_cash, annual_cost, net_cash_p50, net_cash_p75,
-               roi_at_p50, roi_at_p75, zone)]
+               p90_revenue = round(p90_revenue),
+               upfront_cash, annual_cost, net_cash_p50, net_cash_p75, net_cash_p90,
+               roi_at_p50, roi_at_p75, roi_at_p90,
+               owner_uplift_p75, owner_uplift_p90, zone)]
 fwrite(out, "reports/tables/segment_roi_screen.csv")
 
 ranked <- out[!is.na(roi_at_p75)]
