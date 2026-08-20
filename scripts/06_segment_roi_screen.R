@@ -23,7 +23,7 @@ library(ggplot2)
 library(scales)
 
 # ---- Cost assumptions (client-provided, all AUD) -----------------------------
-FITOUT      <- c(`1` = 15000, `2` = 22000)  # furniture, appliances, styling
+FITOUT      <- c(`1` = 15000, `2` = 22000, `3` = 30000)  # furniture, appliances, styling
 LAUNCH      <- 1000                          # photography and listing setup
 BOND_WEEKS  <- 4                             # refundable, but ties up cash
 UTILITIES   <- 4000                          # power, water, internet per year
@@ -40,7 +40,9 @@ listings <- readRDS("data/processed/listings_clean.rds")
 
 # ---- Scope and segment eligibility -------------------------------------------
 
-scoped <- listings[room_type == "Entire home/apt" & bedrooms %in% 1:2]
+# The client brief is 1-2 bedrooms. 3-bedroom segments are screened alongside as
+# a documented scope test, flagged in the output rather than silently included.
+scoped <- listings[room_type == "Entire home/apt" & bedrooms %in% 1:3]
 scoped[, dwelling_class := fifelse(property_type %in% APARTMENT_TYPES,
                                    "apartment", "house")]
 
@@ -48,9 +50,11 @@ eligible <- scoped[, .(n_scoped = .N),
                    by = .(lga = neighbourhood_cleansed, bedrooms, dwelling_class)
                    ][n_scoped >= MIN_LISTINGS]
 
-cat(sprintf("Funnel: %s raw -> %s scoped 1-2BR entire homes -> %d segments (%d LGAs)\n",
+cat(sprintf("Funnel: %s raw -> %s scoped 1-3BR entire homes -> %d segments (%d LGAs)\n",
             comma(nrow(listings)), comma(nrow(scoped)), nrow(eligible),
             uniqueN(eligible$lga)))
+cat(sprintf("  of which in client scope (1-2BR): %d segments\n",
+            nrow(eligible[bedrooms %in% 1:2])))
 
 # Revenue percentiles use the active, priced subset: a listing with no recent
 # activity carries no information about what the segment can earn.
@@ -73,8 +77,8 @@ seg[, lga_official := fifelse(lga == "Moreland", "Merri-bek", lga)]
 
 # There is no official 1-bedroom-house series, so those segments take the
 # 2BR-house rent as a deliberately conservative upper bound.
-seg[, rent_series := fifelse(dwelling_class == "apartment",
-                             paste0(bedrooms, "BR flat"), "2BR house")]
+seg[, rent_series := fifelse(dwelling_class == "apartment", paste0(bedrooms, "BR flat"),
+                      fifelse(bedrooms >= 3, "3BR house", "2BR house"))]
 seg[, rent_is_upper_bound := dwelling_class == "house" & bedrooms == 1]
 
 seg <- merge(seg, rents[, .(lga_official = lga, rent_series = dwelling,
@@ -94,33 +98,55 @@ cat(sprintf("Segments matched to an official rent series: %d of %d\n",
 seg[, upfront_cash := FITOUT[as.character(bedrooms)] + weekly_rent * BOND_WEEKS + LAUNCH]
 seg[, annual_cost  := weekly_rent * 52 + UTILITIES + CONSUMABLES + INSURANCE + TOOLS]
 
-roi <- function(revenue) round(100 * (revenue * (1 - HOST_FEE) - seg$annual_cost) /
-                                 seg$upfront_cash)
-seg[, roi_at_p50 := roi(p50_revenue)]
-seg[, roi_at_p75 := roi(p75_revenue)]
+# Absolute annual cash matters alongside the ratio: cash-on-cash ROI has a
+# denominator the operator controls, so a cheaper fit-out can rank above a
+# segment that simply earns more. Both are reported and both are used.
+seg[, net_cash_p50 := round(p50_revenue * (1 - HOST_FEE) - annual_cost)]
+seg[, net_cash_p75 := round(p75_revenue * (1 - HOST_FEE) - annual_cost)]
+seg[, roi_at_p50 := round(100 * net_cash_p50 / upfront_cash)]
+seg[, roi_at_p75 := round(100 * net_cash_p75 / upfront_cash)]
+seg[, in_client_scope := bedrooms %in% 1:2]
 
 seg[, zone := fifelse(is.na(roi_at_p75), "no revenue data",
               fifelse(roi_at_p75 >= 50, "viable (>=50%)",
               fifelse(roi_at_p75 >= 0,  "marginal (0-50%)", "below break-even")))]
 
-cat("\nSegments by zone, at P75 performance:\n")
-print(seg[, .N, by = zone][order(-N)])
+cat("\nSegments by zone, at P75 performance (client scope, 1-2BR):\n")
+print(seg[in_client_scope == TRUE, .N, by = zone][order(-N)])
 
-setorder(seg, -roi_at_p75)
-out <- seg[, .(lga, bedrooms, dwelling_class, n_scoped, n_active_priced,
+# Ranking by ratio and by dollars is not the same ordering, so both are shown.
+cat("\nRatio versus dollars - top 5 by each, all bedroom counts:\n")
+rank_cmp <- merge(
+  seg[order(-roi_at_p75)][1:5, .(segment = paste(lga, bedrooms, dwelling_class),
+                                 by_roi = roi_at_p75, cash = net_cash_p75)],
+  seg[order(-net_cash_p75)][1:5, .(segment = paste(lga, bedrooms, dwelling_class),
+                                   by_cash = net_cash_p75)],
+  by = "segment", all = TRUE)
+print(rank_cmp[order(-by_cash)])
+
+cat("\nScope test - 3-bedroom segments clearing the hurdle (outside client scope):\n")
+print(seg[bedrooms == 3 & roi_at_p75 >= 50,
+          .(lga, dwelling_class, upfront_cash, net_cash_p75, roi_at_p75)][order(-net_cash_p75)])
+
+setorder(seg, -roi_at_p75, na.last = TRUE)
+out <- seg[, .(lga, bedrooms, dwelling_class, in_client_scope, n_scoped, n_active_priced,
                weekly_rent, rent_is_upper_bound,
                p50_revenue = round(p50_revenue), p75_revenue = round(p75_revenue),
-               upfront_cash, annual_cost, roi_at_p50, roi_at_p75, zone)]
+               upfront_cash, annual_cost, net_cash_p50, net_cash_p75,
+               roi_at_p50, roi_at_p75, zone)]
 fwrite(out, "reports/tables/segment_roi_screen.csv")
 
-cat(sprintf("\nBest: %s %dBR %s at %+d%%   Worst: %s %dBR %s at %+d%%\n",
-            out$lga[1], out$bedrooms[1], out$dwelling_class[1], out$roi_at_p75[1],
-            out$lga[.N <- nrow(out)], out$bedrooms[nrow(out)],
-            out$dwelling_class[nrow(out)], out$roi_at_p75[nrow(out)]))
+ranked <- out[!is.na(roi_at_p75)]
+cat(sprintf("\nBest: %s %dBR %s at %+d%% ($%s)   Worst: %s %dBR %s at %+d%%\n",
+            ranked$lga[1], ranked$bedrooms[1], ranked$dwelling_class[1],
+            ranked$roi_at_p75[1], comma(ranked$net_cash_p75[1]),
+            ranked$lga[nrow(ranked)], ranked$bedrooms[nrow(ranked)],
+            ranked$dwelling_class[nrow(ranked)], ranked$roi_at_p75[nrow(ranked)]))
 
 # ---- Figure: best and worst segments -----------------------------------------
 
-plot_dt <- rbind(head(out[!is.na(roi_at_p75)], 5), tail(out[!is.na(roi_at_p75)], 4))
+in_scope <- out[in_client_scope == TRUE & !is.na(roi_at_p75)]
+plot_dt <- rbind(head(in_scope, 5), tail(in_scope, 4))
 plot_dt[, label := sprintf("%s %dBR %s", fifelse(lga == "Moreland", "Merri-bek", lga),
                            bedrooms, fifelse(dwelling_class == "house", "hse", "apt"))]
 plot_dt[, label := factor(label, levels = rev(label))]
@@ -138,8 +164,8 @@ p <- ggplot(plot_dt, aes(roi_at_p75, label, fill = band)) +
   scale_x_continuous(limits = c(-110, 90), breaks = seq(-100, 80, 40),
                      labels = function(x) paste0(x, "%")) +
   labs(title = "First-year ROI at P75 performance",
-       subtitle = sprintf("Best and worst of %d screened segments; P75 is the 75th percentile, not a ceiling",
-                          nrow(out[!is.na(roi_at_p75)])),
+       subtitle = sprintf("Best and worst of %d in-scope 1-2BR segments; P75 is the 75th percentile, not a ceiling",
+                          nrow(in_scope)),
        x = NULL, y = NULL, fill = NULL) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom", panel.grid.major.y = element_blank())

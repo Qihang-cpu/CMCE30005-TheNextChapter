@@ -69,19 +69,14 @@ rents[, growth_used := pmin(pmax(fifelse(is.na(yoy_growth), 0, yoy_growth), 0), 
 rents[, uplifted_to_jun2026 :=
         round(median_weekly_rent * (1 + growth_used) ^ (QUARTERS_AHEAD / 4))]
 
-# LGAs in scope for the segment screen. Inside Airbnb still labels Merri-bek as
-# Moreland, so the mapping is applied where the two sources are joined.
-SCOPE <- c("Melbourne", "Port Phillip", "Yarra", "Darebin", "Stonnington",
-           "Merri-bek", "Maribyrnong", "Yarra Ranges", "Whitehorse",
-           "Boroondara", "Glen Eira", "Moonee Valley", "Bayside", "Monash",
-           "Kingston")
-out <- rents[lga %in% SCOPE]
+# Every LGA the report publishes is exported; the segment screen selects what it
+# needs. Inside Airbnb still labels Merri-bek as Moreland, and that mapping is
+# applied where the two sources are joined, not here.
+out <- copy(rents)
 setorder(out, lga, dwelling)
 
-cat(sprintf("Scope LGAs matched: %d of %d\n", uniqueN(out$lga), length(SCOPE)))
-cat(sprintf("Rows written: %d  (quarter: %s)\n", nrow(out), out$quarter[1]))
-missing_lga <- setdiff(SCOPE, unique(out$lga))
-if (length(missing_lga)) cat("No rent series for:", paste(missing_lga, collapse = ", "), "\n")
+cat(sprintf("LGAs: %d  ·  dwelling types: %d  ·  rows: %d  (quarter: %s)\n",
+            uniqueN(out$lga), uniqueN(out$dwelling), nrow(out), out$quarter[1]))
 
 fwrite(out[, .(lga, dwelling, quarter, median_weekly_rent, quarter_year_ago,
                median_year_ago, yoy_growth_pct = round(100 * yoy_growth, 1),
