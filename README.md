@@ -376,7 +376,8 @@ $$
 +\beta_{12} LGA_i
 $$
 
-  - The Structure of the dependent variable:
+  - The Structure of the dependent variable: <br>
+  
   $$
   Active_i =
   \begin{cases}
