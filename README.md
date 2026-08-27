@@ -356,8 +356,7 @@ This provides useful evidence for comparing property segments and supports the b
 
 ## 6 Modeling 
 
-
-- **Model 1: Logistic Regression**
+**Model 1: Logistic Regression**
 
 $$
 \text{logit}\left[P(Active_i = 1)\right] =
@@ -395,8 +394,14 @@ $$
   1. At least one review in the previous 12 months is assumed to provide reasonable evidence of recent market activity, although reviews are not identical to bookings.
   2. Each important category should contain enough observations and variation in the dependent variable for stable estimation.
   
+  - The binary outcome captures observed review activity rather than actual bookings. Some listings may have received bookings without receiving reviews.
+  We clustered our standard errors by host to allow observations within the same host to be correlated and we assumed the clusters belonging to different hosts are independent. <br>
+  Because listings managed by the same host may share common pricing, management and operating characteristics, observations within a host may not be statistically independent. We therefore cluster standard errors at the host level, allowing within-host correlation while treating different hosts as independent clusters.
+  
+  
 
-- **Model 2: OLS Regression on log reviews**<br>
+**Model 2: OLS Regression on log reviews**<br>
+
 Model 2 only analyzes Airbnb listings that already have recent review activities, it what to detect the question **Among Airbnb listings that are already active, what listing, host, pricing and operating characteristics are associated with higher or lower review activity?**
 
 $$
