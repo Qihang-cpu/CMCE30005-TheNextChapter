@@ -309,7 +309,8 @@ The first model examines the probability that a listing records any review activ
 
 
 - **Model 2: OLS Regression on log reviews**<br>
-Model 2 only analyzes Airbnb listings that already have recent review activities, it what to detect the question **Among Airbnb listings that are already active, what listing, host, pricing and operating characteristics are associated with higher or lower review activity?**
+
+Model 1 tells us whether a property configuration is likely to operate as an active Airbnb listing, while Model 2 tells us how strongly an already active listing is likely to perform in the market.
 
 $$
 \log(Reviews_i) =
@@ -355,6 +356,80 @@ This provides useful evidence for comparing property segments and supports the b
 
 ## 6 Modeling 
 
+
+- **Model 1: Logistic Regression**
+
+$$
+\text{logit}\left[P(Active_i = 1)\right] =
+\beta_0
++\beta_1 \log(Price_i)
++\beta_2 RoomType_i
++\beta_3 Accommodates_i
++\beta_4 Bedrooms_i
++\beta_5 Bathrooms_i
++\beta_6 Amenities_i
++\beta_7 Superhost_i
++\beta_8 HostTenure_i
++\beta_9 \log(1 + HostListings_i)
++\beta_{10} MinimumStay_i
++\beta_{11} Availability365_i
++\beta_{12} LGA_i
+$$
+
+  - The Structure of the dependent variable:
+  $$
+  Active_i =
+  \begin{cases}
+  1, & \text{if the listing recorded at least one review in the previous 12 months} \\
+  0, & \text{if the listing recorded no review activity in the previous 12 months}
+  \end{cases}
+  $$
+  
+  - **Statistically Assumption**:
+  1. The dependent variable takes the value of 1 if a listing recorded at least one review in the previous 12 months and 0 otherwise, making logistic regression appropriate.
+  2. Continuous predictors are assumed to have an approximately linear relationship with the log-odds of recent review activity.
+  3. Property variables such as bedrooms, accommodates and bathrooms may be correlated but should not exhibit severe multicollinearity.
+  
+  - **Business Assumption**:
+  1. At least one review in the previous 12 months is assumed to provide reasonable evidence of recent market activity, although reviews are not identical to bookings.
+  2. Each important category should contain enough observations and variation in the dependent variable for stable estimation.
+  
+
+- **Model 2: OLS Regression on log reviews**<br>
+Model 2 only analyzes Airbnb listings that already have recent review activities, it what to detect the question **Among Airbnb listings that are already active, what listing, host, pricing and operating characteristics are associated with higher or lower review activity?**
+
+$$
+\log(Reviews_i) =
+\beta_0
++\beta_1 \log(Price_i)
++\beta_2 RoomType_i
++\beta_3 Accommodates_i
++\beta_4 Bedrooms_i
++\beta_5 Bathrooms_i
++\beta_6 Amenities_i
++\beta_7 Superhost_i
++\beta_8 HostTenure_i
++\beta_9 \log(ListingAge_i)
++\beta_{10} \log(1+HostListings_i)
++\beta_{11} Rating_i
++\beta_{12} MinimumStay_i
++\beta_{13} Availability365_i
++\beta_{14} LGA_i
++\epsilon_i
+$$
+<br>
+
+  - **Statistically Assumption**:
+  1. Listings are assumed to be sufficiently independent, although properties managed by the same host may be correlated.
+  2. Property variables such as bedrooms, accommodates and bathrooms may be correlated but should not exhibit severe multicollinearity.
+  3. Important unobserved factors should not be strongly correlated with both predictors and review activity.
+  4. Heteroskedasticity may exist in Airbnb data, so robust standard errors may be appropriate.
+  
+  - **Business Assumption**:
+  1. Reviews are assumed to be positively related to completed stays and therefore provide a reasonable proxy for Airbnb demand.
+  2. Results apply primarily to currently active Airbnb listings and may be affected by survivorship or selection bias.
+  3. The relationships estimated among currently active listings are sufficiently representative of the viable Airbnb listings relevant to our investment decision.
+  
 ---
 
 ## 7 Evaluation
