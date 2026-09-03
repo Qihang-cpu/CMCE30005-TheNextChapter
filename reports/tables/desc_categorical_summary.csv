@@ -1,0 +1,50 @@
+"variable","level","n","pct"
+"has_aircon","TRUE",17329,67.4
+"has_aircon","FALSE",8399,32.6
+"has_free_parking","TRUE",13541,52.6
+"has_free_parking","FALSE",12187,47.4
+"has_pool","FALSE",20985,81.6
+"has_pool","TRUE",4743,18.4
+"host_is_superhost","FALSE",17843,69.4
+"host_is_superhost","TRUE",7885,30.6
+"min_nights_grp","2-6",12737,49.5
+"min_nights_grp","1",10744,41.8
+"min_nights_grp","7-27",1615,6.3
+"min_nights_grp","28+",623,2.4
+"min_nights_grp",NA,9,0
+"neighbourhood_cleansed","Melbourne",8375,32.6
+"neighbourhood_cleansed","Port Phillip",2797,10.9
+"neighbourhood_cleansed","Yarra",1771,6.9
+"neighbourhood_cleansed","Stonnington",1332,5.2
+"neighbourhood_cleansed","Yarra Ranges",1107,4.3
+"neighbourhood_cleansed","Moreland",993,3.9
+"neighbourhood_cleansed","Wyndham",780,3
+"neighbourhood_cleansed","Maribyrnong",671,2.6
+"neighbourhood_cleansed","Monash",646,2.5
+"neighbourhood_cleansed","Whitehorse",643,2.5
+"neighbourhood_cleansed","Darebin",616,2.4
+"neighbourhood_cleansed","Boroondara",601,2.3
+"neighbourhood_cleansed","Glen Eira",535,2.1
+"neighbourhood_cleansed","Moonee Valley",461,1.8
+"neighbourhood_cleansed","Bayside",431,1.7
+"neighbourhood_cleansed","Hume",402,1.6
+"neighbourhood_cleansed","Brimbank",375,1.5
+"neighbourhood_cleansed","Casey",367,1.4
+"neighbourhood_cleansed","Kingston",363,1.4
+"neighbourhood_cleansed","Hobsons Bay",312,1.2
+"neighbourhood_cleansed","Melton",299,1.2
+"neighbourhood_cleansed","Frankston",263,1
+"neighbourhood_cleansed","Whittlesea",247,1
+"neighbourhood_cleansed","Manningham",233,0.9
+"neighbourhood_cleansed","Banyule",231,0.9
+"neighbourhood_cleansed","Cardinia",221,0.9
+"neighbourhood_cleansed","Knox",202,0.8
+"neighbourhood_cleansed","Greater Dandenong",194,0.8
+"neighbourhood_cleansed","Maroondah",147,0.6
+"neighbourhood_cleansed","Nillumbik",113,0.4
+"room_type","Entire home/apt",18829,73.2
+"room_type","Private room",6616,25.7
+"room_type","Shared room",231,0.9
+"room_type","Hotel room",52,0.2
+"shared_bath","FALSE",22052,85.7
+"shared_bath","TRUE",3676,14.3

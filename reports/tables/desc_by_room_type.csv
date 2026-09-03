@@ -1,0 +1,5 @@
+"room_type","n","pct","median_price","mean_price","sd_price","median_price_pp","pct_superhost","median_reviews","median_revenue"
+"Entire home/apt",14278,75.4,278.9,327,188,72.5,42.2,20,14664
+"Private room",4411,23.3,109,140,117,63,27.2,5,936
+"Shared room",197,1,50,67,92,28,6.1,1,0
+"Hotel room",41,0.2,324,353,208,109.5,7.3,9,0
