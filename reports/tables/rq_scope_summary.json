@@ -1,0 +1,65 @@
+{
+  "raw_listings": 25728,
+  "narrow_scope_before_cell_filter": 11099,
+  "eligible_cells_ge_50": 35,
+  "eligible_listings": 8967,
+  "eligible_hosts": 4081,
+  "global_q75_reviews_ltm": 22.0,
+  "positive_n": 2315,
+  "positive_share_with_ties": 0.2581688413070146,
+  "cells_with_at_least_10_successes": 23,
+  "cells_with_fewer_than_10_successes": 12,
+  "largest_host_listing_share": 0.011486561837849895,
+  "multi_listing_host_listing_share": 0.6802721088435374,
+  "rebuilt_target_exact_match_share": 0.9946470391435263,
+  "rebuilt_target_max_abs_difference": 2,
+  "first_review_missing_share": 0.09635329541652726,
+  "no_recent_review_share": 0.1592505854800937,
+  "active_with_first_review_under_12m_share": 0.33320068974665074,
+  "missingness": {
+    "price_num": {
+      "n": 0,
+      "share": 0.0
+    },
+    "bedrooms": {
+      "n": 0,
+      "share": 0.0
+    },
+    "accommodates": {
+      "n": 0,
+      "share": 0.0
+    },
+    "bathrooms_num": {
+      "n": 4,
+      "share": 0.0004460800713728114
+    },
+    "n_amenities": {
+      "n": 0,
+      "share": 0.0
+    },
+    "minimum_nights": {
+      "n": 6,
+      "share": 0.0006691201070592171
+    },
+    "availability_365": {
+      "n": 0,
+      "share": 0.0
+    },
+    "number_of_reviews_ltm": {
+      "n": 0,
+      "share": 0.0
+    },
+    "review_scores_rating": {
+      "n": 864,
+      "share": 0.09635329541652726
+    },
+    "host_is_superhost": {
+      "n": 0,
+      "share": 0.0
+    },
+    "calculated_host_listings_count": {
+      "n": 0,
+      "share": 0.0
+    }
+  }
+}

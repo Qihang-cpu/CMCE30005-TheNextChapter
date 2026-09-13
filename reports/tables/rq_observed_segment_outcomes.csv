@@ -1,0 +1,36 @@
+neighbourhood_cleansed,configuration,n,hosts,median_reviews_ltm,p75_reviews_ltm,success_n,success_rate,median_price
+Melbourne,3BR Apartment/unit,543,249,15.0,31.0,216,0.39779005524861877,451.0
+Yarra Ranges,3BR House/townhouse,137,116,12.0,29.0,49,0.35766423357664234,427.0
+Yarra Ranges,2BR House/townhouse,87,71,15.0,29.0,30,0.3448275862068966,334.5
+Yarra,2BR House/townhouse,99,93,10.0,26.5,32,0.32323232323232326,367.0
+Melbourne,2BR Apartment/unit,2648,1049,11.0,27.0,853,0.3221299093655589,287.0
+Melbourne,1BR Apartment/unit,1782,812,11.0,24.0,507,0.2845117845117845,213.0
+Yarra,2BR Apartment/unit,224,172,11.0,23.0,61,0.27232142857142855,336.5
+Yarra,1BR Apartment/unit,314,240,14.0,23.0,85,0.27070063694267515,232.0
+Moreland,2BR House/townhouse,51,50,7.0,20.5,12,0.23529411764705882,307.0
+Maribyrnong,3BR House/townhouse,53,39,8.0,17.0,12,0.22641509433962265,336.0
+Maribyrnong,2BR Apartment/unit,58,48,10.5,18.5,13,0.22413793103448276,242.16500000000002
+Moreland,2BR Apartment/unit,67,65,9.0,18.0,15,0.22388059701492538,279.67
+Yarra,3BR House/townhouse,87,76,7.0,17.5,18,0.20689655172413793,578.33
+Port Phillip,3BR Apartment/unit,56,43,8.0,18.0,11,0.19642857142857142,393.33500000000004
+Moreland,1BR Apartment/unit,105,93,7.0,18.0,20,0.19047619047619047,213.02
+Port Phillip,2BR Apartment/unit,457,325,5.0,16.0,84,0.1838074398249453,282.0
+Stonnington,1BR Apartment/unit,307,223,8.0,18.0,55,0.1791530944625407,208.0
+Glen Eira,2BR Apartment/unit,63,43,11.0,14.0,11,0.1746031746031746,260.0
+Moonee Valley,2BR Apartment/unit,65,48,5.0,14.0,11,0.16923076923076924,282.5
+Boroondara,2BR Apartment/unit,78,65,6.0,15.0,13,0.16666666666666666,258.355
+Port Phillip,1BR Apartment/unit,614,480,6.0,16.0,98,0.15960912052117263,207.5
+Port Phillip,3BR House/townhouse,123,95,3.0,13.0,17,0.13821138211382114,534.51
+Moreland,3BR House/townhouse,52,50,7.5,17.5,7,0.1346153846153846,371.25
+Whitehorse,1BR Apartment/unit,56,33,4.0,11.0,7,0.125,204.75
+Stonnington,2BR Apartment/unit,193,153,7.0,15.0,23,0.11917098445595854,292.0
+Darebin,1BR Apartment/unit,53,51,7.0,15.0,6,0.11320754716981132,179.83
+Wyndham,3BR House/townhouse,62,56,6.0,12.0,7,0.11290322580645161,274.8
+Monash,2BR Apartment/unit,66,49,6.0,16.75,7,0.10606060606060606,303.5
+Stonnington,3BR House/townhouse,66,56,3.0,11.0,7,0.10606060606060606,513.6800000000001
+Port Phillip,2BR House/townhouse,85,81,3.0,11.0,9,0.10588235294117647,375.0
+Whitehorse,2BR Apartment/unit,98,67,3.0,10.75,8,0.08163265306122448,249.5
+Maribyrnong,2BR House/townhouse,50,47,3.0,11.75,4,0.08,278.27
+Casey,3BR House/townhouse,54,48,3.0,8.75,4,0.07407407407407407,306.0
+Monash,3BR House/townhouse,57,43,4.0,9.0,2,0.03508771929824561,342.0
+Bayside,3BR House/townhouse,57,47,2.0,4.0,1,0.017543859649122806,468.0
