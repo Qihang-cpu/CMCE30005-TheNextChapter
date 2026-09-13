@@ -1,0 +1,106 @@
+lga,dwelling_class,bedrooms,benchmark,review_threshold,n_listings,n_below,n_at_threshold,n_at_least,share_below,share_at_least,reference_scope
+Melbourne,Apartment/unit,1,Main-cohort P50,9,1782,787,46,995,0.441638608305275,0.558361391694725,Fixed thresholds from the pooled main cohort
+Port Phillip,Apartment/unit,1,Main-cohort P50,9,614,346,21,268,0.563517915309446,0.436482084690554,Fixed thresholds from the pooled main cohort
+Yarra,Apartment/unit,1,Main-cohort P50,9,314,117,9,197,0.372611464968153,0.627388535031847,Fixed thresholds from the pooled main cohort
+Melbourne,Apartment/unit,2,Main-cohort P50,9,2648,1162,67,1486,0.438821752265861,0.561178247734139,Fixed thresholds from the pooled main cohort
+Port Phillip,House/townhouse,2,Main-cohort P50,9,85,58,3,27,0.682352941176471,0.317647058823529,Fixed thresholds from the pooled main cohort
+Yarra,Apartment/unit,2,Main-cohort P50,9,224,96,7,128,0.428571428571429,0.571428571428571,Fixed thresholds from the pooled main cohort
+Yarra,House/townhouse,2,Main-cohort P50,9,99,45,4,54,0.454545454545455,0.545454545454545,Fixed thresholds from the pooled main cohort
+Yarra Ranges,House/townhouse,3,Main-cohort P50,9,137,55,4,82,0.401459854014599,0.598540145985402,Fixed thresholds from the pooled main cohort
+Stonnington,Apartment/unit,2,Main-cohort P50,9,193,109,7,84,0.564766839378238,0.435233160621762,Fixed thresholds from the pooled main cohort
+Stonnington,Apartment/unit,1,Main-cohort P50,9,307,158,8,149,0.514657980456026,0.485342019543974,Fixed thresholds from the pooled main cohort
+Yarra Ranges,House/townhouse,2,Main-cohort P50,9,87,31,1,56,0.35632183908046,0.64367816091954,Fixed thresholds from the pooled main cohort
+Melbourne,Apartment/unit,3,Main-cohort P50,9,543,196,14,347,0.360957642725599,0.639042357274402,Fixed thresholds from the pooled main cohort
+Port Phillip,Apartment/unit,2,Main-cohort P50,9,457,271,11,186,0.592997811816193,0.407002188183807,Fixed thresholds from the pooled main cohort
+Merri-bek,Apartment/unit,2,Main-cohort P50,9,67,30,4,37,0.447761194029851,0.552238805970149,Fixed thresholds from the pooled main cohort
+Port Phillip,Apartment/unit,3,Main-cohort P50,9,56,29,2,27,0.517857142857143,0.482142857142857,Fixed thresholds from the pooled main cohort
+Port Phillip,House/townhouse,3,Main-cohort P50,9,123,81,3,42,0.658536585365854,0.341463414634146,Fixed thresholds from the pooled main cohort
+Yarra,House/townhouse,3,Main-cohort P50,9,87,48,2,39,0.551724137931035,0.448275862068966,Fixed thresholds from the pooled main cohort
+Stonnington,House/townhouse,3,Main-cohort P50,9,66,45,1,21,0.681818181818182,0.318181818181818,Fixed thresholds from the pooled main cohort
+Moonee Valley,Apartment/unit,2,Main-cohort P50,9,65,37,4,28,0.569230769230769,0.430769230769231,Fixed thresholds from the pooled main cohort
+Maribyrnong,Apartment/unit,2,Main-cohort P50,9,58,25,1,33,0.431034482758621,0.568965517241379,Fixed thresholds from the pooled main cohort
+Maribyrnong,House/townhouse,2,Main-cohort P50,9,50,30,1,20,0.6,0.4,Fixed thresholds from the pooled main cohort
+Boroondara,Apartment/unit,2,Main-cohort P50,9,78,47,1,31,0.602564102564103,0.397435897435897,Fixed thresholds from the pooled main cohort
+Glen Eira,Apartment/unit,2,Main-cohort P50,9,63,27,3,36,0.428571428571429,0.571428571428571,Fixed thresholds from the pooled main cohort
+Maribyrnong,House/townhouse,3,Main-cohort P50,9,53,28,4,25,0.528301886792453,0.471698113207547,Fixed thresholds from the pooled main cohort
+Merri-bek,House/townhouse,3,Main-cohort P50,9,52,27,3,25,0.519230769230769,0.480769230769231,Fixed thresholds from the pooled main cohort
+Monash,House/townhouse,3,Main-cohort P50,9,57,42,2,15,0.736842105263158,0.263157894736842,Fixed thresholds from the pooled main cohort
+Darebin,Apartment/unit,1,Main-cohort P50,9,53,31,1,22,0.584905660377359,0.415094339622642,Fixed thresholds from the pooled main cohort
+Merri-bek,House/townhouse,2,Main-cohort P50,9,51,28,0,23,0.549019607843137,0.450980392156863,Fixed thresholds from the pooled main cohort
+Bayside,House/townhouse,3,Main-cohort P50,9,57,47,3,10,0.824561403508772,0.175438596491228,Fixed thresholds from the pooled main cohort
+Merri-bek,Apartment/unit,1,Main-cohort P50,9,105,60,0,45,0.571428571428571,0.428571428571429,Fixed thresholds from the pooled main cohort
+Whitehorse,Apartment/unit,1,Main-cohort P50,9,56,37,0,19,0.660714285714286,0.339285714285714,Fixed thresholds from the pooled main cohort
+Whitehorse,Apartment/unit,2,Main-cohort P50,9,98,68,3,30,0.693877551020408,0.306122448979592,Fixed thresholds from the pooled main cohort
+Monash,Apartment/unit,2,Main-cohort P50,9,66,36,1,30,0.545454545454545,0.454545454545455,Fixed thresholds from the pooled main cohort
+Wyndham,House/townhouse,3,Main-cohort P50,9,62,42,1,20,0.67741935483871,0.32258064516129,Fixed thresholds from the pooled main cohort
+Casey,House/townhouse,3,Main-cohort P50,9,54,40,1,14,0.740740740740741,0.259259259259259,Fixed thresholds from the pooled main cohort
+Melbourne,Apartment/unit,1,Fixed common target; main-cohort P75,22,1782,1275,24,507,0.715488215488216,0.284511784511785,Fixed thresholds from the pooled main cohort
+Port Phillip,Apartment/unit,1,Fixed common target; main-cohort P75,22,614,516,7,98,0.840390879478827,0.159609120521173,Fixed thresholds from the pooled main cohort
+Yarra,Apartment/unit,1,Fixed common target; main-cohort P75,22,314,229,2,85,0.729299363057325,0.270700636942675,Fixed thresholds from the pooled main cohort
+Melbourne,Apartment/unit,2,Fixed common target; main-cohort P75,22,2648,1795,34,853,0.677870090634441,0.322129909365559,Fixed thresholds from the pooled main cohort
+Port Phillip,House/townhouse,2,Fixed common target; main-cohort P75,22,85,76,1,9,0.894117647058824,0.105882352941176,Fixed thresholds from the pooled main cohort
+Yarra,Apartment/unit,2,Fixed common target; main-cohort P75,22,224,163,3,61,0.727678571428571,0.272321428571429,Fixed thresholds from the pooled main cohort
+Yarra,House/townhouse,2,Fixed common target; main-cohort P75,22,99,67,0,32,0.676767676767677,0.323232323232323,Fixed thresholds from the pooled main cohort
+Yarra Ranges,House/townhouse,3,Fixed common target; main-cohort P75,22,137,88,5,49,0.642335766423358,0.357664233576642,Fixed thresholds from the pooled main cohort
+Stonnington,Apartment/unit,2,Fixed common target; main-cohort P75,22,193,170,1,23,0.880829015544041,0.119170984455959,Fixed thresholds from the pooled main cohort
+Stonnington,Apartment/unit,1,Fixed common target; main-cohort P75,22,307,252,3,55,0.820846905537459,0.179153094462541,Fixed thresholds from the pooled main cohort
+Yarra Ranges,House/townhouse,2,Fixed common target; main-cohort P75,22,87,57,3,30,0.655172413793103,0.344827586206897,Fixed thresholds from the pooled main cohort
+Melbourne,Apartment/unit,3,Fixed common target; main-cohort P75,22,543,327,6,216,0.602209944751381,0.397790055248619,Fixed thresholds from the pooled main cohort
+Port Phillip,Apartment/unit,2,Fixed common target; main-cohort P75,22,457,373,6,84,0.816192560175055,0.183807439824945,Fixed thresholds from the pooled main cohort
+Merri-bek,Apartment/unit,2,Fixed common target; main-cohort P75,22,67,52,1,15,0.776119402985075,0.223880597014925,Fixed thresholds from the pooled main cohort
+Port Phillip,Apartment/unit,3,Fixed common target; main-cohort P75,22,56,45,1,11,0.803571428571429,0.196428571428571,Fixed thresholds from the pooled main cohort
+Port Phillip,House/townhouse,3,Fixed common target; main-cohort P75,22,123,106,0,17,0.861788617886179,0.138211382113821,Fixed thresholds from the pooled main cohort
+Yarra,House/townhouse,3,Fixed common target; main-cohort P75,22,87,69,2,18,0.793103448275862,0.206896551724138,Fixed thresholds from the pooled main cohort
+Stonnington,House/townhouse,3,Fixed common target; main-cohort P75,22,66,59,1,7,0.893939393939394,0.106060606060606,Fixed thresholds from the pooled main cohort
+Moonee Valley,Apartment/unit,2,Fixed common target; main-cohort P75,22,65,54,0,11,0.830769230769231,0.169230769230769,Fixed thresholds from the pooled main cohort
+Maribyrnong,Apartment/unit,2,Fixed common target; main-cohort P75,22,58,45,1,13,0.775862068965517,0.224137931034483,Fixed thresholds from the pooled main cohort
+Maribyrnong,House/townhouse,2,Fixed common target; main-cohort P75,22,50,46,0,4,0.92,0.08,Fixed thresholds from the pooled main cohort
+Boroondara,Apartment/unit,2,Fixed common target; main-cohort P75,22,78,65,4,13,0.833333333333333,0.166666666666667,Fixed thresholds from the pooled main cohort
+Glen Eira,Apartment/unit,2,Fixed common target; main-cohort P75,22,63,52,0,11,0.825396825396825,0.174603174603175,Fixed thresholds from the pooled main cohort
+Maribyrnong,House/townhouse,3,Fixed common target; main-cohort P75,22,53,41,2,12,0.773584905660377,0.226415094339623,Fixed thresholds from the pooled main cohort
+Merri-bek,House/townhouse,3,Fixed common target; main-cohort P75,22,52,45,0,7,0.865384615384615,0.134615384615385,Fixed thresholds from the pooled main cohort
+Monash,House/townhouse,3,Fixed common target; main-cohort P75,22,57,55,0,2,0.964912280701754,0.0350877192982456,Fixed thresholds from the pooled main cohort
+Darebin,Apartment/unit,1,Fixed common target; main-cohort P75,22,53,47,0,6,0.886792452830189,0.113207547169811,Fixed thresholds from the pooled main cohort
+Merri-bek,House/townhouse,2,Fixed common target; main-cohort P75,22,51,39,0,12,0.764705882352941,0.235294117647059,Fixed thresholds from the pooled main cohort
+Bayside,House/townhouse,3,Fixed common target; main-cohort P75,22,57,56,0,1,0.982456140350877,0.0175438596491228,Fixed thresholds from the pooled main cohort
+Merri-bek,Apartment/unit,1,Fixed common target; main-cohort P75,22,105,85,0,20,0.80952380952381,0.19047619047619,Fixed thresholds from the pooled main cohort
+Whitehorse,Apartment/unit,1,Fixed common target; main-cohort P75,22,56,49,0,7,0.875,0.125,Fixed thresholds from the pooled main cohort
+Whitehorse,Apartment/unit,2,Fixed common target; main-cohort P75,22,98,90,1,8,0.918367346938776,0.0816326530612245,Fixed thresholds from the pooled main cohort
+Monash,Apartment/unit,2,Fixed common target; main-cohort P75,22,66,59,0,7,0.893939393939394,0.106060606060606,Fixed thresholds from the pooled main cohort
+Wyndham,House/townhouse,3,Fixed common target; main-cohort P75,22,62,55,1,7,0.887096774193548,0.112903225806452,Fixed thresholds from the pooled main cohort
+Casey,House/townhouse,3,Fixed common target; main-cohort P75,22,54,50,0,4,0.925925925925926,0.0740740740740741,Fixed thresholds from the pooled main cohort
+Melbourne,Apartment/unit,1,Main-cohort P90,39,1782,1573,15,209,0.882716049382716,0.117283950617284,Fixed thresholds from the pooled main cohort
+Port Phillip,Apartment/unit,1,Main-cohort P90,39,614,585,1,29,0.952768729641694,0.0472312703583062,Fixed thresholds from the pooled main cohort
+Yarra,Apartment/unit,1,Main-cohort P90,39,314,286,2,28,0.910828025477707,0.089171974522293,Fixed thresholds from the pooled main cohort
+Melbourne,Apartment/unit,2,Main-cohort P90,39,2648,2250,26,398,0.849697885196375,0.150302114803625,Fixed thresholds from the pooled main cohort
+Port Phillip,House/townhouse,2,Main-cohort P90,39,85,81,1,4,0.952941176470588,0.0470588235294118,Fixed thresholds from the pooled main cohort
+Yarra,Apartment/unit,2,Main-cohort P90,39,224,208,1,16,0.928571428571429,0.0714285714285714,Fixed thresholds from the pooled main cohort
+Yarra,House/townhouse,2,Main-cohort P90,39,99,89,1,10,0.898989898989899,0.101010101010101,Fixed thresholds from the pooled main cohort
+Yarra Ranges,House/townhouse,3,Main-cohort P90,39,137,120,1,17,0.875912408759124,0.124087591240876,Fixed thresholds from the pooled main cohort
+Stonnington,Apartment/unit,2,Main-cohort P90,39,193,190,0,3,0.984455958549223,0.0155440414507772,Fixed thresholds from the pooled main cohort
+Stonnington,Apartment/unit,1,Main-cohort P90,39,307,295,1,12,0.960912052117264,0.0390879478827362,Fixed thresholds from the pooled main cohort
+Yarra Ranges,House/townhouse,2,Main-cohort P90,39,87,76,0,11,0.873563218390805,0.126436781609195,Fixed thresholds from the pooled main cohort
+Melbourne,Apartment/unit,3,Main-cohort P90,39,543,449,6,94,0.826887661141805,0.173112338858195,Fixed thresholds from the pooled main cohort
+Port Phillip,Apartment/unit,2,Main-cohort P90,39,457,432,0,25,0.945295404814004,0.0547045951859956,Fixed thresholds from the pooled main cohort
+Merri-bek,Apartment/unit,2,Main-cohort P90,39,67,64,1,3,0.955223880597015,0.0447761194029851,Fixed thresholds from the pooled main cohort
+Port Phillip,Apartment/unit,3,Main-cohort P90,39,56,52,0,4,0.928571428571429,0.0714285714285714,Fixed thresholds from the pooled main cohort
+Port Phillip,House/townhouse,3,Main-cohort P90,39,123,122,0,1,0.991869918699187,0.00813008130081301,Fixed thresholds from the pooled main cohort
+Yarra,House/townhouse,3,Main-cohort P90,39,87,84,0,3,0.96551724137931,0.0344827586206897,Fixed thresholds from the pooled main cohort
+Stonnington,House/townhouse,3,Main-cohort P90,39,66,66,0,0,1,0,Fixed thresholds from the pooled main cohort
+Moonee Valley,Apartment/unit,2,Main-cohort P90,39,65,64,0,1,0.984615384615385,0.0153846153846154,Fixed thresholds from the pooled main cohort
+Maribyrnong,Apartment/unit,2,Main-cohort P90,39,58,52,0,6,0.896551724137931,0.103448275862069,Fixed thresholds from the pooled main cohort
+Maribyrnong,House/townhouse,2,Main-cohort P90,39,50,46,0,4,0.92,0.08,Fixed thresholds from the pooled main cohort
+Boroondara,Apartment/unit,2,Main-cohort P90,39,78,73,0,5,0.935897435897436,0.0641025641025641,Fixed thresholds from the pooled main cohort
+Glen Eira,Apartment/unit,2,Main-cohort P90,39,63,61,0,2,0.968253968253968,0.0317460317460317,Fixed thresholds from the pooled main cohort
+Maribyrnong,House/townhouse,3,Main-cohort P90,39,53,51,0,2,0.962264150943396,0.0377358490566038,Fixed thresholds from the pooled main cohort
+Merri-bek,House/townhouse,3,Main-cohort P90,39,52,49,1,3,0.942307692307692,0.0576923076923077,Fixed thresholds from the pooled main cohort
+Monash,House/townhouse,3,Main-cohort P90,39,57,57,0,0,1,0,Fixed thresholds from the pooled main cohort
+Darebin,Apartment/unit,1,Main-cohort P90,39,53,50,1,3,0.943396226415094,0.0566037735849057,Fixed thresholds from the pooled main cohort
+Merri-bek,House/townhouse,2,Main-cohort P90,39,51,48,0,3,0.941176470588235,0.0588235294117647,Fixed thresholds from the pooled main cohort
+Bayside,House/townhouse,3,Main-cohort P90,39,57,57,0,0,1,0,Fixed thresholds from the pooled main cohort
+Merri-bek,Apartment/unit,1,Main-cohort P90,39,105,96,1,9,0.914285714285714,0.0857142857142857,Fixed thresholds from the pooled main cohort
+Whitehorse,Apartment/unit,1,Main-cohort P90,39,56,55,1,1,0.982142857142857,0.0178571428571429,Fixed thresholds from the pooled main cohort
+Whitehorse,Apartment/unit,2,Main-cohort P90,39,98,98,0,0,1,0,Fixed thresholds from the pooled main cohort
+Monash,Apartment/unit,2,Main-cohort P90,39,66,63,0,3,0.954545454545455,0.0454545454545455,Fixed thresholds from the pooled main cohort
+Wyndham,House/townhouse,3,Main-cohort P90,39,62,61,0,1,0.983870967741936,0.0161290322580645,Fixed thresholds from the pooled main cohort
+Casey,House/townhouse,3,Main-cohort P90,39,54,51,0,3,0.944444444444444,0.0555555555555556,Fixed thresholds from the pooled main cohort

@@ -18,6 +18,7 @@
 
 library(data.table)
 library(stringr)
+library(jsonlite)
 
 dir.create("data/processed", showWarnings = FALSE, recursive = TRUE)
 
@@ -25,7 +26,13 @@ dir.create("data/processed", showWarnings = FALSE, recursive = TRUE)
 
 # Missing values arrive as the literal string "NA", so they must be declared
 # explicitly or every numeric column is read as text.
-listings <- fread("data/raw/listings_airbnb.csv", na.strings = c("NA", "", "N/A"))
+raw_paths <- file.path("data/raw", c("listings_airbnb.csv", "calendar_airbnb.csv", "reviews_airbnb.csv"))
+if (!all(file.exists(raw_paths))) {
+  stop("Restore the three school-supplied CSV files in data/raw before running cleaning. Existing processed files have not been changed.")
+}
+listings <- fread(raw_paths[1], na.strings = c("NA", "", "N/A"),
+                  colClasses = c(id = "character", host_id = "character"))
+stopifnot(!anyNA(listings$id), !anyDuplicated(listings$id))
 
 cat("Raw listings:", nrow(listings), "\n")
 
@@ -43,15 +50,24 @@ listings[, bathrooms_num := as.numeric(str_extract(bathrooms_text, "[0-9.]+"))]
 listings[str_detect(tolower(bathrooms_text), "half"), bathrooms_num := 0.5]
 listings[, shared_bath := str_detect(tolower(bathrooms_text), "shared") %in% TRUE]
 
-# amenities is a JSON-style list; the item count is a simple richness measure
-listings[, n_amenities := str_count(amenities, '",\\s*"') + 1L]
-listings[amenities %in% c("[]", NA), n_amenities := 0L]
-
-# individual amenities worth testing on their own
-listings[, has_wifi         := grepl("Wifi", amenities, fixed = TRUE)]
-listings[, has_pool         := grepl("Pool", amenities, fixed = TRUE)]
-listings[, has_aircon       := grepl("Air conditioning", amenities, fixed = TRUE)]
-listings[, has_free_parking := grepl("Free parking", amenities, fixed = TRUE)]
+# Parse the list itself: an amenity name may contain a comma.
+amenity_items <- lapply(listings$amenities, function(x) {
+  if (is.na(x)) return(NA_character_)
+  tryCatch(as.character(fromJSON(x)), error = function(e) NA_character_)
+})
+listings[, n_amenities := vapply(amenity_items, function(x) {
+  if (anyNA(x)) NA_integer_ else length(x)
+}, integer(1))]
+amenity_flag <- function(pattern, exclude = NULL) vapply(amenity_items, function(x) {
+  if (anyNA(x)) return(NA)
+  found <- grepl(pattern, x, ignore.case = TRUE)
+  if (!is.null(exclude)) found <- found & !grepl(exclude, x, ignore.case = TRUE)
+  any(found)
+}, logical(1))
+listings[, has_wifi := amenity_flag("wi-?fi")]
+listings[, has_pool := amenity_flag("\\bpool\\b", "pool table")]
+listings[, has_aircon := amenity_flag("air conditioning")]
+listings[, has_free_parking := amenity_flag("free parking")]
 
 num_cols <- c("bedrooms", "beds", "minimum_nights", "maximum_nights",
               "review_scores_rating", "review_scores_accuracy",
@@ -77,9 +93,8 @@ listings[, host_tenure_years := hosts_time_as_host_years + hosts_time_as_host_mo
 listings[, min_nights_grp := cut(minimum_nights, c(0, 1, 6, 27, Inf),
                                  labels = c("1", "2-6", "7-27", "28+"))]
 
-# Analysis sample: a nightly price in a plausible short-stay range. Below $30 is
-# usually a mis-entered or long-let rate; above $1,500 is a handful of luxury
-# outliers that distort the price distribution.
+# Working price range for comparisons. Values outside it are not automatically
+# errors; analyses must report the effect of this sample restriction.
 listings[, priced := !is.na(price_num) & price_num >= 30 & price_num <= 1500]
 
 # flags, not deletions: an outlier is a statement about the distribution,
@@ -92,7 +107,7 @@ cat("Listings with usable price:", listings[priced == TRUE, .N],
             listings[is.na(price_num), .N],
             listings[!is.na(price_num) & (price_num < 30 | price_num > 1500), .N]))
 
-keep_cols <- c("id", "host_id", "host_is_superhost", "host_tenure_years",
+keep_cols <- c("id", "host_id", "last_scraped", "host_is_superhost", "host_tenure_years",
                "host_identity_verified", "host_listings_count",
                "calculated_host_listings_count",
                "neighbourhood_cleansed", "latitude", "longitude",
@@ -108,12 +123,16 @@ keep_cols <- c("id", "host_id", "host_is_superhost", "host_tenure_years",
                "review_scores_rating", "review_scores_location",
                "review_scores_value", "estimated_occupancy_l365d",
                "estimated_revenue_l365d", "first_review", "last_review")
+keep_cols <- intersect(keep_cols, names(listings))
 saveRDS(listings[, ..keep_cols], "data/processed/listings_clean.rds")
 
 # ---- Calendar: monthly availability -----------------------------------------
 
 calendar <- fread("data/raw/calendar_airbnb.csv",
-                  select = c("listing_id", "date", "available"))
+                  select = c("listing_id", "date", "available"),
+                  colClasses = c(listing_id = "character"))
+stopifnot(!anyDuplicated(calendar[, .(listing_id, date)]),
+          all(calendar$listing_id %in% listings$id))
 calendar[, month := format(date, "%Y-%m")]
 
 calendar_monthly <- calendar[, .(nights = .N, open = sum(available == "t")), by = month]
@@ -121,15 +140,22 @@ calendar_monthly[, pct_open := open / nights]
 setorder(calendar_monthly, month)
 saveRDS(calendar_monthly, "data/processed/calendar_monthly.rds")
 
-avail_90 <- calendar[date <= min(date) + 90,
-                     .(open_90 = mean(available == "t")), by = listing_id]
+# Ninety dates, starting with each listing's first observed calendar date.
+calendar[, window_start := min(date), by = listing_id]
+avail_90 <- calendar[date < window_start + 90,
+                     .(open_90 = mean(available == "t"),
+                       window_start = min(date), window_end = max(date),
+                       observed_nights = .N), by = listing_id]
+stopifnot(all(avail_90$observed_nights <= 90))
 saveRDS(avail_90, "data/processed/availability_90.rds")
 
 rm(calendar); gc()
 
 # ---- Reviews: monthly counts as a demand proxy -------------------------------
 
-reviews <- fread("data/raw/reviews_airbnb.csv", select = c("listing_id", "date"))
+reviews <- fread("data/raw/reviews_airbnb.csv", select = c("listing_id", "date"),
+                 colClasses = c(listing_id = "character"))
+stopifnot(all(reviews$listing_id %in% listings$id))
 
 reviews_monthly <- reviews[, .N, by = .(month = format(date, "%Y-%m"))]
 setorder(reviews_monthly, month)

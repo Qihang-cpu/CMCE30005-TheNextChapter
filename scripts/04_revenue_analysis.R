@@ -26,11 +26,10 @@ library(sandwich)
 
 listings <- readRDS("data/processed/listings_clean.rds")
 
-SNAPSHOT <- as.Date("2026-06-16")
+# Reference date for a descriptive review-history proxy, not a scraping date.
+REFERENCE_DATE <- max(as.Date(listings$last_review), na.rm = TRUE)
 
-# Clustered covariance. sandwich::vcovCL exhausts the C stack on the logistic
-# model at this size, so the sandwich is assembled directly from the score
-# contributions, aggregated by host with rowsum.
+# Host-clustered covariance with finite-sample corrections.
 cluster_vcov <- function(fit, cluster_ids) {
   ef <- estfun(fit)
   rows <- as.integer(rownames(ef))
@@ -42,9 +41,7 @@ cluster_vcov <- function(fit, cluster_ids) {
   V * (G / (G - 1)) * ((n - 1) / (n - k))
 }
 
-# Coefficient table from a fit and a covariance matrix. Assembled directly
-# rather than through lmtest::coeftest, which recurses past the C stack limit
-# on the logistic model at this size.
+# Coefficient estimates with the supplied covariance matrix.
 coef_table <- function(fit, V) {
   b <- coef(fit); se <- sqrt(diag(V))[names(b)]
   data.table(term = names(b), estimate = unname(b), std_error = unname(se),
@@ -59,19 +56,20 @@ d <- listings[priced == TRUE]
 # 1. What the revenue field actually is
 # ============================================================
 
-chk <- d[!is.na(estimated_occupancy_l365d) & !is.na(number_of_reviews_ltm) &
-         !is.na(minimum_nights) & number_of_reviews_ltm > 0]
+chk <- all_l[!is.na(estimated_occupancy_l365d) & !is.na(number_of_reviews_ltm) &
+             !is.na(minimum_nights)]
 chk[, occ_predicted := pmin(number_of_reviews_ltm * 2 * pmax(minimum_nights, 3), 255)]
-occ_exact <- mean(abs(chk$occ_predicted - chk$estimated_occupancy_l365d) < 0.5)
+occ_exact <- mean(abs(chk$occ_predicted - chk$estimated_occupancy_l365d) < 1e-8)
 
-rev_chk <- d[!is.na(estimated_revenue_l365d) & estimated_occupancy_l365d > 0]
+rev_chk <- all_l[!is.na(estimated_revenue_l365d) & !is.na(price_num) &
+                   !is.na(estimated_occupancy_l365d)]
 rev_chk[, rev_predicted := price_num * estimated_occupancy_l365d]
-rev_exact <- mean(abs(round(rev_chk$rev_predicted) - rev_chk$estimated_revenue_l365d) < 0.01)
+rev_exact <- mean(abs(rev_chk$rev_predicted - rev_chk$estimated_revenue_l365d) <= 0.500001)
 
 cat("=== 1. Reconstruction of the published revenue field ===\n")
 cat(sprintf("occupancy = min(reviews_ltm x 2 x max(min_nights, 3), 255): %.1f%% exact (n = %s)\n",
             100 * occ_exact, comma(nrow(chk))))
-cat(sprintf("revenue   = round(price x occupancy):                       %.1f%% exact (n = %s)\n",
+cat(sprintf("revenue = price x modelled nights: %.1f%% within AUD0.50 (n = %s)\n",
             100 * rev_exact, comma(nrow(rev_chk))))
 cat("Revenue is a construct, not a measurement. It is never regressed on its\n")
 cat("own inputs; the identity is decomposed and the components modelled.\n\n")
@@ -138,27 +136,23 @@ cat("dispersion in a modelled quantity, not a statement about what causes revenu
 fwrite(var_decomp, "reports/tables/revenue_variance_decomposition.csv")
 
 # ============================================================
-# 4. Listing age and review activity
+# 4. Review history and review activity
 # ============================================================
 
-# A listing younger than a year cannot have accrued twelve months of reviews,
-# so raw trailing counts understate new listings. Activity is expressed per
-# month of exposure to make ages comparable.
-d[, listing_age_years := as.numeric(SNAPSHOT - as.Date(first_review)) / 365.25]
-d[, exposure_months := pmin(12, pmax(1, listing_age_years * 12))]
-d[, reviews_per_month := number_of_reviews_ltm / exposure_months]
+# First review is an observed history marker, not a listing creation date.
+# Compare trailing-year counts without dividing by assumed operating exposure.
+d[, review_history_years := as.numeric(REFERENCE_DATE - as.Date(first_review)) / 365.25]
 
-age_tab <- d[number_of_reviews_ltm > 0 & !is.na(listing_age_years),
+age_tab <- d[number_of_reviews_ltm > 0 & !is.na(review_history_years),
              .(listings = .N,
                median_reviews_ltm = as.numeric(median(number_of_reviews_ltm)),
-               median_reviews_per_month = round(as.numeric(median(reviews_per_month)), 2),
                median_price = as.numeric(median(price_num))),
-             by = .(age_band = cut(listing_age_years, c(0, 1, 2, 5, Inf),
+             by = .(age_band = cut(review_history_years, c(0, 1, 2, 5, Inf),
                                    labels = c("under 1 year", "1-2 years",
-                                              "2-5 years", "5+ years")))]
+                                              "2-5 years", "5+ years"), include.lowest = TRUE))]
 setorder(age_tab, age_band)
 
-cat("=== 4. Review activity by listing age (active listings) ===\n")
+cat("=== 4. Review activity by time since first review (active listings) ===\n")
 print(age_tab)
 fwrite(age_tab, "reports/tables/revenue_by_listing_age.csv")
 
@@ -200,11 +194,11 @@ print(act[p_value < 0.001 & term != "(Intercept)",
 # ============================================================
 
 act_sample <- m_sample[has_recent_activity == TRUE & !is.na(review_scores_rating) &
-                       !is.na(listing_age_years) & listing_age_years > 0]
+                       !is.na(review_history_years) & review_history_years > 0]
 
 m_volume <- lm(log(number_of_reviews_ltm) ~ log(price_num) + room_type + accommodates +
                  bedrooms + bathrooms_num + n_amenities + superhost +
-                 host_tenure_years + log(listing_age_years) +
+                 host_tenure_years + log(review_history_years) +
                  log1p(calculated_host_listings_count) + review_scores_rating +
                  min_nights_grp + availability_365 + lga,
                data = act_sample)
@@ -316,7 +310,7 @@ p <- ggplot(vd, aes(share, sample, fill = component)) +
   geom_text(aes(label = percent(share, accuracy = 1),
                 hjust = ifelse(share < 0, 1.15, -0.15)),
             position = position_dodge(0.8), size = 2.9, colour = "grey20") +
-  scale_x_continuous(labels = percent, limits = c(-0.2, 1.05)) +
+  scale_x_continuous(labels = percent, expand = expansion(mult = c(0.14, 0.14))) +
   scale_fill_manual(values = c("Price" = "#4878A8", "Stay-length policy" = "#E0A458",
                                "Review activity" = "#C0504D", "Covariance" = "#9BA7B0")) +
   labs(title = "Where variation in modelled revenue sits",
@@ -356,17 +350,17 @@ p <- ggplot(grid, aes(price_band, activity_band, fill = median_revenue)) +
        fill = "Modelled revenue")
 ggsave("reports/figures/08_revenue_price_activity_grid.png", p, width = 8.5, height = 5, dpi = 150)
 
-age_plot <- d[number_of_reviews_ltm > 0 & !is.na(listing_age_years) & listing_age_years <= 10]
-age_plot[, band := cut(listing_age_years, seq(0, 10, 0.5))]
-age_curve <- age_plot[, .(median_rpm = median(reviews_per_month), n = .N),
+age_plot <- d[number_of_reviews_ltm > 0 & !is.na(review_history_years) & review_history_years <= 10]
+age_plot[, band := cut(review_history_years, seq(0, 10, 0.5), include.lowest = TRUE)]
+age_curve <- age_plot[, .(median_reviews = median(number_of_reviews_ltm), n = .N),
                       by = .(age_mid = as.numeric(band) * 0.5 - 0.25)][n >= 40]
-p <- ggplot(age_curve, aes(age_mid, median_rpm)) +
+p <- ggplot(age_curve, aes(age_mid, median_reviews)) +
   geom_line(colour = "#C0504D", linewidth = 0.9) +
   geom_point(size = 1.3) +
   scale_y_continuous(limits = c(0, NA)) +
-  labs(title = "Review activity by listing age",
-       subtitle = "Median reviews per month of exposure; active listings under 10 years old",
-       x = "Listing age (years since first review)", y = "Reviews per month")
+  labs(title = "Recent review activity by time since first review",
+       subtitle = "Active listings; history is measured from the latest observed review date",
+       x = "Years since first review", y = "Median reviews in the preceding 12 months")
 ggsave("reports/figures/09_activity_by_listing_age.png", p, width = 8, height = 5, dpi = 150)
 
 cat("Tables written to reports/tables/, figures to reports/figures/\n")

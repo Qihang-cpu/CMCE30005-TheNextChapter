@@ -1,58 +1,58 @@
-# Data validation — 13 September 2026
+# Analysis validation record
 
-**Result: the current interim report's main statistics and reported models reproduce from the saved processed data. End-to-end validation from the original CSV files remains incomplete because the three local raw-data links are broken.** No raw or processed data, analysis scripts, or historical reports were changed during this audit.
+Updated 13 September 2026 after the review-activity pipeline revision.
 
-## Scope and procedure
+## Conclusion
 
-The audit checked `data/processed/*.rds`, the current interim report, README, analysis scripts, committed result tables, and the older `CMCE30005_Interim_Report_Group2.md` and `.docx` in the parent course directory. Scripts 03, 04 and 07 were rerun in an isolated temporary directory from the saved `listings_clean.rds`. Thirteen regenerated CSV tables matched the committed tables at a numerical tolerance of 1e-10. Saved price-model coefficients reproduced, and the activity models' host-clustered covariance calculation matched `sandwich::vcovCL(type="HC1", cadjust=TRUE)`.
+The current descriptive and predictive outputs reproduce from the saved school-data snapshot. The primary R and Python samples match listing by listing: 8,967 listings, 4,081 hosts and 35 segments, including 1,428 zero-review listings. Original CSV files are unavailable at their linked paths, so raw-to-clean validation remains incomplete. No result should be described as verified actual occupancy, income or profit.
 
-The audit used no external market data. [Machine-readable integrity checks](validation/processed-integrity-2026-09-13.json) record the additional checks on saved data. Matching saved outputs establishes computational consistency; it does not establish that a listing's quoted price, estimated occupancy or estimated revenue is a verified transaction.
+## Checks completed
 
-## Verified statistics
-
-| Quantity | Recomputed result and denominator |
+| Check | Result |
 |---|---|
-| Listings | 25,728 records and 25,728 distinct, non-missing listing IDs |
-| Hosts | 14,113 distinct hosts; no missing host IDs |
-| Calendar records | 9,390,720, summed from the saved monthly aggregate |
-| Reviews | 1,026,690 in both monthly and listing-level saved aggregates |
-| Review joins | No orphan listing IDs; per-listing review totals and latest dates match the saved listings |
-| Missing price / estimated revenue | 6,553 each; missingness patterns coincide |
-| Non-missing quoted prices | 19,175; median AUD243.67, mean AUD317.65037 |
-| AUD30–1,500 price sample | 18,927; filter flags have zero discrepancies |
-| Excluded prices | 6,553 missing + 45 below AUD30 + 203 above AUD1,500 = 6,801 excluded |
-| Missing bedrooms | 4,679 |
-| No review in preceding year | Retained sample: 4,487/18,927 = 23.7069%; excluded sample: 5,574/6,801 = 81.9585% |
-| Entire homes | 18,829/25,728 = 73.2% of the full sample |
-| Entire-home median estimated annual revenue | AUD14,664; 14,278 listings in the price-filtered sample |
-| Private-room median estimated annual revenue | AUD936; 4,411 listings in the price-filtered sample |
-| Log quoted-price model | n = 12,223; adjusted R² = 0.5580295275 |
-| Log recent-review-count model | n = 12,648; adjusted R² = 0.4109740370; 6,250 host clusters |
+| Listing identifiers in the saved snapshot | 25,728 non-missing, unique values; 142 are represented in scientific notation upstream |
+| Saved review aggregates | Monthly and listing totals both equal 1,026,690; listing totals and latest dates match the saved listings |
+| Saved calendar aggregate | 9,390,720 rows represented in monthly totals |
+| Price filter | 18,927 retained; 6,553 missing, 45 below AUD30 and 203 above AUD1,500 excluded |
+| Quoted-price medians | AUD243.67 among 19,175 non-missing prices; AUD242.50 in the filtered sample |
+| Occupancy formula | All 25,719 comparable rows match the supplied review-based formula; nine missing minimum stays cannot be checked |
+| Estimated revenue formula | All 19,175 comparable rows match price × estimated nights within AUD0.50 |
+| Primary scope | Independently reproduced 35 cells, 8,967 listings, 4,081 hosts and 2,315 outcomes of at least 22 reviews |
+| Descriptive results | Nine new tables independently recalculated, including all segment quantiles, rates and profiles |
+| Bootstrap | A segment's 1,000 host-cluster resamples independently recomputed by expanding the sampled hosts' listings |
+| Predictive validation | All eight model/scenario OOF sets checked independently for ROC-AUC, tied-score average precision and Brier score |
+| Host separation | Each host has one fold; no training/validation host overlap within a fold |
+| R/Python consistency | Main and review-history sensitivity listing IDs, host IDs and outcomes match after lossless text-format normalisation |
+| Public outputs | Aggregate tables only; listing predictions, host-fold assignments and review-ID diagnostics remain in ignored processed-data files |
 
-Both R² values describe in-sample fit in log units. Neither is held-out predictive accuracy. Predictive classification remains planned.
+The old price and review models were reproduced before revision. After the date-proxy correction, the exploratory review-intensity model now uses 12,651 observations, 6,252 host clusters and adjusted R² 0.403. That fit is descriptive and is not the primary classifier's accuracy.
 
-For 25,719 records with all required inputs, estimated occupied nights equal `min(reviews_ltm × 2 × max(minimum_nights, 3), 255)` with zero mismatches. The nine missing minimum-stay records cannot be checked against this formula. For all 19,175 comparable revenue records, `quoted price × estimated occupied nights` matches estimated annual revenue within AUD0.50, allowing floating-point tolerance. Consequently, these fields cannot establish actual occupancy, receipts or profit.
+## Corrections applied
 
-## Issues found
+The primary outcome is a fixed 22-review event, with its exploratory P75 origin stated as applying to the eligible sample. Zero-review listings are retained. Four standard dwelling types define the main scope without asserting lease availability. Every ranked main segment meets the 50-listing rule after all filters. Earlier external-rent calculations and external monetary comparison lines are outside the current submission tree.
 
-1. **Original CSV files unavailable in this run.** `data/raw/` contains three symlinks to `../Project` in the course directory, but their targets currently do not exist. Searches of the course directory, Desktop, Documents, Downloads and Spotlight did not locate another copy. The original files are required to recheck parsing, original-row duplicates, calendar date coverage, raw-to-clean transformations and the thirteen reportedly empty original columns. The aggregate counts above are not a fresh count of raw CSV records.
+The Python model now learns imputation, category encoding and scaling within training folds. Standard metric implementations handle tied probabilities. Current quoted price and minimum stay appear only in a labelled operating-controls sensitivity. Both fixed model specifications are reported, with no claim of an independently selected best model or an untouched final test set.
 
-2. **The derived 90-day availability window has an endpoint error.** `scripts/01_data_cleaning.R:124` selects `date <= min(date) + 90`, including the start day and potentially 90 subsequent days. One saved proportion is exactly 68/91; 25,254 saved proportions multiplied by 91 are integers, compared with 8,266 multiplied by 90. The intended horizon and differing listing start dates should be checked against the original calendar before correction. This derived file is not used by scripts 02, 03, 04 or 07, so it does not alter the interim report's main statistics or model fits.
+The cleaning script now preserves ID text, parses amenity JSON, recognises half-baths and uses a 90-date window for each listing. These raw-data transformations still need a full run when the original files are restored. The current saved availability aggregate is from the older window calculation and is not consumed by the primary analysis.
 
-3. **Several older documents have incorrect labels or denominators.** `reports/methodology.md` incorrectly calls all 248 out-of-range prices high-price outliers; the correct split is 203 high and 45 low. `reports/descriptive-analytics.md` says all price statistics use the filtered sample, whereas its overall numeric table uses all non-missing prices (median AUD243.67); the filtered sample's median is AUD242.50. General rating is missing for 4,477 listings, but location and value ratings are each missing for 4,484, so the old blanket statement about all rating fields is incorrect. The current interim report avoids these mistakes.
+The seasonality calculation now uses June 2023 through May 2026, excluding the incomplete final observed month. The exploratory review-history model uses the latest observed review date, 28 June 2026, as a transparent reference, rather than assuming a 16 June scrape. First review is no longer treated as an opening date or used to infer continuous operating exposure. The variance-decomposition figure now shows the negative covariance component rather than clipping it.
 
-4. **Some historical interpretation exceeds the evidence.** Older prose calls modelled nights “booked nights” and treats a cross-sectional price–review relationship as evidence of an optimal price. Neither follows from these data. `reports/revenue-analysis.md` also reverses the price-filter selection effect in one sentence: retained listings have a higher recent-review activity rate (76.3%) than the full sample (60.9%), not a lower rate.
+## Interpretation and remaining limitations
 
-5. **The fixed date and seasonality assumptions need review.** Script 04 uses 16 June 2026 as its date anchor, but 66 saved listings have a last review after that date; the latest saved review date is 28 June. Two first reviews also follow that anchor. Its active-listing age summary includes three unclassified records with zero or negative age. Moreover, time since first review is not actual time since listing creation. Script 02 includes June 2026 in a period described as three full years, despite evidence that the last June is incomplete; the old June seasonality index should not be read as a clean seasonal effect. The current interim report does not quote that index or claim a single-day scrape.
+Main property-only logistic regression has ROC-AUC 0.648870, AP 0.360910 and Brier score 0.181978. The forest has AUC 0.631423 and AP 0.347648. Adding current price and minimum stay gives logistic AUC 0.720489. The latter uses contemporaneous operating characteristics and does not establish performance at the time of property selection.
 
-## Two report versions must not be confused
+The descriptive 90% intervals estimate observed attainment uncertainty from 1,000 host resamples. The predictive 95% intervals resample hosts conditional on the existing OOF scores, using 500 draws. The latter omit model-fitting and model-selection uncertainty; neither set establishes a definitive rank winner.
 
-The course-directory `CMCE30005_Interim_Report_Group2.md` and `.docx` are the **older ROI version**. They combine external DFFH rent data with operating-cost assumptions and a 50% cash-return hurdle, and propose predicting upper-quartile review activity. They do not meet the current internal-data-only scope.
+The original files are required to check raw record duplication, scientific-notation identifier precision, amenity parsing, scraping dates and per-listing trailing-year review counts. The supplied field is used as the current outcome. The Python reconstruction check records its unavailable status instead of reporting a fabricated match rate.
 
-Their principal ROI counts do match the saved scenario table: 57 segments comprise 52 with published rent categories and five with derived rents. The 52-segment subset has two above the 50% hurdle, five positive but below it and 45 negative; the complete 57-segment set has three, seven and 47 respectively. This is consistency with a scenario model, not verification of real profitability. The old wording that adjusted R² of 0.558 explains dollar-price variation should also refer to log quoted price.
+Repeated host splits, nested tuning, broader property mappings, sparse-positive sensitivity and ranking intervals with model refitting remain future work. Cross-sectional scores do not establish new-operator outcomes, future demand or profitability.
 
-The current submission is [interim-project-report.md](interim-project-report.md), with its linked Word/PDF and matching README. It uses internal estimated-revenue comparisons and treats the upper quartile as a research benchmark, not a profitability cutoff.
+## Evidence
 
-## Outstanding verification
-
-Restore the three original school-supplied CSV files or identify their new local location, then compare them with the saved clean data. Only then can the raw-to-clean pipeline be signed off. The availability-window and historical prose issues above are recorded findings, not silently applied fixes.
+- [Scope, source status, versions and hashes](tables/rq_scope_summary.json)
+- [Predictive metrics](tables/rq_model_metrics.json)
+- [Calibration summaries](tables/rq_calibration.csv)
+- [OOF segment scores](tables/rq_oof_segment_ranking.csv)
+- [Descriptive segment results](tables/segment_ladder.csv)
+- [Review-history sensitivity](tables/review_exposure_sensitivity.csv)
+- [Saved-data integrity checks](validation/processed-integrity-2026-09-13.json)

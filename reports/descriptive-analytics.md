@@ -1,115 +1,43 @@
-# Descriptive analytics
+# Descriptive analysis of guest-review activity
 
-Week 5 workshop stage. Produced by `scripts/07_descriptive_analytics.R`; tables
-in `reports/tables/desc_*.csv`, figures 11–15 in `reports/figures/`.
+[Script 07](../scripts/07_descriptive_analytics.R) describes the broader supplied snapshot. [Script 08](../scripts/08_peer_ranking.R) applies the residential segment definition used by the primary research question. Their populations differ and should not be combined without stating the relevant filters.
 
-This note covers what the data *looks like*. The substantive results — the price
-model, the revenue decomposition, seasonality and the ROI screen — are in
-[findings.md](findings.md) and [revenue-analysis.md](revenue-analysis.md).
+## From the supplied snapshot to comparable segments
 
-## Samples
+| Stage | Listings |
+|---|---:|
+| All saved listings | 25,728 |
+| Entire homes with 1–3 bedrooms | 16,576 |
+| Four standard dwelling types | 14,895 |
+| Quoted price AUD30–AUD1,500 | 11,099 |
+| Final LGA × dwelling class × bedrooms cells with at least 50 listings | 8,967 |
 
-| Sample | Rule | n |
-|---|---|---:|
-| Full snapshot | Inside Airbnb, 16 June 2026 | 25,728 |
-| Priced sample | Nightly rate present and within $30–$1,500 | 18,927 |
+The four retained types are entire rental unit, condo, home and townhouse. They describe dwelling categories; the dataset cannot establish whether an operator could lease or sublet an individual property. In Yarra Ranges, the whitelist excludes 415 of 772 entire-home, 1–3-bedroom listings (53.76%). This is the exclusion share across all other property types, not the share of cottages, guesthouses and farm stays alone. See [type counts](tables/excluded_dwelling_types.csv).
 
-Composition uses the full snapshot; anything involving price uses the priced
-sample. The two are labelled separately in every table rather than mixed.
+## Review distribution and common target
 
-## 1. Key numerical variables
+The final cohort contains 4,081 hosts across 35 segments. Review-count P50, P75 and P90 are **9, 22 and 39**. A common target of at least 22 reviews is met by **2,315 listings (25.8169%)**. The remaining 6,652 include **1,428 zero-review listings**. Threshold ties are retained; the classification is not forced to divide the sample into an exact quarter.
 
-Sixteen variables, chosen because each maps to a decision in the business
-problem: what the property is, what it charges, how much trade it does, and how
-guests rate it. Full statistics in `desc_numeric_summary.csv`.
+[Internal benchmark mappings](tables/benchmark_map_citywide.csv) report counts below, at and above each common threshold. Segment-specific quantiles describe distributions but do not redefine the classification target.
 
-Completeness is the headline. Four blocks of missingness matter:
+## Segment comparisons
 
-| Variable | Complete | Missing |
-|---|---:|---:|
-| `bathrooms_num` | 99.9% | 26 |
-| `review_scores_*`, `reviews_per_month` | 82.6% | 4,477 |
-| `bedrooms` | 81.8% | 4,679 |
-| `price_num`, `price_per_person`, `estimated_revenue_l365d` | 74.5% | 6,553 |
+The highest observed target share is Melbourne 3BR Apartment/unit: **216 of 543 listings, or 39.78%**. Its pointwise 90% host-cluster bootstrap interval is 32.57%–46.57%. Yarra Ranges 3BR House/townhouse records 35.77%, and its 2BR counterpart records 34.48%.
 
-Two distributions justify decisions made elsewhere in the pipeline:
+These are observed proportions. Differences in sample composition and overlapping intervals limit conclusions about a uniquely superior location. [The full segment table](tables/segment_ladder.csv) includes counts, independent hosts and uncertainty for all eligible cells.
 
-- **Price is extremely right skewed** — on the full snapshot the median is
-  \$243.67 but the mean is \$317.65 and the maximum \$50,093.56. Figure 11 shows
-  the raw and logged distributions side by side; the log is near symmetric,
-  which is why the price model logs its response and why the $30–$1,500 window
-  exists.
-- **`minimum_nights` reaches 1,000**, so it is binned into `1 / 2–6 / 7–27 / 28+`
-  rather than used as a raw count.
+![Observed review activity by segment](figures/16_segment_ladder.png)
 
-## 2. Key categorical variables
+## Property attributes and review history
 
-Eight variables; levels and shares in `desc_categorical_summary.csv`, charted in
-figure 12.
+Listings meeting the target have a median of 46 amenities, compared with 42 below the target. Both groups have median guest capacity four, two beds and one bathroom. These are unadjusted group summaries, not evidence that changing an amenity count causes higher activity. [The profile table](tables/tier_profile.csv) records other attributes and missing-value counts.
 
-| Variable | Dominant levels |
-|---|---|
-| Room type | Entire home/apt 73.2%, private room 25.7%, shared 0.9%, hotel 0.2% |
-| Minimum nights | 2–6 nights 49.5%, 1 night 41.8%, 7–27 6.3%, 28+ 2.4% |
-| Superhost | 30.6% of listings |
-| Shared bathroom | 14.3% of listings |
+Restricting first review to on or before 1 June 2025 and reapplying segment eligibility leaves **4,812 listings in 16 segments**. This sensitivity retains 463 zero-review listings; 35.83% meet the unchanged 22-review target and its review-count P75 is 29. The change reflects a different population, not an estimate of what newer listings would achieve after a year. See [scope summary](tables/review_scope_summary.csv) and [sensitivity comparisons](tables/review_exposure_sensitivity.csv).
 
-Shared and hotel rooms are together barely 1% of the market. They are reported
-for completeness but are too thin to support segment conclusions.
+## Broader data context
 
-## 3. Summary statistics by group
+Among all 19,175 non-missing quoted prices, the median is AUD243.67. Among the 18,927 prices within AUD30–AUD1,500, it is AUD242.50. Price and modelled revenue each have 6,553 missing values; bedrooms have 4,679. Overall rating has 4,477 missing values, while location and value ratings each have 4,484.
 
-### By room type (priced sample)
+The monthly review index uses **June 2023–May 2026**, excluding the incomplete final month. March is 1.252 and June 0.784 relative to an average month of one. These are review-volume patterns, not identified event effects or booking forecasts. See [seasonality index](tables/seasonality_index.csv).
 
-| Room type | n | % | Median price | Median $/person | % Superhost | Median revenue |
-|---|---:|---:|---:|---:|---:|---:|
-| Entire home/apt | 14,278 | 75.4 | $278.90 | $72.50 | 42.2 | $14,664 |
-| Private room | 4,411 | 23.3 | $109.00 | $63.00 | 27.2 | $936 |
-| Shared room | 197 | 1.0 | $50.00 | $28.00 | 6.1 | $0 |
-| Hotel room | 41 | 0.2 | $324.00 | $109.50 | 7.3 | $0 |
-
-Entire homes charge 2.6× the nightly rate of private rooms but only 1.15× the
-rate *per guest* — most of the headline price gap is capacity, not premium.
-
-### By Superhost status (priced sample)
-
-| | Regular host | Superhost |
-|---|---:|---:|
-| Listings | 11,685 | 7,242 |
-| Median price | $234.50 | $254.00 |
-| Median rating | 4.75 | 4.91 |
-| Median reviews (last 12 months) | 2 | 15 |
-| Median nights booked | 12 | 96 |
-| Median annual revenue | $3,048 | $23,445 |
-
-Price differs by 8% between the two groups; booked nights differ by a factor of
-eight. This is the descriptive form of the result the revenue analysis develops.
-
-### By LGA
-
-`desc_by_lga.csv` ranks all LGAs. Yarra Ranges leads on median price ($343, 984
-listings, 63.2% Superhost), ahead of Bayside ($325) and Nillumbik ($287).
-Melbourne LGA is by far the largest market (6,463 priced listings) at a median
-of $251. Figure 13 shows the full price spread by LGA and room type.
-
-## 4. Relationship worth carrying forward
-
-Figure 15 plots price against trailing-year review activity. The two room types
-behave differently:
-
-- **Entire homes** peak in review activity at roughly **$200–250 per night**,
-  then decline. Both cheaper and more expensive listings show less trade.
-- **Private rooms** decline monotonically across the whole price range.
-
-Activity is a proxy for bookings, so this is the first direct evidence that the
-revenue-maximising price is interior rather than "as high as possible" — the
-question the modelling stage takes up.
-
-## Caveats
-
-1. Occupancy and revenue are Inside Airbnb estimates derived from review volume,
-   not booking records. They support relative comparison only.
-2. The snapshot covers listings active on one day, so listings that failed and
-   were withdrawn are absent. Observed performance is optimistic.
-3. Median is reported throughout in preference to mean, because every monetary
-   variable here is heavily right skewed.
+All results here are reproducible from the saved processed files. The unavailable original CSV files prevent renewed verification of raw parsing and the review-count construction.

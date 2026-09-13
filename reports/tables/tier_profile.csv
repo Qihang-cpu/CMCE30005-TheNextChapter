@@ -1,0 +1,3 @@
+group,n_listings,median_accommodates,median_beds,median_bathrooms,median_amenities,apartment_share,one_bedroom_share,two_bedroom_share,three_bedroom_share,wifi_share,pool_share,aircon_share,free_parking_share,n_missing_beds,n_missing_bathrooms,scope
+At least 22 reviews,2315,4,2,1,46,0.908855291576674,0.336069114470842,0.512311015118791,0.151619870410367,0.91792656587473,0.295032397408207,0.678185745140389,0.451403887688985,47,0,"Standard entire homes, 1-3 bedrooms, price AUD30-1500, segment n>=50"
+Fewer than 22 reviews,6652,4,2,1,42,0.863349368610944,0.36876127480457,0.481509320505111,0.149729404690319,0.939717378232111,0.279615153337342,0.72699939867709,0.463469633193025,283,0,"Standard entire homes, 1-3 bedrooms, price AUD30-1500, segment n>=50"

@@ -1,0 +1,57 @@
+{
+  "raw_listings_or_cached_snapshot_rows": 25728,
+  "narrow_scope_before_cell_filter": 11099,
+  "eligible_cells_ge_50": 35,
+  "eligible_listings": 8967,
+  "eligible_hosts": 4081,
+  "descriptive_p75_reviews_ltm": 22.0,
+  "fixed_review_target": 22,
+  "positive_n": 2315,
+  "positive_share_with_ties": 0.2581688413070146,
+  "zero_recent_review_listings": 1428,
+  "threshold_definition": "A fixed 22-review operational target, motivated by the P75 observed during scope exploration. Cross-validation does not independently validate selection of this threshold.",
+  "validation_definition": "Exploratory five-fold host-grouped cross-validation; no independent final test set or hyperparameter search.",
+  "scope_support_definition": "The >=50-listing rule uses all snapshot covariate counts to define the segments reported. It does not use outcome labels, but evaluation is conditional on this full-snapshot scope rather than discovery of eligible segments in unseen markets.",
+  "ranking_intervals": "95% percentile intervals from 500 within-segment host-cluster resamples, conditional on existing OOF probabilities; models are not refitted and intervals exclude model-fitting and model-selection uncertainty.",
+  "established_sensitivity": "First review on or before 2025-06-01, then recompute cell counts >=50. This is a historical-review criterion, not listing launch date; the 22-review event remains fixed.",
+  "main_model_interpretation": "Physical listing attributes associated with review activity in the preceding year, evaluated on held-out hosts. These are not verified pre-opening measurements or forecasts of a new operator's next year.",
+  "operating_controls_sensitivity": "Current quoted price and minimum stay are contemporaneous operating characteristics, included only as a separately labelled sensitivity.",
+  "missingness_main_numeric": {
+    "accommodates": 0,
+    "bathrooms_num": 0,
+    "n_amenities": 0
+  },
+  "provenance": {
+    "source_kind": "processed_snapshot",
+    "source_file": "data/processed/listings_clean.rds",
+    "limitation": "Raw CSV files are unavailable. Cached cleaning features are reused; raw parsing, original identifier precision and review-date reconstruction have not been revalidated.",
+    "source_sha256": "81b17ead013e0210c508de2722c7de5bcfcf587342e10d58f85bb6372efd2fab",
+    "scientific_notation_listing_ids": 142,
+    "raw_validation": false,
+    "raw_review_validation": {
+      "status": "blocked",
+      "reason": "Raw listings, review dates and per-listing scrape dates are required; they are not all available."
+    }
+  },
+  "seed": 30005,
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.16.3",
+    "scikit_learn": "1.7.2"
+  },
+  "script_sha256": "ce0c65baad97c5764421c673ee4cb95782e5dccb5d9fc31d684fe10f0d39b3b6",
+  "model_settings": {
+    "logistic": {
+      "C": 1.0,
+      "max_iter": 2000
+    },
+    "random_forest": {
+      "n_estimators": 250,
+      "min_samples_leaf": 10,
+      "max_features": "sqrt",
+      "n_jobs": 2
+    }
+  }
+}

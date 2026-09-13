@@ -70,10 +70,15 @@ ggsave("reports/figures/03_price_capacity_roomtype.png", p, width = 9, height = 
 
 # ---- 4. Demand seasonality ---------------------------------------------------
 
-# Review volume is used as the demand proxy. The forward calendar cannot be used
-# for this: most hosts have not opened distant dates, so "unavailable" does not
-# mean "booked".
-rm3 <- reviews_monthly[month >= "2023-07" & month <= "2026-06"]
+# The last observed month may be incomplete. Use the preceding 36 months.
+# Calendar unavailability can include host blocks as well as reservations.
+last_observed_month <- as.Date(paste0(max(reviews_monthly$month), "-01"))
+window_end <- last_observed_month - 1
+window_start <- seq(as.Date(format(window_end, "%Y-%m-01")),
+                    by = "-1 month", length.out = 36)[36]
+rm3 <- reviews_monthly[month >= format(window_start, "%Y-%m") &
+                       month <= format(window_end, "%Y-%m")]
+stopifnot(nrow(rm3) == 36)
 rm3[, date := as.Date(paste0(month, "-01"))]
 
 p <- ggplot(rm3, aes(date, N)) +
@@ -81,12 +86,13 @@ p <- ggplot(rm3, aes(date, N)) +
   geom_point(size = 1.2) +
   scale_x_date(date_breaks = "3 months", date_labels = "%b %y") +
   scale_y_continuous(labels = comma) +
-  labs(title = "Monthly review volume (demand proxy), Jul 2023 - Jun 2026",
+  labs(title = paste("Monthly review volume,", format(window_start, "%b %Y"),
+                     "to", format(window_end, "%b %Y")),
        x = NULL, y = "Reviews posted") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ggsave("reports/figures/04_demand_seasonality.png", p, width = 9, height = 5, dpi = 150)
 
-# seasonality index: mean volume of each calendar month across three full years
+# Descriptive index of review volume; changes in listing coverage may also affect it.
 rm3[, m := substr(month, 6, 7)]
 rm3[, yr := substr(month, 1, 4)]
 seas <- rm3[, .(n = sum(N)), by = .(m, yr)][, .(idx = mean(n)), by = m][order(m)]
@@ -128,9 +134,8 @@ print(head(seg, 12))
 
 # ---- 7. Superhost comparison -------------------------------------------------
 
-# Split by whether the listing was booked at all. Pooling the two overstates the
-# Superhost gap, because a third of regular-host listings record no bookings and
-# drag that median down. See reports/revenue-analysis.md section 5.
+# Compare all priced listings and the subset with at least one recent review.
+# A lack of reviews does not establish that a listing had no bookings.
 priced[, is_active := number_of_reviews_ltm > 0]
 
 sh <- priced[, .(n = .N,

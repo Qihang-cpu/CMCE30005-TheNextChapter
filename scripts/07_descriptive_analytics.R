@@ -27,10 +27,9 @@
 #   4. Generate summary statistics by grouping variables
 #   5. Create histograms, bar charts, box plots and other visualisations
 #
-# Sample convention: descriptive statistics that involve price use the project
-# "priced" sample (a nightly rate present and within $30-$1,500, see
-# reports/methodology.md). Counts and composition use the full snapshot, so
-# the two are reported side by side rather than silently mixed.
+# Numeric summaries and categorical composition use the full snapshot, with
+# missing values excluded separately for each numeric variable. Grouped price
+# comparisons and figures use the $30-$1,500 priced sample.
 # ============================================================
 
 library(dplyr)

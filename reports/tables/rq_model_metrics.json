@@ -1,0 +1,686 @@
+[
+  {
+    "roc_auc": 0.6488695324097463,
+    "average_precision": 0.36090979250105626,
+    "brier_score": 0.18197754445709674,
+    "log_loss": 0.5422843214014677,
+    "precision_top_quarter": 0.37823371989295274,
+    "confusion_matrix_at_0_5": [
+      [
+        6544,
+        108
+      ],
+      [
+        2233,
+        82
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2581688413070146,
+      "precision_top_quarter": 0.2581688413070146,
+      "brier_score": 0.1915176906852081,
+      "log_loss": 0.5711328554066654,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "property_only",
+    "model": "logistic",
+    "n": 8967,
+    "n_hosts": 4081,
+    "n_segments": 35,
+    "descriptive_review_p75_in_this_scope": 22.0,
+    "fixed_review_target": 22,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 7156,
+        "n_validation": 1811,
+        "n_validation_hosts": 810,
+        "validation_positive_share": 0.2771949199337383,
+        "roc_auc": 0.642457671224955
+      },
+      {
+        "fold": 1,
+        "n_train": 7340,
+        "n_validation": 1627,
+        "n_validation_hosts": 861,
+        "validation_positive_share": 0.22065150583896742,
+        "roc_auc": 0.6714541795910477
+      },
+      {
+        "fold": 2,
+        "n_train": 7380,
+        "n_validation": 1587,
+        "n_validation_hosts": 780,
+        "validation_positive_share": 0.3238815374921235,
+        "roc_auc": 0.7105201605738303
+      },
+      {
+        "fold": 3,
+        "n_train": 7003,
+        "n_validation": 1964,
+        "n_validation_hosts": 811,
+        "validation_positive_share": 0.24389002036659876,
+        "roc_auc": 0.6757041535747172
+      },
+      {
+        "fold": 4,
+        "n_train": 6989,
+        "n_validation": 1978,
+        "n_validation_hosts": 819,
+        "validation_positive_share": 0.23306370070778565,
+        "roc_auc": 0.5734531420473963
+      }
+    ],
+    "training_fold_prevalence_baseline": {
+      "brier_score": 0.1921675611642943,
+      "log_loss": 0.5728424891281116
+    }
+  },
+  {
+    "roc_auc": 0.6314231806735077,
+    "average_precision": 0.3476477479198148,
+    "brier_score": 0.1837267718098448,
+    "log_loss": 0.547634731869961,
+    "precision_top_quarter": 0.34736842105263155,
+    "confusion_matrix_at_0_5": [
+      [
+        6574,
+        78
+      ],
+      [
+        2242,
+        73
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2581688413070146,
+      "precision_top_quarter": 0.2581688413070146,
+      "brier_score": 0.1915176906852081,
+      "log_loss": 0.5711328554066654,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "property_only",
+    "model": "random_forest",
+    "n": 8967,
+    "n_hosts": 4081,
+    "n_segments": 35,
+    "descriptive_review_p75_in_this_scope": 22.0,
+    "fixed_review_target": 22,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 7156,
+        "n_validation": 1811,
+        "n_validation_hosts": 810,
+        "validation_positive_share": 0.2771949199337383,
+        "roc_auc": 0.6415407887167905
+      },
+      {
+        "fold": 1,
+        "n_train": 7340,
+        "n_validation": 1627,
+        "n_validation_hosts": 861,
+        "validation_positive_share": 0.22065150583896742,
+        "roc_auc": 0.6448500918253472
+      },
+      {
+        "fold": 2,
+        "n_train": 7380,
+        "n_validation": 1587,
+        "n_validation_hosts": 780,
+        "validation_positive_share": 0.3238815374921235,
+        "roc_auc": 0.6821278208303567
+      },
+      {
+        "fold": 3,
+        "n_train": 7003,
+        "n_validation": 1964,
+        "n_validation_hosts": 811,
+        "validation_positive_share": 0.24389002036659876,
+        "roc_auc": 0.6537476364198702
+      },
+      {
+        "fold": 4,
+        "n_train": 6989,
+        "n_validation": 1978,
+        "n_validation_hosts": 819,
+        "validation_positive_share": 0.23306370070778565,
+        "roc_auc": 0.5710866148938208
+      }
+    ],
+    "training_fold_prevalence_baseline": {
+      "brier_score": 0.1921675611642943,
+      "log_loss": 0.5728424891281116
+    }
+  },
+  {
+    "roc_auc": 0.7204894937328645,
+    "average_precision": 0.4181200443885196,
+    "brier_score": 0.17162770210656716,
+    "log_loss": 0.5093627290008369,
+    "precision_top_quarter": 0.44023193577163244,
+    "confusion_matrix_at_0_5": [
+      [
+        6270,
+        382
+      ],
+      [
+        1986,
+        329
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2581688413070146,
+      "precision_top_quarter": 0.2581688413070146,
+      "brier_score": 0.1915176906852081,
+      "log_loss": 0.5711328554066654,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "operating_controls",
+    "model": "logistic",
+    "n": 8967,
+    "n_hosts": 4081,
+    "n_segments": 35,
+    "descriptive_review_p75_in_this_scope": 22.0,
+    "fixed_review_target": 22,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "log_price",
+      "log_minimum_nights",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 7156,
+        "n_validation": 1811,
+        "n_validation_hosts": 810,
+        "validation_positive_share": 0.2771949199337383,
+        "roc_auc": 0.706614337151014
+      },
+      {
+        "fold": 1,
+        "n_train": 7340,
+        "n_validation": 1627,
+        "n_validation_hosts": 861,
+        "validation_positive_share": 0.22065150583896742,
+        "roc_auc": 0.7454449794820874
+      },
+      {
+        "fold": 2,
+        "n_train": 7380,
+        "n_validation": 1587,
+        "n_validation_hosts": 780,
+        "validation_positive_share": 0.3238815374921235,
+        "roc_auc": 0.7677481587316553
+      },
+      {
+        "fold": 3,
+        "n_train": 7003,
+        "n_validation": 1964,
+        "n_validation_hosts": 811,
+        "validation_positive_share": 0.24389002036659876,
+        "roc_auc": 0.7379845778593169
+      },
+      {
+        "fold": 4,
+        "n_train": 6989,
+        "n_validation": 1978,
+        "n_validation_hosts": 819,
+        "validation_positive_share": 0.23306370070778565,
+        "roc_auc": 0.6512632679237621
+      }
+    ],
+    "training_fold_prevalence_baseline": {
+      "brier_score": 0.1921675611642943,
+      "log_loss": 0.5728424891281116
+    }
+  },
+  {
+    "roc_auc": 0.7167752857582578,
+    "average_precision": 0.42765205700839837,
+    "brier_score": 0.170878664055604,
+    "log_loss": 0.5100326802505964,
+    "precision_top_quarter": 0.43398751115075823,
+    "confusion_matrix_at_0_5": [
+      [
+        6500,
+        152
+      ],
+      [
+        2127,
+        188
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2581688413070146,
+      "precision_top_quarter": 0.2581688413070146,
+      "brier_score": 0.1915176906852081,
+      "log_loss": 0.5711328554066654,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "operating_controls",
+    "model": "random_forest",
+    "n": 8967,
+    "n_hosts": 4081,
+    "n_segments": 35,
+    "descriptive_review_p75_in_this_scope": 22.0,
+    "fixed_review_target": 22,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "log_price",
+      "log_minimum_nights",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 7156,
+        "n_validation": 1811,
+        "n_validation_hosts": 810,
+        "validation_positive_share": 0.2771949199337383,
+        "roc_auc": 0.7395749317474182
+      },
+      {
+        "fold": 1,
+        "n_train": 7340,
+        "n_validation": 1627,
+        "n_validation_hosts": 861,
+        "validation_positive_share": 0.22065150583896742,
+        "roc_auc": 0.727541233535144
+      },
+      {
+        "fold": 2,
+        "n_train": 7380,
+        "n_validation": 1587,
+        "n_validation_hosts": 780,
+        "validation_positive_share": 0.3238815374921235,
+        "roc_auc": 0.7355871569946438
+      },
+      {
+        "fold": 3,
+        "n_train": 7003,
+        "n_validation": 1964,
+        "n_validation_hosts": 811,
+        "validation_positive_share": 0.24389002036659876,
+        "roc_auc": 0.7295417641972967
+      },
+      {
+        "fold": 4,
+        "n_train": 6989,
+        "n_validation": 1978,
+        "n_validation_hosts": 819,
+        "validation_positive_share": 0.23306370070778565,
+        "roc_auc": 0.6622200741559505
+      }
+    ],
+    "training_fold_prevalence_baseline": {
+      "brier_score": 0.1921675611642943,
+      "log_loss": 0.5728424891281116
+    }
+  },
+  {
+    "roc_auc": 0.6208186130279023,
+    "average_precision": 0.44677920934470233,
+    "brier_score": 0.22095651458612034,
+    "log_loss": 0.6312362917675214,
+    "precision_top_quarter": 0.47339983374896094,
+    "confusion_matrix_at_0_5": [
+      [
+        2785,
+        303
+      ],
+      [
+        1480,
+        244
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.35827098919368244,
+      "precision_top_quarter": 0.35827098919368244,
+      "brier_score": 0.22991288749586275,
+      "log_loss": 0.6524168918235212,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "established_history",
+    "model": "logistic",
+    "n": 4812,
+    "n_hosts": 2184,
+    "n_segments": 16,
+    "descriptive_review_p75_in_this_scope": 29.0,
+    "fixed_review_target": 22,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 3877,
+        "n_validation": 935,
+        "n_validation_hosts": 422,
+        "validation_positive_share": 0.38288770053475935,
+        "roc_auc": 0.6544518458991315
+      },
+      {
+        "fold": 1,
+        "n_train": 3999,
+        "n_validation": 813,
+        "n_validation_hosts": 459,
+        "validation_positive_share": 0.3111931119311193,
+        "roc_auc": 0.6414313946922643
+      },
+      {
+        "fold": 2,
+        "n_train": 3974,
+        "n_validation": 838,
+        "n_validation_hosts": 412,
+        "validation_positive_share": 0.4713603818615752,
+        "roc_auc": 0.7151384404377518
+      },
+      {
+        "fold": 3,
+        "n_train": 3673,
+        "n_validation": 1139,
+        "n_validation_hosts": 439,
+        "validation_positive_share": 0.32133450395083407,
+        "roc_auc": 0.6507044443973167
+      },
+      {
+        "fold": 4,
+        "n_train": 3725,
+        "n_validation": 1087,
+        "n_validation_hosts": 452,
+        "validation_positive_share": 0.32382704691812325,
+        "roc_auc": 0.5180252782931355
+      }
+    ],
+    "training_fold_prevalence_baseline": {
+      "brier_score": 0.231593169917876,
+      "log_loss": 0.6561004268427028
+    }
+  },
+  {
+    "roc_auc": 0.5958177301852543,
+    "average_precision": 0.42457114123773243,
+    "brier_score": 0.22605859513419194,
+    "log_loss": 0.6441922044884113,
+    "precision_top_quarter": 0.4485215532597079,
+    "confusion_matrix_at_0_5": [
+      [
+        2830,
+        258
+      ],
+      [
+        1488,
+        236
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.35827098919368244,
+      "precision_top_quarter": 0.35827098919368244,
+      "brier_score": 0.22991288749586275,
+      "log_loss": 0.6524168918235212,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "established_history",
+    "model": "random_forest",
+    "n": 4812,
+    "n_hosts": 2184,
+    "n_segments": 16,
+    "descriptive_review_p75_in_this_scope": 29.0,
+    "fixed_review_target": 22,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 3877,
+        "n_validation": 935,
+        "n_validation_hosts": 422,
+        "validation_positive_share": 0.38288770053475935,
+        "roc_auc": 0.6409549490235567
+      },
+      {
+        "fold": 1,
+        "n_train": 3999,
+        "n_validation": 813,
+        "n_validation_hosts": 459,
+        "validation_positive_share": 0.3111931119311193,
+        "roc_auc": 0.6133540372670807
+      },
+      {
+        "fold": 2,
+        "n_train": 3974,
+        "n_validation": 838,
+        "n_validation_hosts": 412,
+        "validation_positive_share": 0.4713603818615752,
+        "roc_auc": 0.6681801297254051
+      },
+      {
+        "fold": 3,
+        "n_train": 3673,
+        "n_validation": 1139,
+        "n_validation_hosts": 439,
+        "validation_positive_share": 0.32133450395083407,
+        "roc_auc": 0.6213302087530663
+      },
+      {
+        "fold": 4,
+        "n_train": 3725,
+        "n_validation": 1087,
+        "n_validation_hosts": 452,
+        "validation_positive_share": 0.32382704691812325,
+        "roc_auc": 0.5192273500309215
+      }
+    ],
+    "training_fold_prevalence_baseline": {
+      "brier_score": 0.231593169917876,
+      "log_loss": 0.6561004268427028
+    }
+  },
+  {
+    "roc_auc": 0.7022574811336264,
+    "average_precision": 0.3273128002076616,
+    "brier_score": 0.14530640171891648,
+    "log_loss": 0.4508636719074591,
+    "precision_top_quarter": 0.33282349342306516,
+    "confusion_matrix_at_0_5": [
+      [
+        10411,
+        122
+      ],
+      [
+        2454,
+        88
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.1944168260038241,
+      "precision_top_quarter": 0.1944168260038241,
+      "brier_score": 0.15661892377042286,
+      "log_loss": 0.49256439864859075,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "no_price_filter",
+    "model": "logistic",
+    "n": 13075,
+    "n_hosts": 7090,
+    "n_segments": 53,
+    "descriptive_review_p75_in_this_scope": 17.0,
+    "fixed_review_target": 22,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 10486,
+        "n_validation": 2589,
+        "n_validation_hosts": 1417,
+        "validation_positive_share": 0.20702974121282347,
+        "roc_auc": 0.6998631416710893
+      },
+      {
+        "fold": 1,
+        "n_train": 10646,
+        "n_validation": 2429,
+        "n_validation_hosts": 1428,
+        "validation_positive_share": 0.17373404693289418,
+        "roc_auc": 0.7113149002189022
+      },
+      {
+        "fold": 2,
+        "n_train": 10693,
+        "n_validation": 2382,
+        "n_validation_hosts": 1382,
+        "validation_positive_share": 0.23299748110831234,
+        "roc_auc": 0.7528109390178356
+      },
+      {
+        "fold": 3,
+        "n_train": 10257,
+        "n_validation": 2818,
+        "n_validation_hosts": 1426,
+        "validation_positive_share": 0.1880766501064585,
+        "roc_auc": 0.7233758576329331
+      },
+      {
+        "fold": 4,
+        "n_train": 10218,
+        "n_validation": 2857,
+        "n_validation_hosts": 1437,
+        "validation_positive_share": 0.17465873293664683,
+        "roc_auc": 0.634987957254628
+      }
+    ],
+    "training_fold_prevalence_baseline": {
+      "brier_score": 0.15687085355137736,
+      "log_loss": 0.4933735309368276
+    }
+  },
+  {
+    "roc_auc": 0.6863027726803393,
+    "average_precision": 0.3085746578927776,
+    "brier_score": 0.1466090312117446,
+    "log_loss": 0.45475267212783077,
+    "precision_top_quarter": 0.3125955949831753,
+    "confusion_matrix_at_0_5": [
+      [
+        10471,
+        62
+      ],
+      [
+        2496,
+        46
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.1944168260038241,
+      "precision_top_quarter": 0.1944168260038241,
+      "brier_score": 0.15661892377042286,
+      "log_loss": 0.49256439864859075,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "no_price_filter",
+    "model": "random_forest",
+    "n": 13075,
+    "n_hosts": 7090,
+    "n_segments": 53,
+    "descriptive_review_p75_in_this_scope": 17.0,
+    "fixed_review_target": 22,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 10486,
+        "n_validation": 2589,
+        "n_validation_hosts": 1417,
+        "validation_positive_share": 0.20702974121282347,
+        "roc_auc": 0.6926221910418682
+      },
+      {
+        "fold": 1,
+        "n_train": 10646,
+        "n_validation": 2429,
+        "n_validation_hosts": 1428,
+        "validation_positive_share": 0.17373404693289418,
+        "roc_auc": 0.6819591146626618
+      },
+      {
+        "fold": 2,
+        "n_train": 10693,
+        "n_validation": 2382,
+        "n_validation_hosts": 1382,
+        "validation_positive_share": 0.23299748110831234,
+        "roc_auc": 0.7308239273756515
+      },
+      {
+        "fold": 3,
+        "n_train": 10257,
+        "n_validation": 2818,
+        "n_validation_hosts": 1426,
+        "validation_positive_share": 0.1880766501064585,
+        "roc_auc": 0.7121965298852091
+      },
+      {
+        "fold": 4,
+        "n_train": 10218,
+        "n_validation": 2857,
+        "n_validation_hosts": 1437,
+        "validation_positive_share": 0.17465873293664683,
+        "roc_auc": 0.6315123886449745
+      }
+    ],
+    "training_fold_prevalence_baseline": {
+      "brier_score": 0.15687085355137736,
+      "log_loss": 0.4933735309368276
+    }
+  }
+]

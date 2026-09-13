@@ -6,11 +6,17 @@
   "distinct_hosts": 14113,
   "missing_host_ids": 0,
   "calendar_records_from_monthly_aggregate": 9390720,
-  "calendar_months": ["2026-06", "2027-06"],
+  "calendar_months": [
+    "2026-06",
+    "2027-06"
+  ],
   "calendar_availability_rates_valid": true,
   "review_records_from_monthly_aggregate": 1026690,
   "review_records_from_listing_aggregate": 1026690,
-  "review_months": ["2010-08", "2026-06"],
+  "review_months": [
+    "2010-08",
+    "2026-06"
+  ],
   "review_last_date": "2026-06-28",
   "review_orphan_listing_ids": 0,
   "review_aggregate_duplicate_listing_ids": 0,
@@ -23,8 +29,8 @@
   "price_below30": 45,
   "price_above1500": 203,
   "price_filter_mismatch": 0,
-  "price_median": 243.66999999999999,
-  "price_mean": 317.65037131681822,
+  "price_median": 243.67,
+  "price_mean": 317.6503713168182,
   "missing_bedrooms": 4679,
   "missing_rating": 4477,
   "missing_location_rating": 4484,
@@ -36,10 +42,12 @@
   "revenue_max_abs_residual": 0.500000000007276,
   "revenue_missing_with_price": 0,
   "revenue_present_without_price": 0,
-  "snapshot_date_in_script": "2026-06-16",
   "first_review_after_script_date": 2,
   "last_review_after_script_date": 66,
-  "nonmissing_minimum_nights_range": [1, 1000],
+  "nonmissing_minimum_nights_range": [
+    1,
+    1000
+  ],
   "amenity_flags_in_price_model": false,
   "listings_by_room_type": [
     {
@@ -70,7 +78,10 @@
       "priced": false,
       "n": 6801,
       "no_ltm_reviews": 5574,
-      "pct_no_ltm_reviews": 81.958535509483895
+      "pct_no_ltm_reviews": 81.9585355094839
     }
-  ]
+  ],
+  "previous_script_reference_date": "2026-06-16",
+  "current_review_history_reference_date": "2026-06-28",
+  "note": "Saved-data integrity checks; raw-to-clean validation remains unavailable. Counts relative to the previous script date describe the issue found before correction."
 }

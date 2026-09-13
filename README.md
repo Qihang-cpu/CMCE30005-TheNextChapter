@@ -1,4 +1,4 @@
-# Melbourne Airbnb Performance
+# Melbourne Airbnb Review Activity
 
 Interim Project Report
 
@@ -6,83 +6,77 @@ CMCE30005 Business Analytics Challenge | Semester 2 2026 | TheNextChapter Group 
 
 Eric Huang, Loc Le, Qihang Sun and Maksym Xu
 
-Repository: [Qihang-cpu/CMCE30005-TheNextChapter](https://github.com/Qihang-cpu/CMCE30005-TheNextChapter)
+Repository: [Qihang-cpu/CMCE30005-TheNextChapter](https://github.com/Qihang-cpu/CMCE30005-TheNextChapter/tree/interim-report-2026-09-13)
 
 ## Introduction
 
-A prospective operator considering several Airbnb properties in Melbourne needs evidence about which property configurations attract stronger demand before committing to leases and furnishings. Our project compares existing listings using the three Inside Airbnb files supplied for the subject. The sample contains 25,728 listings, with substantial differences in prices, property types and recent review activity. These differences make a single citywide average an inadequate guide to property selection.
+A prospective operator considering several Airbnb properties in Melbourne needs a way to compare locations and dwelling configurations before committing to leases and furnishings. The school-supplied Inside Airbnb snapshot contains considerable variation in quoted prices and recent guest reviews. Citywide averages conceal these differences, while comparisons between conventional apartments and specialised holiday accommodation can be misleading.
 
-Work completed so far establishes a data-cleaning pipeline, descriptive comparisons and exploratory regression models. It also identifies a constraint that changes the project: reported revenue is estimated and operating costs are absent. We therefore focus on relative listing performance rather than profitability. The intended output is an internal benchmarking framework and a validated model for identifying listings with high estimated revenue.
+Our project combines descriptive comparisons with predictive modelling of review activity. The business output is a shortlist of comparable residential segments for further investigation. Reviews provide an observable activity measure, but they do not measure profit. Because actual leases and operating costs are unavailable, we have removed external-rent scenarios from the current analysis.
 
 ## Problem Definition and Objectives
 
-Our research question is: **Which observable property characteristics are associated with high estimated annual revenue among comparable Melbourne Airbnb listings, and how accurately can models identify upper-quartile listings belonging to hosts excluded from model training?**
+Our research question is: **Among Greater Melbourne standard entire-home segments with at least 50 eligible listings, which LGA × dwelling-type × bedroom configurations have the highest mean out-of-sample predicted probability of recording at least 22 guest reviews in the twelve months preceding the snapshot?**
 
-The descriptive objective is to compare revenue distributions and property characteristics across local government areas (LGAs) and dwelling configurations. The predictive objective is to classify listings above their segment's 75th revenue percentile. We propose an entire-home sample with one to three bedrooms, comparing listings within LGA, bedroom count and broad dwelling type. Segment sizes and missing classifications will be reported before modelling.
+The descriptive objective is to compare review distributions, attainment rates and property attributes. The predictive objective is to assess whether property information distinguishes higher-activity listings belonging to hosts excluded from training.
 
-The upper quartile has an industry benchmarking precedent. Cushman & Wakefield Georgia (2019, pp. 13–14) compares Airbnb revenue at the median, 75th and 90th percentiles. Hawthorne (2024), writing for Rabbu, explicitly uses the 75th percentile as a short-term rental assessment benchmark. These sources motivate our choice; they do not establish a universal success or profitability threshold. Cutoffs will be calculated from the supplied data, with the 90th percentile used as a sensitivity check. No external market observations or cost estimates enter the analysis.
+Eligible listings are entire homes with one to three bedrooms, quoted prices of AUD30–1,500, and one of four dwelling types: rental unit, condo, home or townhouse. Apartments and condos form one class; homes and townhouses form the other. At least 50 listings must remain in each LGA–class–bedroom cell after these filters. This defines comparable residential stock without claiming that particular properties are available to lease.
+
+The eligible sample's observed 75th percentile is 22 reviews. We retain that fixed event across modelling and sensitivity analyses. Because of ties, 25.82% meet it. Industry reports use percentile comparisons for revenue benchmarking (Cushman & Wakefield Georgia, 2019), but our review threshold comes from the supplied data. It is neither a whole-market benchmark nor a profitability threshold, and cross-validation does not independently establish the choice of 22.
 
 ## Data Description
 
-The supplied June 2026 snapshot comprises 25,728 listing records, approximately 9.39 million calendar records and 1.03 million reviews. Listing identifiers connect the files. Relevant variables include LGA, room and property type, bedrooms, bathrooms, guest capacity, amenities, quoted nightly price, minimum stay, host characteristics and review counts. Calendar records describe availability, not confirmed bookings, and contain no price column.
+The June 2026 dataset comprises 25,728 listings, approximately 9.39 million calendar records and 1.03 million reviews. Relevant variables include listing and host identifiers, LGA, dwelling type, bedrooms, capacity, bathroom descriptions, amenities, quoted price and recent review counts. Calendar availability does not establish bookings, and the calendar file contains no prices.
 
-Cleaning scripts convert textual missing values and currency strings, parse bathroom descriptions and count listed amenities. Thirteen entirely empty columns are removed. Prices and estimated revenue are missing for 6,553 listings (25.5%); bedrooms are missing for 4,679 (18.2%). Exploratory price models use an AUD30–1,500 range, retaining 18,927 listings. This is a working filter, not a market definition: 82.0% of excluded listings have no review in the preceding year, compared with 23.7% of retained listings. Selection bias must therefore accompany any comparison.
+Cleaning converts currency strings and missing values and derives bathroom counts and amenity counts. The revised parsers preserve identifiers as text, recognise half-baths and parse amenity lists without treating commas inside names as additional amenities. Price and estimated revenue are each missing for 6,553 listings; bedrooms are missing for 4,679. The median quoted price is AUD243.67 among 19,175 non-missing values, compared with AUD242.50 in the 18,927-listing price-filtered sample.
 
-Quoted prices are positively skewed: the median is AUD243.67 and the mean AUD317.65 among 19,175 listings with a non-missing quoted price. Entire homes account for 73.2% of the full sample. Within the filtered sample, median estimated annual revenue is AUD14,664 for entire homes and AUD936 for private rooms. This motivates comparison within similar property groups rather than interpreting the difference as a return from switching property type.
+The main scope contains 8,967 listings, 4,081 hosts and 35 eligible segments. It retains 1,428 listings with zero reviews in the preceding year. Excluding these would remove relevant low-activity outcomes. There are 2,315 listings with at least 22 reviews. Their median amenity count is 46, compared with 42 below the threshold; both groups have a median capacity of four guests. These pooled differences describe composition rather than causal effects.
 
-We verified that estimated revenue equals quoted price multiplied by estimated occupied nights, allowing for rounding. Estimated nights are themselves constructed from reviews and minimum-stay assumptions. These measures are imperfect proxies, and their rankings inherit those assumptions. Actual rent, cleaning, utilities and furnishing costs are unavailable. The snapshot also cannot identify genuine rental-arbitrage operators or establish future performance.
+A current reproducibility limitation is that the local links to the original CSV files are broken. This update was rerun from the saved cleaned snapshot and aggregates. Their results can be reproduced, but original identifier precision, parsing and per-listing review windows still require verification against restored source files. First-review dates also indicate review history, not opening dates or continuous operation.
 
 ## Methodology and Analytical Approach
 
-The completed descriptive analysis uses medians, distribution plots and grouped summaries. A hedonic ordinary least squares model relates log quoted price to listing attributes. Two exploratory activity models examine whether a listing has any recent review and, among active listings, its log review count. The activity models cluster standard errors by host to account for listings sharing an operator. These models describe associations and have not been validated on held-out data.
+The descriptive stage reports each segment's sample size, distinct hosts, review quantiles and observed attainment rate. Host-cluster bootstrap intervals account for listings sharing an operator. The same eligible listings and fixed outcome feed the predictive stage, linking the segment comparisons to a common classification task.
 
-For prediction, we will compare logistic regression, providing an interpretable baseline, with a random forest that can capture nonlinear relationships. The main predictors will describe properties and amenities. Price, review counts, minimum-stay variables, estimated occupancy and their derivatives will be excluded because they construct the revenue target. Superhost status and review scores will also be excluded from the main model because they reflect prior operating outcomes and are unavailable when selecting a property before hosting.
+We fitted a regularised logistic regression and a random forest using LGA, configuration, guest capacity, bathroom count and amenity count. Reviews, ratings, Superhost status and estimated occupancy or revenue are excluded as predictors. Current price and minimum stay enter only a separate operating-controls sensitivity because they describe contemporaneous business settings.
 
-Hosts will be separated into training and test groups using an 80/20 split. Five-fold cross-validation will also keep hosts separate. Imputation, segment cutoffs and tuning will be learned within training folds and then applied to validation or test listings. Sparse or unseen segments will be flagged rather than assigned unsupported local thresholds. We will report ROC-AUC against 0.5, and precision-recall AUC and precision among the highest-ranked quarter against held-out prevalence. The task predicts held-out listings' observed-snapshot classifications, not next year's income. R, data.table, ggplot2, broom and sandwich support completed work; ranger is planned for the forest.
+Five-fold cross-validation separates hosts: no host appears in both training and validation within a fold. Imputation, category encoding and standardisation are fitted inside each training fold, following the scikit-learn guidance on avoiding information leakage. Both models use the same folds and fixed settings. These are exploratory cross-validation results, with no hyperparameter search or independent final test set.
+
+Evaluation includes ROC-AUC, average precision, Brier score, calibration summaries and precision among the highest-scored quarter. The main logistic model achieves AUC 0.649, average precision 0.361 and Brier score 0.182. Its top-quarter precision is 37.8%, compared with the sample prevalence of 25.8%. The forest achieves AUC 0.631 and average precision 0.348. Adding operating controls raises logistic AUC to 0.720; this does not establish equivalent performance using information verified before opening.
+
+Segment rankings average out-of-fold probabilities. Melbourne three-bedroom apartments have the highest mean logistic score, 39.5%, compared with an observed attainment rate of 39.8% across 543 listings. The accompanying intervals resample hosts while holding fitted scores fixed; they omit model-fitting uncertainty and do not establish a definitive best location. R supports cleaning and descriptive analysis; Python, pandas and scikit-learn support predictive validation.
 
 ## Analysis Plan and Progress to Date
 
-Cleaning, exploratory summaries and regression analyses are complete. The price model uses 12,223 listings and achieves an adjusted R-squared of 0.558 for log price. This is in-sample fit, not predictive accuracy. The review-intensity model uses 12,648 listings and an adjusted R-squared of 0.411, indicating substantial unexplained variation. Scripts and result tables provide an audit trail for these findings.
+The audit of the available cleaned data, descriptive segment comparisons, two predictive baselines and three sensitivity scenarios are complete. R and Python implementations agree on the main sample and labels. Separate calculations reproduce the model metrics and grouped predictions. Earlier cleaning issues identified during review include a 91-date availability window and an incomplete final month in the seasonality calculation; the code now uses 90 dates and excludes the final observed month respectively.
 
-The main adjustment is to replace the earlier profit and cash-return framing with internal performance benchmarking. An earlier external-rent screen is excluded from the current research question. The proposed predictive analysis remains unfinished; no test-set accuracy or classifier results are claimed.
+Restricting first reviews to on or before 1 June 2025 and reapplying the 50-listing rule leaves 4,812 listings in 16 segments. Their P75 is 29, demonstrating that review-history restrictions change the benchmark. The sensitivity retains the fixed 22-review event and zero-review outcomes. Removing the price filter gives a further check on sample selection.
 
-By the end of Week 9, we will finalise comparable segments, inspect ties at percentile cutoffs and implement the host-grouped baseline. Week 10 will cover the forest, cross-validation and threshold sensitivity. Weeks 11–12 will focus on model interpretation, limitations and final reporting. Missing data and sparse segments are the main implementation risks. The repository README reproduces this interim report and links to the scripts and supporting analyses.
+Week 9 will focus on restoring raw files, verifying identifiers and review windows, and assessing sparse positive outcomes. Week 10 will test repeated host splits, broader dwelling mappings and model tuning within nested validation. Weeks 11–12 will cover ranking uncertainty and final reporting. The README reproduces this report and links to the scripts, tables and figures. The findings support screening existing comparable listings; they do not forecast a new operator's future income.
 
 ## References
 
 Cushman & Wakefield Georgia. (2019, June). *Tbilisi hospitality series: Airbnb* (pp. 13–14). [Report](https://cushwake.ge/wp-content/uploads/2025/06/MKTB_JUNE_AIRBNB.pdf).
 
-Hawthorne, T. (2024, December 10). *How to accurately estimate Airbnb revenue*. Rabbu. [Article](https://rabbu.com/blog/how-rabbu-uses-our-airbnb-calculator-internally).
-
 Inside Airbnb. (2026). *Melbourne listings, calendar and reviews* [June 2026 dataset supplied through CMCE30005 LMS].
+
+Scikit-learn developers. (2025). *Cross-validation* and *Common pitfalls and recommended practices*. [Validation guidance](https://scikit-learn.org/1.7/modules/cross_validation.html); [Preprocessing guidance](https://scikit-learn.org/1.7/common_pitfalls.html).
 
 
 ---
 
 ## Repository guide
 
-The report above is the current interim submission. Editable and submission copies:
+- [Word report](reports/Interim_Project_Report.docx) · [PDF report](reports/Interim_Project_Report.pdf) · [Report source](reports/interim-project-report.md)
+- [Research question and analysis plan](reports/rq-analysis-plan.md)
+- [Data notes](reports/data-notes.md) · [Methodology](reports/methodology.md) · [Validation record](reports/data-validation-2026-09-13.md)
+- [Review segment comparisons](reports/tables/segment_ladder.csv) · [Model metrics](reports/tables/rq_model_metrics.json) · [Out-of-fold segment ranking](reports/tables/rq_oof_segment_ranking.csv)
 
-- [Word report](reports/Interim_Project_Report.docx)
-- [PDF report](reports/Interim_Project_Report.pdf)
-- [Report source](reports/interim-project-report.md)
+### Reproducing the analysis
 
-### Current data scope
+Use the three school-supplied files: `listings_airbnb.csv`, `calendar_airbnb.csv` and `reviews_airbnb.csv` in `data/raw/`. They are not included in Git. The current local links are broken; the latest run used the existing cleaned R snapshot. The source status and hashes are recorded in [rq_scope_summary.json](reports/tables/rq_scope_summary.json).
 
-The analysis uses only the three CSV files supplied through CMCE30005 LMS. External publications are cited for benchmarking methodology; their observations, market revenue levels and cost estimates are not used in the models. Raw files are excluded from GitHub. Place `listings_airbnb.csv`, `calendar_airbnb.csv` and `reviews_airbnb.csv` in `data/raw/` to reproduce the work.
-
-### Completed analysis
-
-- [Data cleaning](scripts/01_data_cleaning.R) and [descriptive analytics](scripts/07_descriptive_analytics.R).
-- [Exploratory comparisons](scripts/02_exploratory_analysis.R), [price model](scripts/03_price_model.R) and [review activity analysis](scripts/04_revenue_analysis.R).
-- [Descriptive tables](reports/tables/) and [figures](reports/figures/).
-- [Revenue construction and limitations](reports/revenue-analysis.md) and [descriptive write-up](reports/descriptive-analytics.md).
-
-Predictive classification and host-grouped validation are planned, not completed. The current report supersedes previous profitability and cash-return research questions. Historical external-rent and ROI scripts (`05` and `06`), tables and discussion are retained as prior work but are outside the current submission's evidence and run order.
-
-### Reproduce the completed internal analysis
-
-Open `CMCE30005-Group2.Rproj`, then run:
+After restoring the original files, run the following from the project root in R:
 
 ```r
 source("scripts/00_packages.R")
@@ -91,10 +85,18 @@ source("scripts/02_exploratory_analysis.R")
 source("scripts/03_price_model.R")
 source("scripts/04_revenue_analysis.R")
 source("scripts/07_descriptive_analytics.R")
+source("scripts/08_peer_ranking.R")
 ```
 
-The scripts use R with data.table, ggplot2, scales, stringr, broom and sandwich. Script 07 additionally uses dplyr, tidyr, skimr and patchwork. Processed R objects can be regenerated; the summary outputs are available for review without rerunning the pipeline.
+Scripts 02, 03, 04, 07 and 08 can also rerun from the existing processed files. The earlier price and revenue analyses describe the supplied data and are supporting analyses; the primary question uses the review outcome in script 08 and the Python model.
 
-### Data validation
+Install the Python dependencies and run the predictive analysis:
 
-[Validation record, 13 September 2026](reports/data-validation-2026-09-13.md): the current report's main statistics and 13 regenerated result tables match the saved processed data. Raw-to-clean validation remains incomplete because the local raw CSV links are currently broken. The record also identifies historical wording errors and a derived availability-window issue.
+```sh
+python -m pip install -r requirements-analysis.txt
+python scripts/rq_scope_feasibility.py
+```
+
+The Python script reads raw listings when available. Otherwise it requires Rscript to read the existing `listings_clean.rds`; a fresh clone needs the school files to create that snapshot. Private listing-level probabilities and host-fold assignments are written to ignored `data/processed/` files. Public outputs contain aggregate tables only.
+
+The current pipeline contains no external market observations, rent inputs or assumed profitability calculations. The supporting references concern methodology. Older rent scenarios have been removed from the current submission tree.
