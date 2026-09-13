@@ -35,19 +35,20 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "reports" / "tables"
 PRIVATE_OUTPUT = ROOT / "data" / "processed"
-SEED = 30005
+CONFIG_PATH = ROOT / "config" / "review_analysis.json"
+CONFIG = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+SEED = int(CONFIG["seed"])
 N_FOLDS = 5
-REVIEW_TARGET = 22
-ESTABLISHED_CUTOFF = pd.Timestamp("2025-06-01")
+ESTABLISHED_CUTOFF = pd.Timestamp(CONFIG["established_first_review_on_or_before"])
+MINIMUM_SEGMENT_LISTINGS = int(CONFIG["minimum_segment_listings"])
 BOOTSTRAP_REPLICATES = 500
 CELL_KEYS = ["neighbourhood_cleansed", "configuration"]
 NUMERIC_FEATURES = ["accommodates", "bathrooms_num", "n_amenities"]
-PROPERTY_MAP = {
-    "Entire rental unit": "Apartment/unit",
-    "Entire condo": "Apartment/unit",
-    "Entire home": "House/townhouse",
-    "Entire townhouse": "House/townhouse",
-}
+PROPERTY_MAP = CONFIG["property_map"]
+if CONFIG["benchmark_partition"]["hash_algorithm"] != "sha256":
+    raise ValueError("The host partition requires SHA256.")
+if not 0 < CONFIG["benchmark_quantile"] < 1:
+    raise ValueError("The configured benchmark quantile must lie strictly between zero and one.")
 
 
 def file_sha256(path):
@@ -149,25 +150,60 @@ def read_source():
     return frame, provenance
 
 
-def make_scope(frame, *, price_filter=True, established=False):
-    mask = frame["room_type"].eq("Entire home/apt") & frame["bedrooms"].isin([1, 2, 3]) & frame["dwelling_class"].notna()
+def host_role(host_id):
+    partition = CONFIG["benchmark_partition"]
+    digest = hashlib.sha256((partition["hash_prefix"] + host_id).encode("utf-8")).hexdigest()
+    bucket = int(digest[:int(partition["hex_characters"])], 16) % int(partition["modulus"])
+    return "benchmark_development" if bucket == int(partition["benchmark_remainder"]) else "analysis"
+
+
+def eligible_base(frame, *, price_filter=True, established=True):
+    """Apply declared eligibility without using recent-review outcome values."""
+    mask = frame["room_type"].eq(CONFIG["room_type"]) & frame["bedrooms"].isin(CONFIG["bedrooms"]) & frame["dwelling_class"].notna()
     if price_filter:
-        mask &= frame["price_num"].between(30, 1500)
+        mask &= frame["price_num"].between(CONFIG["minimum_price"], CONFIG["maximum_price"])
     if established:
         mask &= frame["first_review_date"].le(ESTABLISHED_CUTOFF)
     base = frame.loc[mask].copy()
     base["bedrooms"] = base["bedrooms"].astype(int)
     base["configuration"] = base["bedrooms"].astype(str) + "BR " + base["dwelling_class"]
+    return base
+
+
+def make_scope(analysis_frame, *, price_filter=True, established=True):
+    if not analysis_frame["host_role"].eq("analysis").all():
+        raise ValueError("Benchmark-development hosts must be removed before defining an analysis scope.")
+    base = eligible_base(analysis_frame, price_filter=price_filter, established=established)
     counts = base.groupby(CELL_KEYS).size().rename("n").reset_index()
-    cells = counts.loc[counts["n"] >= 50].copy()
+    cells = counts.loc[counts["n"] >= MINIMUM_SEGMENT_LISTINGS].copy()
     sample = base.merge(cells[CELL_KEYS], on=CELL_KEYS, how="inner", validate="many_to_one")
-    sample["review_target_met"] = sample["number_of_reviews_ltm"].ge(REVIEW_TARGET).astype(int)
     if sample.empty:
         raise ValueError("No eligible segments remain after the declared filters.")
+    if sample.groupby(CELL_KEYS).size().lt(MINIMUM_SEGMENT_LISTINGS).any():
+        raise ValueError("An analysis segment is below the configured support requirement.")
     return sample, cells, len(base)
 
 
-def validate_raw_reviews(frame, sample, provenance):
+def develop_benchmark(benchmark_frame, analysis_cells):
+    """Read only benchmark outcomes to calculate the common review-count event."""
+    if not benchmark_frame["host_role"].eq("benchmark_development").all():
+        raise ValueError("Threshold development accepts benchmark hosts only.")
+    reference = eligible_base(benchmark_frame).merge(
+        analysis_cells[CELL_KEYS], on=CELL_KEYS, how="inner", validate="many_to_one"
+    )
+    if reference.empty:
+        raise ValueError("No eligible benchmark-development listings remain in the primary analysis cells.")
+    quantile = float(reference["number_of_reviews_ltm"].quantile(CONFIG["benchmark_quantile"], interpolation="linear"))
+    return reference, quantile, int(np.ceil(quantile))
+
+
+def attach_outcome(sample, threshold):
+    labelled = sample.copy()
+    labelled["review_target_met"] = labelled["number_of_reviews_ltm"].ge(threshold).astype(int)
+    return labelled
+
+
+def validate_raw_reviews(frame, sample, provenance, threshold):
     path = ROOT / "data/raw/reviews_airbnb.csv"
     if provenance["source_kind"] != "raw_listings" or not path.is_file() or "last_scraped" not in frame:
         return {"status": "blocked", "reason": "Raw listings, review dates and per-listing scrape dates are required; they are not all available."}
@@ -189,7 +225,7 @@ def validate_raw_reviews(frame, sample, provenance):
     check = sample[["id", "number_of_reviews_ltm"]].copy()
     check["rebuilt_reviews"] = check["id"].map(counts).fillna(0).astype(int)
     check["difference"] = check["rebuilt_reviews"] - check["number_of_reviews_ltm"]
-    check["label_changed"] = check["rebuilt_reviews"].ge(REVIEW_TARGET) != check["number_of_reviews_ltm"].ge(REVIEW_TARGET)
+    check["label_changed"] = check["rebuilt_reviews"].ge(threshold) != check["number_of_reviews_ltm"].ge(threshold)
     check.loc[check["difference"].ne(0)].to_csv(PRIVATE_OUTPUT / "rq_review_reconstruction_mismatches.csv", index=False)
     return {
         "status": "completed", "review_file_sha256": file_sha256(path),
@@ -230,7 +266,21 @@ def precision_top_quarter(y, probability):
 
 def score_predictions(y, probability):
     prevalence = float(y.mean())
+    bins = calibration_table(y, probability)
+    ece = float((bins["n"] * (bins["mean_predicted_probability"] - bins["observed_review_target_share"]).abs()).sum() / len(y))
+    high_score = probability >= 0.5
     return {
+        "mean_predicted_probability": float(probability.mean()),
+        "observed_target_share": prevalence,
+        "mean_prediction_minus_observed": float(probability.mean() - prevalence),
+        "expected_calibration_error_10_equal_width_bins": ece,
+        "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
+        "high_score_at_least_0_5": {
+            "n": int(high_score.sum()),
+            "observed_target_share": float(y[high_score].mean()) if high_score.any() else None,
+            "mean_predicted_probability": float(probability[high_score].mean()) if high_score.any() else None,
+        },
+        "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
         "roc_auc": float(roc_auc_score(y, probability)),
         "average_precision": float(average_precision_score(y, probability)),
         "brier_score": float(brier_score_loss(y, probability)),
@@ -249,9 +299,14 @@ def score_predictions(y, probability):
 def calibration_table(y, probability):
     data = pd.DataFrame({"observed": y, "predicted": probability})
     data["probability_bin"] = pd.cut(data["predicted"], np.linspace(0, 1, 11), include_lowest=True)
-    return data.groupby("probability_bin", observed=True).agg(
-        n=("observed", "size"), mean_predicted_probability=("predicted", "mean"), observed_review_target_share=("observed", "mean")
+    grouped = data.groupby("probability_bin", observed=True).agg(
+        n=("observed", "size"), positive_n=("observed", "sum"),
+        mean_predicted_probability=("predicted", "mean"), observed_review_target_share=("observed", "mean")
     ).reset_index()
+    grouped["absolute_calibration_gap"] = (grouped["mean_predicted_probability"] - grouped["observed_review_target_share"]).abs()
+    grouped["fewer_than_50_listings"] = grouped["n"].lt(50)
+    grouped["fewer_than_10_positive_listings"] = grouped["positive_n"].lt(10)
+    return grouped
 
 
 def segment_ranking(sample, probability):
@@ -280,8 +335,12 @@ def segment_ranking(sample, probability):
     return ranking
 
 
-def evaluate(sample, host_folds, *, scenario, model_name, controls=False):
+def evaluate(sample, host_folds, benchmark_hosts, *, threshold, scenario, model_name, controls=False):
     data = sample.copy()
+    if set(data["host_id"]) & benchmark_hosts:
+        raise ValueError("Benchmark-development hosts overlap the modelling/evaluation sample.")
+    if not data["host_role"].eq("analysis").all() or data.groupby(CELL_KEYS).size().lt(MINIMUM_SEGMENT_LISTINGS).any():
+        raise ValueError("The modelling scope violates role or minimum-support requirements.")
     if controls:
         data["log_price"] = np.log(data["price_num"].where(data["price_num"] > 0))
         data["log_minimum_nights"] = np.log1p(data["minimum_nights"].where(data["minimum_nights"] >= 0))
@@ -292,7 +351,10 @@ def evaluate(sample, host_folds, *, scenario, model_name, controls=False):
     baseline_probability = np.full(len(data), np.nan)
     for fold in range(N_FOLDS):
         train, test = data["fold"].ne(fold), data["fold"].eq(fold)
-        assert set(data.loc[train, "host_id"]).isdisjoint(data.loc[test, "host_id"])
+        if not set(data.loc[train, "host_id"]).isdisjoint(data.loc[test, "host_id"]):
+            raise ValueError("A host overlaps training and validation within a fold.")
+        if set(data.loc[train | test, "host_id"]) & benchmark_hosts:
+            raise ValueError("A benchmark host entered cross-validation.")
         if y[train].sum() in (0, int(train.sum())) or y[test].sum() in (0, int(test.sum())):
             raise ValueError(f"{scenario}: fold {fold} lacks one outcome class.")
         pipeline, columns = build_model(model_name, controls)
@@ -311,14 +373,15 @@ def evaluate(sample, host_folds, *, scenario, model_name, controls=False):
         "scenario": scenario, "model": model_name, "n": len(data), "n_hosts": data["host_id"].nunique(),
         "n_segments": data.groupby(CELL_KEYS).ngroups,
         "descriptive_review_p75_in_this_scope": float(data["number_of_reviews_ltm"].quantile(0.75)),
-        "fixed_review_target": REVIEW_TARGET,
+        "common_review_threshold": threshold,
         "predictors": columns, "folds": fold_metrics,
         "training_fold_prevalence_baseline": {
             "brier_score": float(brier_score_loss(y, baseline_probability)),
             "log_loss": float(log_loss(y, baseline_probability, labels=[0, 1])),
         },
     })
-    private = data[["id", "host_id", "fold", "number_of_reviews_ltm", "review_target_met"]].copy()
+    private = data[["id", "host_id", "host_role", "fold", *CELL_KEYS, "number_of_reviews_ltm", "review_target_met"]].copy()
+    private["common_review_threshold"] = threshold
     private["oof_probability"] = probability
     private.to_csv(PRIVATE_OUTPUT / f"rq_oof_{scenario}_{model_name}.csv", index=False)
     ranking = segment_ranking(data, probability).assign(scenario=scenario, model=model_name)
@@ -331,35 +394,68 @@ def main():
     OUTPUT.mkdir(parents=True, exist_ok=True)
     PRIVATE_OUTPUT.mkdir(parents=True, exist_ok=True)
     frame, provenance = read_source()
-    sample, cells, n_before_cells = make_scope(frame)
-    established, _, _ = make_scope(frame, established=True)
-    no_price_filter, _, _ = make_scope(frame, price_filter=False)
-    # One reproducible host assignment is shared by models and scope sensitivities.
-    all_hosts = np.array(sorted(frame["host_id"].unique()), dtype=object)
-    np.random.default_rng(SEED).shuffle(all_hosts)
-    host_folds = {host: index % N_FOLDS for index, host in enumerate(all_hosts)}
-    pd.DataFrame({"host_id": list(host_folds), "fold": list(host_folds.values())}).to_csv(PRIVATE_OUTPUT / "rq_host_fold_manifest.csv", index=False)
-    raw_validation = validate_raw_reviews(frame, sample, provenance)
+    frame["host_role"] = frame["host_id"].map(host_role)
+    benchmark_frame = frame.loc[frame["host_role"].eq("benchmark_development")].copy()
+    analysis_frame = frame.loc[frame["host_role"].eq("analysis")].copy()
+    benchmark_hosts = set(benchmark_frame["host_id"])
+    if benchmark_hosts & set(analysis_frame["host_id"]):
+        raise ValueError("Host roles are not disjoint.")
+    # Only eligibility and analysis-host counts define the primary reporting cells.
+    sample, cells, n_before_cells = make_scope(analysis_frame)
+    reference, benchmark_q75, threshold = develop_benchmark(benchmark_frame, cells)
+    all_histories, _, _ = make_scope(analysis_frame, established=False)
+    no_price_filter, _, _ = make_scope(analysis_frame, price_filter=False)
+    sample, all_histories, no_price_filter = [attach_outcome(part, threshold) for part in (sample, all_histories, no_price_filter)]
+    reference = attach_outcome(reference, threshold)
+    # Benchmark hosts have no model fold. All other hosts retain a common fold
+    # across primary models and sensitivity samples, including hosts outside the
+    # primary reporting cells who become eligible in a sensitivity.
+    analysis_hosts = np.array(sorted(analysis_frame["host_id"].unique()), dtype=object)
+    np.random.default_rng(SEED).shuffle(analysis_hosts)
+    host_folds = {host: index % N_FOLDS for index, host in enumerate(analysis_hosts)}
+    host_manifest = frame[["host_id", "host_role"]].drop_duplicates().sort_values("host_id")
+    host_manifest["fold"] = host_manifest["host_id"].map(host_folds).astype("Int64")
+    host_manifest.to_csv(PRIVATE_OUTPUT / "rq_host_fold_manifest.csv", index=False)
+    private_columns = ["id", "host_id", "host_role", *CELL_KEYS, "number_of_reviews_ltm", "review_target_met"]
+    reference[private_columns].assign(common_review_threshold=threshold).to_csv(PRIVATE_OUTPUT / "rq_benchmark_reference.csv", index=False)
+    sample[private_columns].assign(fold=sample["host_id"].map(host_folds), common_review_threshold=threshold).to_csv(PRIVATE_OUTPUT / "rq_analysis_main_manifest.csv", index=False)
+    raw_validation = validate_raw_reviews(frame, pd.concat([sample, reference], ignore_index=True), provenance, threshold)
     provenance["raw_validation"] = raw_validation["status"] == "completed"
     provenance["raw_review_validation"] = raw_validation
+    benchmark_details = {
+        "n_listings": len(reference), "n_hosts": reference["host_id"].nunique(),
+        "n_segments": reference.groupby(CELL_KEYS).ngroups,
+        "quantile_probability": CONFIG["benchmark_quantile"], "pooled_review_quantile": benchmark_q75,
+        "common_integer_review_threshold": threshold,
+        "reference_share_meeting_threshold": float(reference["review_target_met"].mean()),
+        "reference_zero_recent_reviews": int(reference["number_of_reviews_ltm"].eq(0).sum()),
+        "host_partition": CONFIG["benchmark_partition"],
+        "scope": "Primary listing eligibility within the final primary analysis cells. Benchmark hosts supply the common cutoff only and are excluded from every model fit, OOF prediction and sensitivity sample.",
+    }
     summary = {
-        "raw_listings_or_cached_snapshot_rows": len(frame), "narrow_scope_before_cell_filter": n_before_cells,
+        "raw_listings_or_cached_snapshot_rows": len(frame),
+        "established_eligible_all_roles_before_cell_filter": len(eligible_base(frame)),
+        "analysis_eligible_before_cell_filter": n_before_cells,
         "eligible_cells_ge_50": len(cells), "eligible_listings": len(sample), "eligible_hosts": sample["host_id"].nunique(),
-        "descriptive_p75_reviews_ltm": float(sample["number_of_reviews_ltm"].quantile(0.75)),
-        "fixed_review_target": REVIEW_TARGET, "positive_n": int(sample["review_target_met"].sum()),
+        "analysis_pool_descriptive_p75_reviews_ltm": float(sample["number_of_reviews_ltm"].quantile(.75)),
+        "common_review_threshold": threshold, "positive_n": int(sample["review_target_met"].sum()),
         "positive_share_with_ties": float(sample["review_target_met"].mean()),
         "zero_recent_review_listings": int(sample["number_of_reviews_ltm"].eq(0).sum()),
-        "threshold_definition": "A fixed 22-review operational target, motivated by the P75 observed during scope exploration. Cross-validation does not independently validate selection of this threshold.",
-        "validation_definition": "Exploratory five-fold host-grouped cross-validation; no independent final test set or hyperparameter search.",
-        "scope_support_definition": "The >=50-listing rule uses all snapshot covariate counts to define the segments reported. It does not use outcome labels, but evaluation is conditional on this full-snapshot scope rather than discovery of eligible segments in unseen markets.",
+        "benchmark_development": benchmark_details,
+        "all_source_hosts_by_role": {role: int(count) for role, count in host_manifest["host_role"].value_counts().items()},
+        "threshold_definition": CONFIG["threshold_usage"],
+        "exploratory_status": CONFIG["exploratory_status"],
+        "validation_definition": "Revised exploratory five-fold host-grouped cross-validation, with a computationally separate benchmark-development host partition. No independent untouched final test set or hyperparameter search.",
+        "scope_support_definition": CONFIG["segment_support"],
         "ranking_intervals": f"95% percentile intervals from {BOOTSTRAP_REPLICATES} within-segment host-cluster resamples, conditional on existing OOF probabilities; models are not refitted and intervals exclude model-fitting and model-selection uncertainty.",
-        "established_sensitivity": f"First review on or before {ESTABLISHED_CUTOFF.date()}, then recompute cell counts >=50. This is a historical-review criterion, not listing launch date; the 22-review event remains fixed.",
-        "main_model_interpretation": "Physical listing attributes associated with review activity in the preceding year, evaluated on held-out hosts. These are not verified pre-opening measurements or forecasts of a new operator's next year.",
+        "established_definition": f"First review on or before {ESTABLISHED_CUTOFF.date()}, using reference date {CONFIG['reference_date']}. This is a review-history criterion, not listing launch date or proof of continuous operation.",
+        "main_model_interpretation": "Physical listing attributes associated with review activity in the preceding year, evaluated on held-out analysis hosts. These are not verified pre-opening measurements or forecasts of a new operator's next year.",
         "operating_controls_sensitivity": "Current quoted price and minimum stay are contemporaneous operating characteristics, included only as a separately labelled sensitivity.",
+        "calibration_status": "No post-hoc calibration is fitted. ECE uses ten fixed equal-width bins; sparse high-score bins limit calibration interpretation.",
         "missingness_main_numeric": {column: int(sample[column].isna().sum()) for column in NUMERIC_FEATURES},
         "provenance": provenance, "seed": SEED,
         "versions": {"python": platform.python_version(), "numpy": np.__version__, "pandas": pd.__version__, "scipy": scipy.__version__, "scikit_learn": sklearn.__version__},
-        "script_sha256": file_sha256(__file__),
+        "script_sha256": file_sha256(__file__), "config_file": "config/review_analysis.json", "config_sha256": file_sha256(CONFIG_PATH),
         "model_settings": {"logistic": {"C": 1.0, "max_iter": 2000}, "random_forest": {"n_estimators": 250, "min_samples_leaf": 10, "max_features": "sqrt", "n_jobs": 2}},
     }
     observations = sample.groupby(CELL_KEYS).agg(
@@ -368,14 +464,19 @@ def main():
         positive_n=("review_target_met", "sum"), observed_review_target_share=("review_target_met", "mean"),
         median_quoted_price=("price_num", "median"),
     ).reset_index().sort_values("observed_review_target_share", ascending=False)
+    observations["common_review_threshold"] = threshold
     observations.to_csv(OUTPUT / "rq_observed_segment_outcomes.csv", index=False)
     cells.sort_values(CELL_KEYS).to_csv(OUTPUT / "rq_eligible_lga_configurations.csv", index=False)
-    frame.loc[frame["room_type"].eq("Entire home/apt") & frame["bedrooms"].isin([1, 2, 3]), "property_type"].value_counts().rename_axis("property_type").reset_index(name="n").to_csv(OUTPUT / "rq_property_type_counts.csv", index=False)
+    reference_cells = reference.groupby(CELL_KEYS).agg(n_benchmark_listings=("id", "size"), n_benchmark_hosts=("host_id", "nunique"), benchmark_cell_descriptive_p75=("number_of_reviews_ltm", lambda values: values.quantile(.75))).reset_index()
+    reference_cells = cells.merge(reference_cells, on=CELL_KEYS, how="left", validate="one_to_one")
+    reference_cells["common_review_threshold"] = threshold
+    reference_cells.to_csv(OUTPUT / "rq_benchmark_scope.csv", index=False)
+    frame.loc[frame["room_type"].eq(CONFIG["room_type"]) & frame["bedrooms"].isin(CONFIG["bedrooms"]), "property_type"].value_counts().rename_axis("property_type").reset_index(name="n").to_csv(OUTPUT / "rq_property_type_counts.csv", index=False)
     all_metrics, rankings, calibrations = [], [], []
-    scenarios = [("property_only", sample, False), ("operating_controls", sample, True), ("established_history", established, False), ("no_price_filter", no_price_filter, False)]
+    scenarios = [("property_only", sample, False), ("operating_controls", sample, True), ("all_review_histories", all_histories, False), ("no_price_filter", no_price_filter, False)]
     for scenario, data, controls in scenarios:
         for model_name in ["logistic", "random_forest"]:
-            metrics, ranking, calibration = evaluate(data, host_folds, scenario=scenario, model_name=model_name, controls=controls)
+            metrics, ranking, calibration = evaluate(data, host_folds, benchmark_hosts, threshold=threshold, scenario=scenario, model_name=model_name, controls=controls)
             all_metrics.append(metrics)
             rankings.append(ranking)
             calibrations.append(calibration)
@@ -383,7 +484,9 @@ def main():
     pd.concat(calibrations, ignore_index=True).to_csv(OUTPUT / "rq_calibration.csv", index=False)
     (OUTPUT / "rq_scope_summary.json").write_text(json.dumps(summary, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     (OUTPUT / "rq_model_metrics.json").write_text(json.dumps(all_metrics, indent=2, allow_nan=False) + "\n", encoding="utf-8")
-    print("Aggregate results written to reports/tables; identifiers and OOF rows remain in data/processed.", flush=True)
+    print(f"Benchmark development: {len(reference)} listings / {reference.host_id.nunique()} hosts; P75={benchmark_q75:g}, integer threshold={threshold}.", flush=True)
+    print(f"Primary analysis: {len(sample)} listings / {sample.host_id.nunique()} hosts / {len(cells)} segments; analysis P75={summary['analysis_pool_descriptive_p75_reviews_ltm']:g}.", flush=True)
+    print("Aggregate results written to reports/tables; reference identifiers, host roles and OOF rows remain in data/processed.", flush=True)
 
 
 if __name__ == "__main__":

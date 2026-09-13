@@ -1,33 +1,35 @@
 # Analytical methodology
 
-The project compares recent guest-review activity across residential Airbnb segments in Greater Melbourne. Its outcome is whether a listing recorded at least 22 guest reviews in the preceding 12 months. Reviews measure recorded guest engagement; they do not establish bookings, occupancy, revenue or profit.
+The project compares review activity among established standard residential Airbnb listings in Greater Melbourne. It asks which supported property segments have the highest mean out-of-fold probability of meeting a common upper-quartile review-count benchmark in the year preceding the supplied snapshot. Reviews do not establish occupancy, income or profit.
 
-## Sample and outcome
+## Sample and common outcome
 
-The primary cohort contains entire homes with one to three bedrooms, a quoted nightly price between AUD30 and AUD1,500, and one of four property types. Entire rental units and condos form the Apartment/unit class; entire homes and townhouses form House/townhouse. A segment is LGA × dwelling class × bedroom count and must contain at least 50 listings after these filters. The whitelist defines comparability, not whether a property is available to rent or can be sublet.
+The [shared configuration](../config/review_analysis.json) defines entire homes with one to three bedrooms, a quoted price of AUD30–1,500 and four property types. Rental units and condos form Apartment/unit; homes and townhouses form House/townhouse. Established means first review on or before 1 June 2025, relative to 1 June 2026. This is review history, not an opening date or continuous exposure. Neither the whitelist nor the quoted-price range establishes lease availability or verified data errors.
 
-The resulting cohort has **8,967 listings, 4,081 hosts and 35 segments**, including **1,428 listings with zero recent reviews**. Its empirical review-count P75 is 22. The event `number_of_reviews_ltm >= 22` applies the same threshold to every segment; 2,315 listings, or 25.8169%, meet it. Ties explain why this exceeds exactly 25%. The threshold was identified during scope exploration and then fixed. Cross-validation does not independently validate the choice of 22, and 22 is not the P75 of all Melbourne listings.
+Approximately 20% of hosts are assigned to benchmark development using a fixed hash of their text identifiers. These hosts are excluded from all model training and analysis samples. Among the remaining hosts, every reported LGA × dwelling class × bedroom cell must contain at least 50 listings after all eligibility filters. This support criterion uses covariates, not review outcomes.
 
-The price window defines the primary quoted-listing population. Extreme quoted prices are excluded by a scope rule, not classified as verified errors. [Scope counts](tables/review_scope_summary.csv) document every restriction.
+Benchmark-host listings must satisfy the primary eligibility rules and belong to the supported primary cells. Their pooled P75, calculated by linear interpolation and rounded upward to an integer, defines one common event for all segments and models. The reference comprises **899 listings from 424 hosts**, with **P75 = 30 reviews**. No validation-host outcomes enter that calculation.
 
-## Descriptive comparisons
+The primary analysis contains **3,810 listings, 1,699 hosts and 14 segments**. It retains **333 zero-review listings**. The fixed event `number_of_reviews_ltm >= 30` occurs for **957 listings (25.1181%)**. Threshold ties are retained; neither the reference nor the analysis is forced into an exact 25% positive class. The count of 30 is a computed result, not part of the wording of the research question. [The analysis plan](rq-analysis-plan.md) records the full partition algorithm.
 
-[Script 08](../scripts/08_peer_ranking.R) reports segment review quantiles, zero-review counts, observed target shares and independent host counts. It resamples hosts with replacement, retaining each sampled host's listings, to obtain pointwise 90% percentile intervals from 1,000 draws. These intervals describe uncertainty in observed proportions; they are not probabilities that a segment ranks first.
+## Descriptive comparison and composition checks
 
-Property-attribute profiles compare the two outcome groups without using review-derived features. These pooled contrasts remain subject to differences in location, configuration and other characteristics.
+[Script 08](../scripts/08_peer_ranking.R) describes the same analysis listings used by the predictive workflow. It reports counts, distinct hosts, review quantiles, zero outcomes, actual attainment and property-attribute profiles. Host-cluster resampling retains all listings of each sampled host. Its pointwise 90% percentile intervals use 1,000 draws and do not measure confidence in a segment's rank.
 
-## Predictive validation
+Wider dwelling and unrestricted-history summaries show how inclusion rules change composition. These comparisons do not demonstrate that excluded dwellings cannot be rented, or that younger review histories would perform like established histories after another year. Pooled attribute differences do not establish causal effects.
 
-The [Python workflow](../scripts/rq_scope_feasibility.py) evaluates logistic regression and a random forest using five folds grouped by host. Every listing receives a prediction from a model trained without its host. Imputation, scaling and categorical encoding are fitted within each training fold. Main predictors are guest capacity, bathroom count, amenity count, LGA and bedroom–dwelling configuration.
+## Predictive validation and calibration
 
-ROC-AUC, average precision, Brier score, log loss, calibration bins and precision among the highest-scored quarter assess discrimination and probability quality. The baseline probability for each validation fold comes from its training fold. Full-sample prevalence is also reported as a descriptive reference.
+The [Python workflow](../scripts/rq_scope_feasibility.py) evaluates logistic regression and random forest with five host-grouped folds. Every scored listing is excluded from training together with its host. Preprocessing is learned inside each training fold. Main predictors are guest capacity, bathrooms, amenities, LGA and bedroom–dwelling configuration. Current price and minimum stay are reserved for a labelled operating-controls sensitivity.
 
-This is exploratory cross-validation with fixed model settings; there is no independent final test set or hyperparameter search. Segment eligibility uses full-snapshot covariate counts. The target is observed activity before the snapshot, not a new operator's next-year outcome.
+ROC-AUC and average precision assess discrimination. Brier score, log loss, mean predicted versus observed rates, ten fixed-width calibration bins and their weighted absolute error assess probability quality. A training-fold-prevalence baseline provides a comparison. Bin sizes must accompany calibration summaries, especially where high predicted probabilities are sparse. Calibration is assessed, not assumed; later recalibration must use training data only.
 
-Mean out-of-fold probabilities provide a segment ranking. Its 95% bootstrap intervals resample hosts around existing predictions without refitting the models, so they omit model-fitting and model-selection uncertainty. They differ from script 08's 90% intervals for observed rates.
+Mean out-of-fold probabilities provide the reference segment ranking. Its conditional 95% intervals use 500 host-cluster resamples around fixed predictions and a fixed benchmark. They omit uncertainty from estimating the benchmark, fitting or choosing models, and selecting the highest rank. They differ from the descriptive 90% intervals for observed rates.
 
-## Sensitivity and interpretation
+## Sensitivity and limits
 
-A separate cohort requires first review on or before **1 June 2025**, then reapplies the 50-listing rule. It retains zero-review outcomes and the fixed threshold of 22. First review is a history measure, not a launch date or evidence of continuous operation. Further sensitivities remove the price restriction or add current price and minimum-stay settings as contemporaneous operating controls.
+Removing the history restriction gives 6,675 analysis listings in 22 segments. Removing the price filter but retaining established history gives 5,647 in 19 segments. Both exclude all benchmark hosts, recalculate minimum support and retain the primary reference's 30-review event. Adding current price and minimum stay changes the predictor set rather than the primary sample. Comparisons between different samples require attention to prevalence and composition.
 
-All numerical comparisons use the school-supplied data. [Data notes](data-notes.md) describe the missing raw files and resulting reproducibility limits. Financial feasibility and causal effects are outside what this dataset can establish.
+The revised design follows prior exploration of the snapshot. Computational separation of reference and validation hosts does not create an untouched final test. Fixed models have been evaluated without hyperparameter search; repeated splits, nested tuning, training-only calibration and refitted uncertainty remain future work. Cross-sectional scores describe existing listings in the preceding year, not new operators' future performance.
+
+All numerical inputs are from the school's supplied data. The unavailable original CSV files prevent verification of raw parsing, identifier precision and per-listing review windows; see [data notes](data-notes.md). Financial feasibility, subletting eligibility and causal effects remain outside the evidence.

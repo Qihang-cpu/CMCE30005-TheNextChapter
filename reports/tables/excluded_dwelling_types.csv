@@ -1,67 +1,97 @@
-scope,lga,property_type,standard_type,n_listings,share_of_scope
-All entire homes with 1-3 bedrooms,All LGAs,Entire rental unit,TRUE,10868,0.655646718146718
-All entire homes with 1-3 bedrooms,All LGAs,Entire loft,FALSE,106,0.00639478764478765
-All entire homes with 1-3 bedrooms,All LGAs,Entire townhouse,TRUE,437,0.026363416988417
-All entire homes with 1-3 bedrooms,All LGAs,Entire home,TRUE,2965,0.17887306949807
-All entire homes with 1-3 bedrooms,All LGAs,Entire cottage,FALSE,146,0.00880791505791506
-All entire homes with 1-3 bedrooms,All LGAs,Entire bungalow,FALSE,39,0.00235279922779923
-All entire homes with 1-3 bedrooms,All LGAs,Entire villa,FALSE,32,0.00193050193050193
-All entire homes with 1-3 bedrooms,All LGAs,Entire guest suite,FALSE,227,0.0136944980694981
-All entire homes with 1-3 bedrooms,All LGAs,Entire condo,TRUE,625,0.0377051158301158
-All entire homes with 1-3 bedrooms,All LGAs,Entire guesthouse,FALSE,366,0.0220801158301158
-All entire homes with 1-3 bedrooms,All LGAs,Entire serviced apartment,FALSE,408,0.0246138996138996
-All entire homes with 1-3 bedrooms,All LGAs,Farm stay,FALSE,52,0.00313706563706564
-All entire homes with 1-3 bedrooms,All LGAs,Entire bed and breakfast,FALSE,1,6.03281853281853e-05
-All entire homes with 1-3 bedrooms,All LGAs,Entire cabin,FALSE,87,0.00524855212355212
-All entire homes with 1-3 bedrooms,All LGAs,Barn,FALSE,11,0.000663610038610039
-All entire homes with 1-3 bedrooms,All LGAs,Tiny home,FALSE,80,0.00482625482625483
-All entire homes with 1-3 bedrooms,All LGAs,Camper/RV,FALSE,16,0.000965250965250965
-All entire homes with 1-3 bedrooms,All LGAs,Earthen home,FALSE,5,0.000301640926640927
-All entire homes with 1-3 bedrooms,All LGAs,Casa particular,FALSE,2,0.000120656370656371
-All entire homes with 1-3 bedrooms,All LGAs,Floor,FALSE,1,6.03281853281853e-05
-All entire homes with 1-3 bedrooms,All LGAs,Entire chalet,FALSE,2,0.000120656370656371
-All entire homes with 1-3 bedrooms,All LGAs,Dome,FALSE,9,0.000542953667953668
-All entire homes with 1-3 bedrooms,All LGAs,Tower,FALSE,2,0.000120656370656371
-All entire homes with 1-3 bedrooms,All LGAs,Entire vacation home,FALSE,25,0.00150820463320463
-All entire homes with 1-3 bedrooms,All LGAs,Entire place,FALSE,14,0.000844594594594595
-All entire homes with 1-3 bedrooms,All LGAs,Yurt,FALSE,3,0.000180984555984556
-All entire homes with 1-3 bedrooms,All LGAs,Castle,FALSE,1,6.03281853281853e-05
-All entire homes with 1-3 bedrooms,All LGAs,Room in aparthotel,FALSE,35,0.00211148648648649
-All entire homes with 1-3 bedrooms,All LGAs,Tipi,FALSE,1,6.03281853281853e-05
-All entire homes with 1-3 bedrooms,All LGAs,Hut,FALSE,2,0.000120656370656371
-All entire homes with 1-3 bedrooms,All LGAs,Tent,FALSE,2,0.000120656370656371
-All entire homes with 1-3 bedrooms,All LGAs,Religious building,FALSE,1,6.03281853281853e-05
-All entire homes with 1-3 bedrooms,All LGAs,Train,FALSE,1,6.03281853281853e-05
-All entire homes with 1-3 bedrooms,All LGAs,Bus,FALSE,2,0.000120656370656371
-All entire homes with 1-3 bedrooms,All LGAs,Boat,FALSE,1,6.03281853281853e-05
-All entire homes with 1-3 bedrooms,All LGAs,Entire home/apt,FALSE,1,6.03281853281853e-05
-Excluded types within LGA,Port Phillip,All excluded types,FALSE,102,0.0477751756440281
-Excluded types within LGA,Monash,All excluded types,FALSE,39,0.150579150579151
-Excluded types within LGA,Yarra,All excluded types,FALSE,86,0.0644677661169415
-Excluded types within LGA,Melbourne,All excluded types,FALSE,284,0.0430955993930197
-Excluded types within LGA,Whitehorse,All excluded types,FALSE,34,0.0988372093023256
-Excluded types within LGA,Bayside,All excluded types,FALSE,40,0.144404332129964
-Excluded types within LGA,Yarra Ranges,All excluded types,FALSE,415,0.537564766839378
-Excluded types within LGA,Glen Eira,All excluded types,FALSE,32,0.110344827586207
-Excluded types within LGA,Darebin,All excluded types,FALSE,43,0.117486338797814
-Excluded types within LGA,Nillumbik,All excluded types,FALSE,42,0.591549295774648
-Excluded types within LGA,Banyule,All excluded types,FALSE,23,0.181102362204724
-Excluded types within LGA,Manningham,All excluded types,FALSE,15,0.168539325842697
-Excluded types within LGA,Knox,All excluded types,FALSE,28,0.378378378378378
-Excluded types within LGA,Stonnington,All excluded types,FALSE,39,0.0392749244712991
-Excluded types within LGA,Cardinia,All excluded types,FALSE,58,0.552380952380952
-Excluded types within LGA,Frankston,All excluded types,FALSE,52,0.329113924050633
-Excluded types within LGA,Boroondara,All excluded types,FALSE,25,0.0764525993883792
-Excluded types within LGA,Merri-bek,All excluded types,FALSE,56,0.106261859582543
-Excluded types within LGA,Hume,All excluded types,FALSE,34,0.272
-Excluded types within LGA,Maroondah,All excluded types,FALSE,25,0.28735632183908
-Excluded types within LGA,Moonee Valley,All excluded types,FALSE,24,0.0956175298804781
-Excluded types within LGA,Kingston,All excluded types,FALSE,24,0.112676056338028
-Excluded types within LGA,Hobsons Bay,All excluded types,FALSE,30,0.169491525423729
-Excluded types within LGA,Greater Dandenong,All excluded types,FALSE,12,0.214285714285714
-Excluded types within LGA,Maribyrnong,All excluded types,FALSE,23,0.0676470588235294
-Excluded types within LGA,Brimbank,All excluded types,FALSE,21,0.173553719008264
-Excluded types within LGA,Melton,All excluded types,FALSE,15,0.208333333333333
-Excluded types within LGA,Wyndham,All excluded types,FALSE,20,0.149253731343284
-Excluded types within LGA,Casey,All excluded types,FALSE,15,0.168539325842697
-Excluded types within LGA,Whittlesea,All excluded types,FALSE,25,0.342465753424658
+scope,lga,property_type,standard_type,n_listings,n_scope_listings,share_of_scope
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire rental unit,TRUE,10868,16576,0.655646718146718
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire loft,FALSE,106,16576,0.00639478764478765
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire townhouse,TRUE,437,16576,0.026363416988417
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire home,TRUE,2965,16576,0.17887306949807
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire cottage,FALSE,146,16576,0.00880791505791506
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire bungalow,FALSE,39,16576,0.00235279922779923
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire villa,FALSE,32,16576,0.00193050193050193
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire guest suite,FALSE,227,16576,0.0136944980694981
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire condo,TRUE,625,16576,0.0377051158301158
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire guesthouse,FALSE,366,16576,0.0220801158301158
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire serviced apartment,FALSE,408,16576,0.0246138996138996
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Farm stay,FALSE,52,16576,0.00313706563706564
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire bed and breakfast,FALSE,1,16576,6.03281853281853e-05
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire cabin,FALSE,87,16576,0.00524855212355212
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Barn,FALSE,11,16576,0.000663610038610039
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Tiny home,FALSE,80,16576,0.00482625482625483
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Camper/RV,FALSE,16,16576,0.000965250965250965
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Earthen home,FALSE,5,16576,0.000301640926640927
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Casa particular,FALSE,2,16576,0.000120656370656371
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Floor,FALSE,1,16576,6.03281853281853e-05
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire chalet,FALSE,2,16576,0.000120656370656371
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Dome,FALSE,9,16576,0.000542953667953668
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Tower,FALSE,2,16576,0.000120656370656371
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire vacation home,FALSE,25,16576,0.00150820463320463
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire place,FALSE,14,16576,0.000844594594594595
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Yurt,FALSE,3,16576,0.000180984555984556
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Castle,FALSE,1,16576,6.03281853281853e-05
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Room in aparthotel,FALSE,35,16576,0.00211148648648649
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Tipi,FALSE,1,16576,6.03281853281853e-05
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Hut,FALSE,2,16576,0.000120656370656371
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Tent,FALSE,2,16576,0.000120656370656371
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Religious building,FALSE,1,16576,6.03281853281853e-05
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Train,FALSE,1,16576,6.03281853281853e-05
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Bus,FALSE,2,16576,0.000120656370656371
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Boat,FALSE,1,16576,6.03281853281853e-05
+"All entire homes with 1-3 bedrooms, before history, price or host filters",All LGAs,Entire home/apt,FALSE,1,16576,6.03281853281853e-05
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Port Phillip,All excluded types,FALSE,102,2135,0.0477751756440281
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Monash,All excluded types,FALSE,39,259,0.150579150579151
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Yarra,All excluded types,FALSE,86,1334,0.0644677661169415
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Melbourne,All excluded types,FALSE,284,6590,0.0430955993930197
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Whitehorse,All excluded types,FALSE,34,344,0.0988372093023256
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Bayside,All excluded types,FALSE,40,277,0.144404332129964
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Yarra Ranges,All excluded types,FALSE,415,772,0.537564766839378
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Glen Eira,All excluded types,FALSE,32,290,0.110344827586207
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Darebin,All excluded types,FALSE,43,366,0.117486338797814
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Nillumbik,All excluded types,FALSE,42,71,0.591549295774648
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Banyule,All excluded types,FALSE,23,127,0.181102362204724
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Manningham,All excluded types,FALSE,15,89,0.168539325842697
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Knox,All excluded types,FALSE,28,74,0.378378378378378
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Stonnington,All excluded types,FALSE,39,993,0.0392749244712991
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Cardinia,All excluded types,FALSE,58,105,0.552380952380952
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Frankston,All excluded types,FALSE,52,158,0.329113924050633
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Boroondara,All excluded types,FALSE,25,327,0.0764525993883792
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Merri-bek,All excluded types,FALSE,56,527,0.106261859582543
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Hume,All excluded types,FALSE,34,125,0.272
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Maroondah,All excluded types,FALSE,25,87,0.28735632183908
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Moonee Valley,All excluded types,FALSE,24,251,0.0956175298804781
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Kingston,All excluded types,FALSE,24,213,0.112676056338028
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Hobsons Bay,All excluded types,FALSE,30,177,0.169491525423729
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Greater Dandenong,All excluded types,FALSE,12,56,0.214285714285714
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Maribyrnong,All excluded types,FALSE,23,340,0.0676470588235294
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Brimbank,All excluded types,FALSE,21,121,0.173553719008264
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Melton,All excluded types,FALSE,15,72,0.208333333333333
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Wyndham,All excluded types,FALSE,20,134,0.149253731343284
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Casey,All excluded types,FALSE,15,89,0.168539325842697
+"Excluded whitelist types within LGA, entire homes with 1-3 bedrooms",Whittlesea,All excluded types,FALSE,25,73,0.342465753424658
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Port Phillip,Entire cottage / Entire guesthouse / Farm stay,FALSE,15,2135,0.00702576112412178
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Monash,Entire cottage / Entire guesthouse / Farm stay,FALSE,15,259,0.0579150579150579
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Yarra,Entire cottage / Entire guesthouse / Farm stay,FALSE,20,1334,0.0149925037481259
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Melbourne,Entire cottage / Entire guesthouse / Farm stay,FALSE,11,6590,0.00166919575113809
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Whitehorse,Entire cottage / Entire guesthouse / Farm stay,FALSE,11,344,0.0319767441860465
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Bayside,Entire cottage / Entire guesthouse / Farm stay,FALSE,9,277,0.0324909747292419
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Yarra Ranges,Entire cottage / Entire guesthouse / Farm stay,FALSE,200,772,0.259067357512953
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Glen Eira,Entire cottage / Entire guesthouse / Farm stay,FALSE,9,290,0.0310344827586207
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Darebin,Entire cottage / Entire guesthouse / Farm stay,FALSE,21,366,0.0573770491803279
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Nillumbik,Entire cottage / Entire guesthouse / Farm stay,FALSE,17,71,0.23943661971831
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Banyule,Entire cottage / Entire guesthouse / Farm stay,FALSE,5,127,0.0393700787401575
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Manningham,Entire cottage / Entire guesthouse / Farm stay,FALSE,10,89,0.112359550561798
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Knox,Entire cottage / Entire guesthouse / Farm stay,FALSE,15,74,0.202702702702703
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Stonnington,Entire cottage / Entire guesthouse / Farm stay,FALSE,4,993,0.0040281973816717
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Cardinia,Entire cottage / Entire guesthouse / Farm stay,FALSE,26,105,0.247619047619048
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Frankston,Entire cottage / Entire guesthouse / Farm stay,FALSE,26,158,0.164556962025316
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Boroondara,Entire cottage / Entire guesthouse / Farm stay,FALSE,4,327,0.0122324159021407
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Merri-bek,Entire cottage / Entire guesthouse / Farm stay,FALSE,30,527,0.0569259962049336
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Hume,Entire cottage / Entire guesthouse / Farm stay,FALSE,15,125,0.12
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Maroondah,Entire cottage / Entire guesthouse / Farm stay,FALSE,10,87,0.114942528735632
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Moonee Valley,Entire cottage / Entire guesthouse / Farm stay,FALSE,12,251,0.0478087649402391
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Kingston,Entire cottage / Entire guesthouse / Farm stay,FALSE,9,213,0.0422535211267606
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Hobsons Bay,Entire cottage / Entire guesthouse / Farm stay,FALSE,18,177,0.101694915254237
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Greater Dandenong,Entire cottage / Entire guesthouse / Farm stay,FALSE,2,56,0.0357142857142857
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Maribyrnong,Entire cottage / Entire guesthouse / Farm stay,FALSE,10,340,0.0294117647058824
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Brimbank,Entire cottage / Entire guesthouse / Farm stay,FALSE,17,121,0.140495867768595
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Melton,Entire cottage / Entire guesthouse / Farm stay,FALSE,8,72,0.111111111111111
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Wyndham,Entire cottage / Entire guesthouse / Farm stay,FALSE,6,134,0.0447761194029851
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Casey,Entire cottage / Entire guesthouse / Farm stay,FALSE,5,89,0.0561797752808989
+"Cottage, guesthouse and farm stay within LGA, entire homes with 1-3 bedrooms",Whittlesea,Entire cottage / Entire guesthouse / Farm stay,FALSE,4,73,0.0547945205479452

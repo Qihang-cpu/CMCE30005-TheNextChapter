@@ -1,4 +1,4 @@
-benchmark,review_threshold,n_listings,n_below,n_at_threshold,n_at_least,share_below,share_at_least,reference_scope
-Main-cohort P50,9,8967,4316,243,4651,0.481320397011264,0.518679602988737,Fixed thresholds from the pooled main cohort
-Fixed common target; main-cohort P75,22,8967,6652,109,2315,0.741831158692985,0.258168841307015,Fixed thresholds from the pooled main cohort
-Main-cohort P90,39,8967,8054,60,913,0.898182223709156,0.101817776290844,Fixed thresholds from the pooled main cohort
+benchmark,raw_quantile,review_target,n_listings,n_below,n_at_threshold,n_at_least,share_below,share_at_least,reference_scope
+Benchmark-development P50,14,14,3810,1813,88,1997,0.475853018372703,0.524146981627297,"Benchmark-development hosts, primary eligibility and final main cells"
+Common upper-quartile target,30,30,3810,2853,59,957,0.748818897637795,0.251181102362205,"Benchmark-development hosts, primary eligibility and final main cells"
+Benchmark-development P90,49,49,3810,3473,14,337,0.911548556430446,0.0884514435695538,"Benchmark-development hosts, primary eligibility and final main cells"

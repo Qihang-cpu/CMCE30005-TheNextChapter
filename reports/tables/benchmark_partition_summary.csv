@@ -1,0 +1,7 @@
+partition,population,n_listings,n_hosts,n_segments,review_target,n_meeting_target,observed_target_rate,benchmark_raw_p75,partition_rule
+analysis,All saved listings,20354,11267,496,30,1941,0.0953620909894861,30,"SHA256(30005|benchmark| + canonical host ID), first 7 hex % 5 == 0"
+benchmark development,All saved listings,5374,2846,361,30,423,0.0787123185708969,30,"SHA256(30005|benchmark| + canonical host ID), first 7 hex % 5 == 0"
+analysis,Primary eligibility before cell-size rule,5455,2764,163,30,1142,0.209349220898258,30,"SHA256(30005|benchmark| + canonical host ID), first 7 hex % 5 == 0"
+benchmark development,Primary eligibility before cell-size rule,1331,675,123,30,265,0.199098422238918,30,"SHA256(30005|benchmark| + canonical host ID), first 7 hex % 5 == 0"
+analysis,Final main analysis cells,3810,1699,14,30,957,0.251181102362205,30,"SHA256(30005|benchmark| + canonical host ID), first 7 hex % 5 == 0"
+benchmark development,Final main analysis cells,899,424,14,30,227,0.252502780867631,30,"SHA256(30005|benchmark| + canonical host ID), first 7 hex % 5 == 0"

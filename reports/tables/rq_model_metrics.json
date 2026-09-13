@@ -1,35 +1,46 @@
 [
   {
-    "roc_auc": 0.6488695324097463,
-    "average_precision": 0.36090979250105626,
-    "brier_score": 0.18197754445709674,
-    "log_loss": 0.5422843214014677,
-    "precision_top_quarter": 0.37823371989295274,
+    "mean_predicted_probability": 0.24764449273929212,
+    "observed_target_share": 0.2511811023622047,
+    "mean_prediction_minus_observed": -0.0035366096229125787,
+    "expected_calibration_error_10_equal_width_bins": 0.03663300169367289,
+    "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
+    "high_score_at_least_0_5": {
+      "n": 22,
+      "observed_target_share": 0.3181818181818182,
+      "mean_predicted_probability": 0.573768371855709
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.5678788318296639,
+    "average_precision": 0.27796792186920843,
+    "brier_score": 0.1880229688135152,
+    "log_loss": 0.5619940648680554,
+    "precision_top_quarter": 0.28751311647429173,
     "confusion_matrix_at_0_5": [
       [
-        6544,
-        108
+        2838,
+        15
       ],
       [
-        2233,
-        82
+        950,
+        7
       ]
     ],
     "descriptive_constant_probability_baseline": {
       "roc_auc": 0.5,
-      "average_precision": 0.2581688413070146,
-      "precision_top_quarter": 0.2581688413070146,
-      "brier_score": 0.1915176906852081,
-      "log_loss": 0.5711328554066654,
+      "average_precision": 0.2511811023622047,
+      "precision_top_quarter": 0.2511811023622047,
+      "brier_score": 0.18808915617831234,
+      "log_loss": 0.5636290020754469,
       "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
     },
     "scenario": "property_only",
     "model": "logistic",
-    "n": 8967,
-    "n_hosts": 4081,
-    "n_segments": 35,
-    "descriptive_review_p75_in_this_scope": 22.0,
-    "fixed_review_target": 22,
+    "n": 3810,
+    "n_hosts": 1699,
+    "n_segments": 14,
+    "descriptive_review_p75_in_this_scope": 30.0,
+    "common_review_threshold": 30,
     "predictors": [
       "accommodates",
       "bathrooms_num",
@@ -40,81 +51,92 @@
     "folds": [
       {
         "fold": 0,
-        "n_train": 7156,
-        "n_validation": 1811,
-        "n_validation_hosts": 810,
-        "validation_positive_share": 0.2771949199337383,
-        "roc_auc": 0.642457671224955
+        "n_train": 3102,
+        "n_validation": 708,
+        "n_validation_hosts": 326,
+        "validation_positive_share": 0.21045197740112995,
+        "roc_auc": 0.6454118692295686
       },
       {
         "fold": 1,
-        "n_train": 7340,
-        "n_validation": 1627,
-        "n_validation_hosts": 861,
-        "validation_positive_share": 0.22065150583896742,
-        "roc_auc": 0.6714541795910477
+        "n_train": 3017,
+        "n_validation": 793,
+        "n_validation_hosts": 365,
+        "validation_positive_share": 0.3228247162673392,
+        "roc_auc": 0.5658134020018621
       },
       {
         "fold": 2,
-        "n_train": 7380,
-        "n_validation": 1587,
-        "n_validation_hosts": 780,
-        "validation_positive_share": 0.3238815374921235,
-        "roc_auc": 0.7105201605738303
+        "n_train": 3060,
+        "n_validation": 750,
+        "n_validation_hosts": 323,
+        "validation_positive_share": 0.304,
+        "roc_auc": 0.5967012838609935
       },
       {
         "fold": 3,
-        "n_train": 7003,
-        "n_validation": 1964,
-        "n_validation_hosts": 811,
-        "validation_positive_share": 0.24389002036659876,
-        "roc_auc": 0.6757041535747172
+        "n_train": 3073,
+        "n_validation": 737,
+        "n_validation_hosts": 330,
+        "validation_positive_share": 0.18181818181818182,
+        "roc_auc": 0.5352219004480087
       },
       {
         "fold": 4,
-        "n_train": 6989,
-        "n_validation": 1978,
-        "n_validation_hosts": 819,
-        "validation_positive_share": 0.23306370070778565,
-        "roc_auc": 0.5734531420473963
+        "n_train": 2988,
+        "n_validation": 822,
+        "n_validation_hosts": 355,
+        "validation_positive_share": 0.23114355231143552,
+        "roc_auc": 0.575
       }
     ],
     "training_fold_prevalence_baseline": {
-      "brier_score": 0.1921675611642943,
-      "log_loss": 0.5728424891281116
+      "brier_score": 0.18973769418135375,
+      "log_loss": 0.5680376616851116
     }
   },
   {
-    "roc_auc": 0.6314231806735077,
-    "average_precision": 0.3476477479198148,
-    "brier_score": 0.1837267718098448,
-    "log_loss": 0.547634731869961,
-    "precision_top_quarter": 0.34736842105263155,
+    "mean_predicted_probability": 0.24549127422637415,
+    "observed_target_share": 0.2511811023622047,
+    "mean_prediction_minus_observed": -0.005689828135830549,
+    "expected_calibration_error_10_equal_width_bins": 0.0606353973385333,
+    "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
+    "high_score_at_least_0_5": {
+      "n": 36,
+      "observed_target_share": 0.2222222222222222,
+      "mean_predicted_probability": 0.55922032528269
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.5528692413822405,
+    "average_precision": 0.271081796944436,
+    "brier_score": 0.19095203579204106,
+    "log_loss": 0.5705325771954627,
+    "precision_top_quarter": 0.26862539349422876,
     "confusion_matrix_at_0_5": [
       [
-        6574,
-        78
+        2825,
+        28
       ],
       [
-        2242,
-        73
+        949,
+        8
       ]
     ],
     "descriptive_constant_probability_baseline": {
       "roc_auc": 0.5,
-      "average_precision": 0.2581688413070146,
-      "precision_top_quarter": 0.2581688413070146,
-      "brier_score": 0.1915176906852081,
-      "log_loss": 0.5711328554066654,
+      "average_precision": 0.2511811023622047,
+      "precision_top_quarter": 0.2511811023622047,
+      "brier_score": 0.18808915617831234,
+      "log_loss": 0.5636290020754469,
       "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
     },
     "scenario": "property_only",
     "model": "random_forest",
-    "n": 8967,
-    "n_hosts": 4081,
-    "n_segments": 35,
-    "descriptive_review_p75_in_this_scope": 22.0,
-    "fixed_review_target": 22,
+    "n": 3810,
+    "n_hosts": 1699,
+    "n_segments": 14,
+    "descriptive_review_p75_in_this_scope": 30.0,
+    "common_review_threshold": 30,
     "predictors": [
       "accommodates",
       "bathrooms_num",
@@ -125,81 +147,92 @@
     "folds": [
       {
         "fold": 0,
-        "n_train": 7156,
-        "n_validation": 1811,
-        "n_validation_hosts": 810,
-        "validation_positive_share": 0.2771949199337383,
-        "roc_auc": 0.6415407887167905
+        "n_train": 3102,
+        "n_validation": 708,
+        "n_validation_hosts": 326,
+        "validation_positive_share": 0.21045197740112995,
+        "roc_auc": 0.6418700699955577
       },
       {
         "fold": 1,
-        "n_train": 7340,
-        "n_validation": 1627,
-        "n_validation_hosts": 861,
-        "validation_positive_share": 0.22065150583896742,
-        "roc_auc": 0.6448500918253472
+        "n_train": 3017,
+        "n_validation": 793,
+        "n_validation_hosts": 365,
+        "validation_positive_share": 0.3228247162673392,
+        "roc_auc": 0.5389352013500931
       },
       {
         "fold": 2,
-        "n_train": 7380,
-        "n_validation": 1587,
-        "n_validation_hosts": 780,
-        "validation_positive_share": 0.3238815374921235,
-        "roc_auc": 0.6821278208303567
+        "n_train": 3060,
+        "n_validation": 750,
+        "n_validation_hosts": 323,
+        "validation_positive_share": 0.304,
+        "roc_auc": 0.5862909188680514
       },
       {
         "fold": 3,
-        "n_train": 7003,
-        "n_validation": 1964,
-        "n_validation_hosts": 811,
-        "validation_positive_share": 0.24389002036659876,
-        "roc_auc": 0.6537476364198702
+        "n_train": 3073,
+        "n_validation": 737,
+        "n_validation_hosts": 330,
+        "validation_positive_share": 0.18181818181818182,
+        "roc_auc": 0.5166084997896091
       },
       {
         "fold": 4,
-        "n_train": 6989,
-        "n_validation": 1978,
-        "n_validation_hosts": 819,
-        "validation_positive_share": 0.23306370070778565,
-        "roc_auc": 0.5710866148938208
+        "n_train": 2988,
+        "n_validation": 822,
+        "n_validation_hosts": 355,
+        "validation_positive_share": 0.23114355231143552,
+        "roc_auc": 0.5766905396402398
       }
     ],
     "training_fold_prevalence_baseline": {
-      "brier_score": 0.1921675611642943,
-      "log_loss": 0.5728424891281116
+      "brier_score": 0.18973769418135375,
+      "log_loss": 0.5680376616851116
     }
   },
   {
-    "roc_auc": 0.7204894937328645,
-    "average_precision": 0.4181200443885196,
-    "brier_score": 0.17162770210656716,
-    "log_loss": 0.5093627290008369,
-    "precision_top_quarter": 0.44023193577163244,
+    "mean_predicted_probability": 0.24828633255748517,
+    "observed_target_share": 0.2511811023622047,
+    "mean_prediction_minus_observed": -0.0028947698047195325,
+    "expected_calibration_error_10_equal_width_bins": 0.03008212022215469,
+    "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
+    "high_score_at_least_0_5": {
+      "n": 300,
+      "observed_target_share": 0.4033333333333333,
+      "mean_predicted_probability": 0.5759730084840463
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.7130734811035039,
+    "average_precision": 0.39551359992180934,
+    "brier_score": 0.17146504527685896,
+    "log_loss": 0.5100166419526347,
+    "precision_top_quarter": 0.43126967471143757,
     "confusion_matrix_at_0_5": [
       [
-        6270,
-        382
+        2674,
+        179
       ],
       [
-        1986,
-        329
+        836,
+        121
       ]
     ],
     "descriptive_constant_probability_baseline": {
       "roc_auc": 0.5,
-      "average_precision": 0.2581688413070146,
-      "precision_top_quarter": 0.2581688413070146,
-      "brier_score": 0.1915176906852081,
-      "log_loss": 0.5711328554066654,
+      "average_precision": 0.2511811023622047,
+      "precision_top_quarter": 0.2511811023622047,
+      "brier_score": 0.18808915617831234,
+      "log_loss": 0.5636290020754469,
       "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
     },
     "scenario": "operating_controls",
     "model": "logistic",
-    "n": 8967,
-    "n_hosts": 4081,
-    "n_segments": 35,
-    "descriptive_review_p75_in_this_scope": 22.0,
-    "fixed_review_target": 22,
+    "n": 3810,
+    "n_hosts": 1699,
+    "n_segments": 14,
+    "descriptive_review_p75_in_this_scope": 30.0,
+    "common_review_threshold": 30,
     "predictors": [
       "accommodates",
       "bathrooms_num",
@@ -212,81 +245,92 @@
     "folds": [
       {
         "fold": 0,
-        "n_train": 7156,
-        "n_validation": 1811,
-        "n_validation_hosts": 810,
-        "validation_positive_share": 0.2771949199337383,
-        "roc_auc": 0.706614337151014
+        "n_train": 3102,
+        "n_validation": 708,
+        "n_validation_hosts": 326,
+        "validation_positive_share": 0.21045197740112995,
+        "roc_auc": 0.7931289094860189
       },
       {
         "fold": 1,
-        "n_train": 7340,
-        "n_validation": 1627,
-        "n_validation_hosts": 861,
-        "validation_positive_share": 0.22065150583896742,
-        "roc_auc": 0.7454449794820874
+        "n_train": 3017,
+        "n_validation": 793,
+        "n_validation_hosts": 365,
+        "validation_positive_share": 0.3228247162673392,
+        "roc_auc": 0.720372148510242
       },
       {
         "fold": 2,
-        "n_train": 7380,
-        "n_validation": 1587,
-        "n_validation_hosts": 780,
-        "validation_positive_share": 0.3238815374921235,
-        "roc_auc": 0.7677481587316553
+        "n_train": 3060,
+        "n_validation": 750,
+        "n_validation_hosts": 323,
+        "validation_positive_share": 0.304,
+        "roc_auc": 0.7677161053975935
       },
       {
         "fold": 3,
-        "n_train": 7003,
-        "n_validation": 1964,
-        "n_validation_hosts": 811,
-        "validation_positive_share": 0.24389002036659876,
-        "roc_auc": 0.7379845778593169
+        "n_train": 3073,
+        "n_validation": 737,
+        "n_validation_hosts": 330,
+        "validation_positive_share": 0.18181818181818182,
+        "roc_auc": 0.6087968119601
       },
       {
         "fold": 4,
-        "n_train": 6989,
-        "n_validation": 1978,
-        "n_validation_hosts": 819,
-        "validation_positive_share": 0.23306370070778565,
-        "roc_auc": 0.6512632679237621
+        "n_train": 2988,
+        "n_validation": 822,
+        "n_validation_hosts": 355,
+        "validation_positive_share": 0.23114355231143552,
+        "roc_auc": 0.6995461359093937
       }
     ],
     "training_fold_prevalence_baseline": {
-      "brier_score": 0.1921675611642943,
-      "log_loss": 0.5728424891281116
+      "brier_score": 0.18973769418135375,
+      "log_loss": 0.5680376616851116
     }
   },
   {
-    "roc_auc": 0.7167752857582578,
-    "average_precision": 0.42765205700839837,
-    "brier_score": 0.170878664055604,
-    "log_loss": 0.5100326802505964,
-    "precision_top_quarter": 0.43398751115075823,
+    "mean_predicted_probability": 0.2497567225199389,
+    "observed_target_share": 0.2511811023622047,
+    "mean_prediction_minus_observed": -0.0014243798422657883,
+    "expected_calibration_error_10_equal_width_bins": 0.04170005556264421,
+    "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
+    "high_score_at_least_0_5": {
+      "n": 159,
+      "observed_target_share": 0.41509433962264153,
+      "mean_predicted_probability": 0.5574995933143023
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.7102186885717833,
+    "average_precision": 0.4158494936141541,
+    "brier_score": 0.16958013943972566,
+    "log_loss": 0.5126545598030897,
+    "precision_top_quarter": 0.459601259181532,
     "confusion_matrix_at_0_5": [
       [
-        6500,
-        152
+        2760,
+        93
       ],
       [
-        2127,
-        188
+        891,
+        66
       ]
     ],
     "descriptive_constant_probability_baseline": {
       "roc_auc": 0.5,
-      "average_precision": 0.2581688413070146,
-      "precision_top_quarter": 0.2581688413070146,
-      "brier_score": 0.1915176906852081,
-      "log_loss": 0.5711328554066654,
+      "average_precision": 0.2511811023622047,
+      "precision_top_quarter": 0.2511811023622047,
+      "brier_score": 0.18808915617831234,
+      "log_loss": 0.5636290020754469,
       "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
     },
     "scenario": "operating_controls",
     "model": "random_forest",
-    "n": 8967,
-    "n_hosts": 4081,
-    "n_segments": 35,
-    "descriptive_review_p75_in_this_scope": 22.0,
-    "fixed_review_target": 22,
+    "n": 3810,
+    "n_hosts": 1699,
+    "n_segments": 14,
+    "descriptive_review_p75_in_this_scope": 30.0,
+    "common_review_threshold": 30,
     "predictors": [
       "accommodates",
       "bathrooms_num",
@@ -299,81 +343,92 @@
     "folds": [
       {
         "fold": 0,
-        "n_train": 7156,
-        "n_validation": 1811,
-        "n_validation_hosts": 810,
-        "validation_positive_share": 0.2771949199337383,
-        "roc_auc": 0.7395749317474182
+        "n_train": 3102,
+        "n_validation": 708,
+        "n_validation_hosts": 326,
+        "validation_positive_share": 0.21045197740112995,
+        "roc_auc": 0.7781212856130915
       },
       {
         "fold": 1,
-        "n_train": 7340,
-        "n_validation": 1627,
-        "n_validation_hosts": 861,
-        "validation_positive_share": 0.22065150583896742,
-        "roc_auc": 0.727541233535144
+        "n_train": 3017,
+        "n_validation": 793,
+        "n_validation_hosts": 365,
+        "validation_positive_share": 0.3228247162673392,
+        "roc_auc": 0.6875400081471135
       },
       {
         "fold": 2,
-        "n_train": 7380,
-        "n_validation": 1587,
-        "n_validation_hosts": 780,
-        "validation_positive_share": 0.3238815374921235,
-        "roc_auc": 0.7355871569946438
+        "n_train": 3060,
+        "n_validation": 750,
+        "n_validation_hosts": 323,
+        "validation_positive_share": 0.304,
+        "roc_auc": 0.8152181219331854
       },
       {
         "fold": 3,
-        "n_train": 7003,
-        "n_validation": 1964,
-        "n_validation_hosts": 811,
-        "validation_positive_share": 0.24389002036659876,
-        "roc_auc": 0.7295417641972967
+        "n_train": 3073,
+        "n_validation": 737,
+        "n_validation_hosts": 330,
+        "validation_positive_share": 0.18181818181818182,
+        "roc_auc": 0.6205663226157768
       },
       {
         "fold": 4,
-        "n_train": 6989,
-        "n_validation": 1978,
-        "n_validation_hosts": 819,
-        "validation_positive_share": 0.23306370070778565,
-        "roc_auc": 0.6622200741559505
+        "n_train": 2988,
+        "n_validation": 822,
+        "n_validation_hosts": 355,
+        "validation_positive_share": 0.23114355231143552,
+        "roc_auc": 0.6827198534310459
       }
     ],
     "training_fold_prevalence_baseline": {
-      "brier_score": 0.1921675611642943,
-      "log_loss": 0.5728424891281116
+      "brier_score": 0.18973769418135375,
+      "log_loss": 0.5680376616851116
     }
   },
   {
-    "roc_auc": 0.6208186130279023,
-    "average_precision": 0.44677920934470233,
-    "brier_score": 0.22095651458612034,
-    "log_loss": 0.6312362917675214,
-    "precision_top_quarter": 0.47339983374896094,
+    "mean_predicted_probability": 0.17365181660242118,
+    "observed_target_share": 0.1752808988764045,
+    "mean_prediction_minus_observed": -0.0016290822739833122,
+    "expected_calibration_error_10_equal_width_bins": 0.0240867497842617,
+    "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
+    "high_score_at_least_0_5": {
+      "n": 10,
+      "observed_target_share": 0.4,
+      "mean_predicted_probability": 0.5256861395337153
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.603253142054232,
+    "average_precision": 0.2194791022836834,
+    "brier_score": 0.14269991028779686,
+    "log_loss": 0.4548722280352844,
+    "precision_top_quarter": 0.23367285799880166,
     "confusion_matrix_at_0_5": [
       [
-        2785,
-        303
+        5499,
+        6
       ],
       [
-        1480,
-        244
+        1166,
+        4
       ]
     ],
     "descriptive_constant_probability_baseline": {
       "roc_auc": 0.5,
-      "average_precision": 0.35827098919368244,
-      "precision_top_quarter": 0.35827098919368244,
-      "brier_score": 0.22991288749586275,
-      "log_loss": 0.6524168918235212,
+      "average_precision": 0.1752808988764045,
+      "precision_top_quarter": 0.1752808988764045,
+      "brier_score": 0.14455750536548415,
+      "log_loss": 0.4641617277441831,
       "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
     },
-    "scenario": "established_history",
+    "scenario": "all_review_histories",
     "model": "logistic",
-    "n": 4812,
-    "n_hosts": 2184,
-    "n_segments": 16,
-    "descriptive_review_p75_in_this_scope": 29.0,
-    "fixed_review_target": 22,
+    "n": 6675,
+    "n_hosts": 2924,
+    "n_segments": 22,
+    "descriptive_review_p75_in_this_scope": 23.0,
+    "common_review_threshold": 30,
     "predictors": [
       "accommodates",
       "bathrooms_num",
@@ -384,81 +439,92 @@
     "folds": [
       {
         "fold": 0,
-        "n_train": 3877,
-        "n_validation": 935,
-        "n_validation_hosts": 422,
-        "validation_positive_share": 0.38288770053475935,
-        "roc_auc": 0.6544518458991315
+        "n_train": 5440,
+        "n_validation": 1235,
+        "n_validation_hosts": 591,
+        "validation_positive_share": 0.15546558704453442,
+        "roc_auc": 0.6822841762543944
       },
       {
         "fold": 1,
-        "n_train": 3999,
-        "n_validation": 813,
-        "n_validation_hosts": 459,
-        "validation_positive_share": 0.3111931119311193,
-        "roc_auc": 0.6414313946922643
+        "n_train": 5236,
+        "n_validation": 1439,
+        "n_validation_hosts": 613,
+        "validation_positive_share": 0.2098679638637943,
+        "roc_auc": 0.5889438338371572
       },
       {
         "fold": 2,
-        "n_train": 3974,
-        "n_validation": 838,
-        "n_validation_hosts": 412,
-        "validation_positive_share": 0.4713603818615752,
-        "roc_auc": 0.7151384404377518
+        "n_train": 5411,
+        "n_validation": 1264,
+        "n_validation_hosts": 587,
+        "validation_positive_share": 0.2143987341772152,
+        "roc_auc": 0.6409311676198333
       },
       {
         "fold": 3,
-        "n_train": 3673,
-        "n_validation": 1139,
-        "n_validation_hosts": 439,
-        "validation_positive_share": 0.32133450395083407,
-        "roc_auc": 0.6507044443973167
+        "n_train": 5288,
+        "n_validation": 1387,
+        "n_validation_hosts": 565,
+        "validation_positive_share": 0.13193943763518384,
+        "roc_auc": 0.5745080151770963
       },
       {
         "fold": 4,
-        "n_train": 3725,
-        "n_validation": 1087,
-        "n_validation_hosts": 452,
-        "validation_positive_share": 0.32382704691812325,
-        "roc_auc": 0.5180252782931355
+        "n_train": 5325,
+        "n_validation": 1350,
+        "n_validation_hosts": 568,
+        "validation_positive_share": 0.16444444444444445,
+        "roc_auc": 0.5847369976359338
       }
     ],
     "training_fold_prevalence_baseline": {
-      "brier_score": 0.231593169917876,
-      "log_loss": 0.6561004268427028
+      "brier_score": 0.14515183684186106,
+      "log_loss": 0.46621994549580426
     }
   },
   {
-    "roc_auc": 0.5958177301852543,
-    "average_precision": 0.42457114123773243,
-    "brier_score": 0.22605859513419194,
-    "log_loss": 0.6441922044884113,
-    "precision_top_quarter": 0.4485215532597079,
+    "mean_predicted_probability": 0.17265060042245226,
+    "observed_target_share": 0.1752808988764045,
+    "mean_prediction_minus_observed": -0.00263029845395224,
+    "expected_calibration_error_10_equal_width_bins": 0.03930372232291335,
+    "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
+    "high_score_at_least_0_5": {
+      "n": 28,
+      "observed_target_share": 0.17857142857142858,
+      "mean_predicted_probability": 0.5293511322697221
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.5796882399062235,
+    "average_precision": 0.20563269476460144,
+    "brier_score": 0.14468504135242305,
+    "log_loss": 0.46108071764285036,
+    "precision_top_quarter": 0.19652486518873577,
     "confusion_matrix_at_0_5": [
       [
-        2830,
-        258
+        5482,
+        23
       ],
       [
-        1488,
-        236
+        1165,
+        5
       ]
     ],
     "descriptive_constant_probability_baseline": {
       "roc_auc": 0.5,
-      "average_precision": 0.35827098919368244,
-      "precision_top_quarter": 0.35827098919368244,
-      "brier_score": 0.22991288749586275,
-      "log_loss": 0.6524168918235212,
+      "average_precision": 0.1752808988764045,
+      "precision_top_quarter": 0.1752808988764045,
+      "brier_score": 0.14455750536548415,
+      "log_loss": 0.4641617277441831,
       "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
     },
-    "scenario": "established_history",
+    "scenario": "all_review_histories",
     "model": "random_forest",
-    "n": 4812,
-    "n_hosts": 2184,
-    "n_segments": 16,
-    "descriptive_review_p75_in_this_scope": 29.0,
-    "fixed_review_target": 22,
+    "n": 6675,
+    "n_hosts": 2924,
+    "n_segments": 22,
+    "descriptive_review_p75_in_this_scope": 23.0,
+    "common_review_threshold": 30,
     "predictors": [
       "accommodates",
       "bathrooms_num",
@@ -469,81 +535,92 @@
     "folds": [
       {
         "fold": 0,
-        "n_train": 3877,
-        "n_validation": 935,
-        "n_validation_hosts": 422,
-        "validation_positive_share": 0.38288770053475935,
-        "roc_auc": 0.6409549490235567
+        "n_train": 5440,
+        "n_validation": 1235,
+        "n_validation_hosts": 591,
+        "validation_positive_share": 0.15546558704453442,
+        "roc_auc": 0.6389196828060084
       },
       {
         "fold": 1,
-        "n_train": 3999,
-        "n_validation": 813,
-        "n_validation_hosts": 459,
-        "validation_positive_share": 0.3111931119311193,
-        "roc_auc": 0.6133540372670807
+        "n_train": 5236,
+        "n_validation": 1439,
+        "n_validation_hosts": 613,
+        "validation_positive_share": 0.2098679638637943,
+        "roc_auc": 0.557620844909632
       },
       {
         "fold": 2,
-        "n_train": 3974,
-        "n_validation": 838,
-        "n_validation_hosts": 412,
-        "validation_positive_share": 0.4713603818615752,
-        "roc_auc": 0.6681801297254051
+        "n_train": 5411,
+        "n_validation": 1264,
+        "n_validation_hosts": 587,
+        "validation_positive_share": 0.2143987341772152,
+        "roc_auc": 0.6123101563341917
       },
       {
         "fold": 3,
-        "n_train": 3673,
-        "n_validation": 1139,
-        "n_validation_hosts": 439,
-        "validation_positive_share": 0.32133450395083407,
-        "roc_auc": 0.6213302087530663
+        "n_train": 5288,
+        "n_validation": 1387,
+        "n_validation_hosts": 565,
+        "validation_positive_share": 0.13193943763518384,
+        "roc_auc": 0.5650200606357678
       },
       {
         "fold": 4,
-        "n_train": 3725,
-        "n_validation": 1087,
-        "n_validation_hosts": 452,
-        "validation_positive_share": 0.32382704691812325,
-        "roc_auc": 0.5192273500309215
+        "n_train": 5325,
+        "n_validation": 1350,
+        "n_validation_hosts": 568,
+        "validation_positive_share": 0.16444444444444445,
+        "roc_auc": 0.5880315155581113
       }
     ],
     "training_fold_prevalence_baseline": {
-      "brier_score": 0.231593169917876,
-      "log_loss": 0.6561004268427028
+      "brier_score": 0.14515183684186106,
+      "log_loss": 0.46621994549580426
     }
   },
   {
-    "roc_auc": 0.7022574811336264,
-    "average_precision": 0.3273128002076616,
-    "brier_score": 0.14530640171891648,
-    "log_loss": 0.4508636719074591,
-    "precision_top_quarter": 0.33282349342306516,
+    "mean_predicted_probability": 0.1783296800574808,
+    "observed_target_share": 0.18062688153001594,
+    "mean_prediction_minus_observed": -0.0022972014725351486,
+    "expected_calibration_error_10_equal_width_bins": 0.026008339530504423,
+    "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
+    "high_score_at_least_0_5": {
+      "n": 26,
+      "observed_target_share": 0.2692307692307692,
+      "mean_predicted_probability": 0.5613761236118686
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.6368115324798604,
+    "average_precision": 0.24885301658167416,
+    "brier_score": 0.1444896557722356,
+    "log_loss": 0.4570511446164316,
+    "precision_top_quarter": 0.2514164305949009,
     "confusion_matrix_at_0_5": [
       [
-        10411,
-        122
+        4608,
+        19
       ],
       [
-        2454,
-        88
+        1013,
+        7
       ]
     ],
     "descriptive_constant_probability_baseline": {
       "roc_auc": 0.5,
-      "average_precision": 0.1944168260038241,
-      "precision_top_quarter": 0.1944168260038241,
-      "brier_score": 0.15661892377042286,
-      "log_loss": 0.49256439864859075,
+      "average_precision": 0.18062688153001594,
+      "precision_top_quarter": 0.18062688153001594,
+      "brier_score": 0.14800081119875752,
+      "log_loss": 0.4723427270136247,
       "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
     },
     "scenario": "no_price_filter",
     "model": "logistic",
-    "n": 13075,
-    "n_hosts": 7090,
-    "n_segments": 53,
-    "descriptive_review_p75_in_this_scope": 17.0,
-    "fixed_review_target": 22,
+    "n": 5647,
+    "n_hosts": 3064,
+    "n_segments": 19,
+    "descriptive_review_p75_in_this_scope": 23.0,
+    "common_review_threshold": 30,
     "predictors": [
       "accommodates",
       "bathrooms_num",
@@ -554,81 +631,92 @@
     "folds": [
       {
         "fold": 0,
-        "n_train": 10486,
-        "n_validation": 2589,
-        "n_validation_hosts": 1417,
-        "validation_positive_share": 0.20702974121282347,
-        "roc_auc": 0.6998631416710893
+        "n_train": 4578,
+        "n_validation": 1069,
+        "n_validation_hosts": 618,
+        "validation_positive_share": 0.1449953227315248,
+        "roc_auc": 0.7030563986729725
       },
       {
         "fold": 1,
-        "n_train": 10646,
-        "n_validation": 2429,
-        "n_validation_hosts": 1428,
-        "validation_positive_share": 0.17373404693289418,
-        "roc_auc": 0.7113149002189022
+        "n_train": 4485,
+        "n_validation": 1162,
+        "n_validation_hosts": 634,
+        "validation_positive_share": 0.24010327022375216,
+        "roc_auc": 0.6245712522883458
       },
       {
         "fold": 2,
-        "n_train": 10693,
-        "n_validation": 2382,
-        "n_validation_hosts": 1382,
-        "validation_positive_share": 0.23299748110831234,
-        "roc_auc": 0.7528109390178356
+        "n_train": 4530,
+        "n_validation": 1117,
+        "n_validation_hosts": 612,
+        "validation_positive_share": 0.21844225604297224,
+        "roc_auc": 0.6773538579986104
       },
       {
         "fold": 3,
-        "n_train": 10257,
-        "n_validation": 2818,
-        "n_validation_hosts": 1426,
-        "validation_positive_share": 0.1880766501064585,
-        "roc_auc": 0.7233758576329331
+        "n_train": 4544,
+        "n_validation": 1103,
+        "n_validation_hosts": 590,
+        "validation_positive_share": 0.12964641885766093,
+        "roc_auc": 0.5948790792540792
       },
       {
         "fold": 4,
-        "n_train": 10218,
-        "n_validation": 2857,
-        "n_validation_hosts": 1437,
-        "validation_positive_share": 0.17465873293664683,
-        "roc_auc": 0.634987957254628
+        "n_train": 4451,
+        "n_validation": 1196,
+        "n_validation_hosts": 610,
+        "validation_positive_share": 0.16638795986622074,
+        "roc_auc": 0.6497709208026088
       }
     ],
     "training_fold_prevalence_baseline": {
-      "brier_score": 0.15687085355137736,
-      "log_loss": 0.4933735309368276
+      "brier_score": 0.14901143645095452,
+      "log_loss": 0.47578842751104733
     }
   },
   {
-    "roc_auc": 0.6863027726803393,
-    "average_precision": 0.3085746578927776,
-    "brier_score": 0.1466090312117446,
-    "log_loss": 0.45475267212783077,
-    "precision_top_quarter": 0.3125955949831753,
+    "mean_predicted_probability": 0.1755532023931129,
+    "observed_target_share": 0.18062688153001594,
+    "mean_prediction_minus_observed": -0.005073679136903042,
+    "expected_calibration_error_10_equal_width_bins": 0.034156409132674516,
+    "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
+    "high_score_at_least_0_5": {
+      "n": 33,
+      "observed_target_share": 0.24242424242424243,
+      "mean_predicted_probability": 0.5596457425833666
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.6184359068892307,
+    "average_precision": 0.2336941447030424,
+    "brier_score": 0.14633521946494818,
+    "log_loss": 0.46217495314204365,
+    "precision_top_quarter": 0.2301699716713881,
     "confusion_matrix_at_0_5": [
       [
-        10471,
-        62
+        4602,
+        25
       ],
       [
-        2496,
-        46
+        1012,
+        8
       ]
     ],
     "descriptive_constant_probability_baseline": {
       "roc_auc": 0.5,
-      "average_precision": 0.1944168260038241,
-      "precision_top_quarter": 0.1944168260038241,
-      "brier_score": 0.15661892377042286,
-      "log_loss": 0.49256439864859075,
+      "average_precision": 0.18062688153001594,
+      "precision_top_quarter": 0.18062688153001594,
+      "brier_score": 0.14800081119875752,
+      "log_loss": 0.4723427270136247,
       "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
     },
     "scenario": "no_price_filter",
     "model": "random_forest",
-    "n": 13075,
-    "n_hosts": 7090,
-    "n_segments": 53,
-    "descriptive_review_p75_in_this_scope": 17.0,
-    "fixed_review_target": 22,
+    "n": 5647,
+    "n_hosts": 3064,
+    "n_segments": 19,
+    "descriptive_review_p75_in_this_scope": 23.0,
+    "common_review_threshold": 30,
     "predictors": [
       "accommodates",
       "bathrooms_num",
@@ -639,48 +727,48 @@
     "folds": [
       {
         "fold": 0,
-        "n_train": 10486,
-        "n_validation": 2589,
-        "n_validation_hosts": 1417,
-        "validation_positive_share": 0.20702974121282347,
-        "roc_auc": 0.6926221910418682
+        "n_train": 4578,
+        "n_validation": 1069,
+        "n_validation_hosts": 618,
+        "validation_positive_share": 0.1449953227315248,
+        "roc_auc": 0.6845944801298792
       },
       {
         "fold": 1,
-        "n_train": 10646,
-        "n_validation": 2429,
-        "n_validation_hosts": 1428,
-        "validation_positive_share": 0.17373404693289418,
-        "roc_auc": 0.6819591146626618
+        "n_train": 4485,
+        "n_validation": 1162,
+        "n_validation_hosts": 634,
+        "validation_positive_share": 0.24010327022375216,
+        "roc_auc": 0.6018318943646821
       },
       {
         "fold": 2,
-        "n_train": 10693,
-        "n_validation": 2382,
-        "n_validation_hosts": 1382,
-        "validation_positive_share": 0.23299748110831234,
-        "roc_auc": 0.7308239273756515
+        "n_train": 4530,
+        "n_validation": 1117,
+        "n_validation_hosts": 612,
+        "validation_positive_share": 0.21844225604297224,
+        "roc_auc": 0.671095994591854
       },
       {
         "fold": 3,
-        "n_train": 10257,
-        "n_validation": 2818,
-        "n_validation_hosts": 1426,
-        "validation_positive_share": 0.1880766501064585,
-        "roc_auc": 0.7121965298852091
+        "n_train": 4544,
+        "n_validation": 1103,
+        "n_validation_hosts": 590,
+        "validation_positive_share": 0.12964641885766093,
+        "roc_auc": 0.5747523310023309
       },
       {
         "fold": 4,
-        "n_train": 10218,
-        "n_validation": 2857,
-        "n_validation_hosts": 1437,
-        "validation_positive_share": 0.17465873293664683,
-        "roc_auc": 0.6315123886449745
+        "n_train": 4451,
+        "n_validation": 1196,
+        "n_validation_hosts": 610,
+        "validation_positive_share": 0.16638795986622074,
+        "roc_auc": 0.6339596679485693
       }
     ],
     "training_fold_prevalence_baseline": {
-      "brier_score": 0.15687085355137736,
-      "log_loss": 0.4933735309368276
+      "brier_score": 0.14901143645095452,
+      "log_loss": 0.47578842751104733
     }
   }
 ]

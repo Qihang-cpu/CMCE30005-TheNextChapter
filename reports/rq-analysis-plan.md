@@ -2,52 +2,65 @@
 
 ## Primary research question
 
-Among Greater Melbourne standard entire-home segments with at least 50 eligible listings, which LGA × dwelling-type × bedroom configurations have the highest mean out-of-sample predicted probability of recording at least 22 guest reviews in the twelve months preceding the snapshot?
+Among established standard entire-home listings with one to three bedrooms in Greater Melbourne, which LGA × dwelling-type × bedroom-count segments with at least 50 eligible listings have the highest mean out-of-sample predicted probability of meeting a common upper-quartile review-count benchmark in the 12 months preceding the snapshot?
 
-The intended use is to screen comparable property segments for a prospective operator. Cross-sectional validation on existing listings does not establish a new operator's future performance, lease availability or profit.
+The intended use is to screen comparable property segments for a prospective multi-property operator. The outcome concerns the twelve months preceding the supplied snapshot. Validation on hosts excluded from model training does not establish a new operator's future performance, lease availability or profit.
 
-## Sample and outcome
+## Eligibility and reference date
+
+[The shared configuration](../config/review_analysis.json) specifies the scope before the revised model evaluation.
 
 | Item | Rule |
 |---|---|
 | Unit | One listing in the school-supplied June 2026 snapshot |
+| Established | First review on or before 1 June 2025 |
+| History reference | 1 June 2026, the start of the supplied snapshot month |
 | Room and bedrooms | Entire home/apt, one to three bedrooms |
 | Apartment/unit | Entire rental unit; Entire condo |
 | House/townhouse | Entire home; Entire townhouse |
-| Quoted price | AUD30–1,500 inclusive |
+| Quoted price | AUD30–1,500 inclusive; an explicit scope assumption |
 | Segment | LGA × dwelling class × bedroom count |
-| Minimum support | At least 50 listings after all main-sample filters |
-| Outcome | One if number_of_reviews_ltm >=22; otherwise zero |
-| Zero reviews | Retained in the analytical sample |
+| Minimum support | At least 50 analysis listings after all filters and removal of benchmark hosts |
+| Zero recent reviews | Retained |
 
-The main sample contains 8,967 listings, 4,081 hosts and 35 segments. Its descriptive P75 is 22 reviews; 2,315 listings (25.82%) reach or exceed that value. The event remains fixed at 22 in every model and sensitivity. Its selection followed sample exploration, so cross-validation assesses models for that event rather than independently validating the threshold choice. Segment support is defined using full-snapshot covariate counts; results are conditional on this reported scope.
+The history condition establishes an earlier observed review, not an opening date or uninterrupted operation. The reference date is an eligibility convention; it does not replace a listing's scrape date when validating its trailing-year outcome. The four-type mapping describes comparable residential stock without asserting that other dwelling types cannot be leased. Wider-type and unrestricted-history summaries document composition changes. R displays Moreland as Merri-bek; Python retains the source label.
 
-The dwelling mapping defines a comparable residential sample. It does not establish that excluded types cannot be rented. The R tables display the original Moreland label as Merri-bek; the Python tables retain the source label.
+## Common benchmark without using validation outcomes
+
+A deterministic host partition reserves approximately 20% of hosts for benchmark development. For a canonical host ID, take SHA256 of `30005|benchmark|` followed by that ID, interpret the first seven hexadecimal characters as an integer, and reserve hosts whose remainder modulo five is zero. All of a host's listings share the role. This partition is based on identifiers, not outcomes.
+
+Remove those hosts from the analysis pool, then determine eligible cells using the remaining listings' covariates and the 50-listing rule. The reference sample contains benchmark-host listings that satisfy the same primary eligibility rules and belong to those final cells. It contains **899 listings from 424 hosts**. Its pooled review-count P75 is **30**, calculated using linear interpolation (R type 7). The common integer event is review count at least the ceiling of that P75.
+
+Benchmark hosts determine the cutoff only. They are excluded from model fitting, out-of-fold evaluation, segment scoring and every sensitivity's analysis pool. Analysis outcomes cannot change the cutoff. The primary analysis contains **3,810 listings, 1,699 hosts and 14 segments**, including 333 zero-review listings. There are **957 outcomes at or above 30 (25.1181%)**. Its observed P75 also happens to be 30; this agreement is not required by the procedure. The reference attainment share is 25.2503%, with integer ties retained.
+
+The common threshold is fixed across all segments, models and sensitivities. It is a school-data benchmark, not a whole-market P75, profitability standard or externally specified count. This design follows prior exploration of the same snapshot. Separating the current computations does not create a previously untouched final test or erase earlier research choices. Segment support uses full analysis-pool covariate counts, so results remain conditional on those supported segments.
 
 ## Descriptive analysis
 
-Script 08 reports review quantiles, sample sizes, hosts, zero-review counts and observed attainment rates. Its 90% pointwise intervals use 1,000 within-segment host-cluster resamples. The profile table compares capacity, beds, bathrooms, amenities and parking between listings at or above 22 and below 22. These are unadjusted property comparisons, not causal effects or fitted predictions.
+Script 08 reports listing and distinct-host counts, zero-review counts, review quantiles, observed attainment and property attributes for the same analysis listings used in prediction. Pointwise 90% intervals use 1,000 within-segment host-cluster resamples. The profile compares listings meeting the common event with those below it. These are pooled associations, not causal effects.
 
-## Prediction and evaluation
+## Prediction and probability validation
 
-`scripts/rq_scope_feasibility.py` fits pooled logistic regression and random forest models. Main predictors are LGA, configuration, capacity, bathroom count and amenity count. Current quoted price and minimum stay enter only the operating-controls sensitivity. Reviews, ratings, Superhost, availability and estimated revenue or occupancy do not enter the primary model.
+The Python workflow fits logistic regression and random forest using LGA, configuration, capacity, bathrooms and amenities. Current price and minimum stay enter a separate operating-controls sensitivity. Review counts, ratings, Superhost status, availability, estimated occupancy and estimated revenue are excluded from the primary predictors.
 
-Five host-grouped folds use seed 30005. Every host retains the same fold across models and sensitivities. Imputation, category encoding and scaling are fitted only on the training fold. Logistic regression uses C=1; the forest uses 250 trees, minimum leaf size 10 and square-root feature sampling. No hyperparameter search or independent final test set has been completed.
+Five folds separate analysis hosts; each listing's prediction comes from a model trained without its host. Imputation, encoding and scaling are fitted inside each training fold. Fixed model settings are logistic C=1 and 250 forest trees with minimum leaf size 10 and square-root feature sampling. There is no hyperparameter search or independent final test set.
 
-Outputs report ROC-AUC, average precision with tied scores handled as groups, Brier score, log loss, calibration bins, a confusion matrix at 0.5 and precision among the highest-scored quarter. A training-fold prevalence predictor supplies an additional Brier/log-loss reference. Listing-level OOF probabilities and fold assignments remain in ignored processed-data files; public tables contain aggregates.
+Evaluation reports ROC-AUC, average precision, Brier score, log loss, precision among the highest-scored quarter, and a confusion matrix at 0.5. Probability assessment compares mean predicted probabilities with observed rates in ten fixed-width bins, includes bin counts and weighted absolute calibration error, and compares Brier score with a training-fold-prevalence baseline. Sparse high-probability bins are not evidence of precise calibration. Any later recalibration must be fitted within training data, not to the evaluation outcomes.
 
-The logistic main model provides the reference segment ranking. Its mean OOF probabilities describe the observed mix of eligible properties within each segment. The 95% score intervals use 500 host-cluster resamples conditional on the existing OOF scores, with no model refitting. They are distinct from the descriptive 90% attainment intervals and omit model-fitting, model-selection and rank-selection uncertainty.
+Segments are ranked by mean out-of-fold probability. Conditional 95% intervals resample hosts 500 times while holding fitted scores and the common benchmark fixed. They omit model-fitting, benchmark-estimation and model-selection uncertainty and cannot establish a definitive best location. Listing predictions, benchmark membership and fold assignments remain in ignored processed-data files; public outputs are aggregate tables.
 
-## Completed sensitivities
+## Sensitivity analyses and remaining work
 
-- Add contemporaneous price and minimum stay to the predictor set.
-- Require first review on or before 1 June 2025 and reapply the 50-listing rule: 4,812 listings in 16 segments. This is a review-history criterion, not an opening date or proof of uninterrupted trading. The sample P75 is 29, while the event remains 22.
-- Remove the price filter and reapply minimum support: 13,075 listings in 53 segments. Its P75 is 17; the event again remains 22.
+- Add current quoted price and minimum stay as contemporaneous operating characteristics.
+- Remove the first-review restriction, exclude the same benchmark hosts and reapply minimum support: 6,675 listings in 22 segments.
+- Remove the price filter while retaining the history condition, exclude the same benchmark hosts and reapply minimum support: 5,647 listings in 19 segments.
 
-Metrics from different samples should be interpreted against their own prevalence and composition, not used as a like-for-like competition between sample definitions. Broader property mappings, repeated splits, nested tuning and refitted ranking uncertainty remain future work.
+Both alternative-sample P75 values are 23, while the primary reference's 30-review cutoff remains fixed. The different samples have different prevalences; their metrics are not a like-for-like competition between scope definitions. Wider dwelling summaries assess the effect of the whitelist. Repeated host splits, training-only recalibration, nested tuning and ranking intervals with refitted models and reference thresholds remain future work.
 
-## Reproducibility status
+## Reproducibility and methodological sources
 
-The current run used `data/processed/listings_clean.rds` because the raw CSV links are broken. Raw IDs, original cleaning and per-listing review windows remain unverified in this rerun. The Python reader preserves identifiers as text, parses amenity JSON and half-baths when raw files are restored, and records review-count mismatches against each listing's scrape date. It does not substitute a claimed exact match while sources are unavailable.
+The current run uses `data/processed/listings_clean.rds` because original CSV links are broken. Raw identifiers, parsing and per-listing review windows remain unverified. The original files must be restored for those checks; the revised workflow records their unavailable status.
 
-See [model metrics](tables/rq_model_metrics.json), [scope and provenance](tables/rq_scope_summary.json), [segment scores](tables/rq_oof_segment_ranking.csv) and [validation record](data-validation-2026-09-13.md).
+Scikit-learn explains [validation for grouped observations](https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data) and [probability calibration](https://scikit-learn.org/stable/modules/calibration.html). These support the validation approach, not an external numerical review threshold.
+
+See [metrics](tables/rq_model_metrics.json), [scope and provenance](tables/rq_scope_summary.json), [segment scores](tables/rq_oof_segment_ranking.csv) and [validation record](data-validation-2026-09-13.md).

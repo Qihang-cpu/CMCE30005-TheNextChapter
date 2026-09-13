@@ -1,6 +1,6 @@
 # Review activity and the limits of modelled revenue
 
-[Script 04](../scripts/04_revenue_analysis.R) provides supporting diagnostics for the decision to use recorded review activity as the primary outcome. Its broader priced sample differs from the 8,967-listing residential cohort used in the main classification analysis.
+[Script 04](../scripts/04_revenue_analysis.R) provides supporting diagnostics for the decision to use recorded review activity as the primary outcome. Its broader priced sample differs from the 3,810-listing established residential analysis cohort used in the main classification analysis.
 
 ## Reconstruction of the supplied estimates
 

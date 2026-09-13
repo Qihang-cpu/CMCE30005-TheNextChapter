@@ -1,0 +1,31 @@
+{
+  "reference_date": "2026-06-01",
+  "established_first_review_on_or_before": "2025-06-01",
+  "reference_date_basis": "First day of the supplied June 2026 snapshot month. This is an explicit review-history eligibility reference, not a verified scrape date or launch date.",
+  "room_type": "Entire home/apt",
+  "bedrooms": [1, 2, 3],
+  "property_map": {
+    "Entire rental unit": "Apartment/unit",
+    "Entire condo": "Apartment/unit",
+    "Entire home": "House/townhouse",
+    "Entire townhouse": "House/townhouse"
+  },
+  "minimum_price": 30,
+  "maximum_price": 1500,
+  "minimum_segment_listings": 50,
+  "benchmark_quantile": 0.75,
+  "quantile_method": "R type 7 / NumPy linear; round upward for an integer review-count event",
+  "seed": 30005,
+  "benchmark_partition": {
+    "hash_prefix": "30005|benchmark|",
+    "hash_algorithm": "sha256",
+    "hex_characters": 7,
+    "modulus": 5,
+    "benchmark_remainder": 0,
+    "canonical_host_id": "Expand scientific-notation text as an exact decimal integer without conversion through floating point. This cannot recover precision already lost upstream.",
+    "usage": "Benchmark hosts supply the common cutoff only and are excluded from all model training, OOF evaluation and sensitivity analysis pools."
+  },
+  "segment_support": "Apply all eligibility filters and remove benchmark hosts, then retain segments with at least 50 analysis listings. Benchmark rows must satisfy primary eligibility and belong to these retained primary segments.",
+  "threshold_usage": "Compute the pooled benchmark-development P75 once; hold the resulting integer cutoff fixed across all segments, models and sensitivity samples. Analysis-pool outcomes do not determine this cutoff.",
+  "exploratory_status": "This revised design follows prior exploration of the supplied snapshot. Computational separation does not create a previously untouched final test or remove the influence of earlier research choices."
+}

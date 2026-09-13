@@ -35,11 +35,13 @@ The earlier source inventory recorded 13 entirely empty fields, including host-r
 
 ## Main cohort and outcome
 
-The primary sample retains entire homes with one to three bedrooms and four property types: entire rental unit and condo form Apartment/unit; entire home and townhouse form House/townhouse. After the price filter, an LGA × class × bedroom cell needs at least 50 listings.
+The main scope uses entire rental units, condos, homes and townhouses with one to three bedrooms, a quoted price of AUD30–1,500 and first review on or before 1 June 2025. The 1 June 2026 reference defines a review-history eligibility convention. It is not a verified scrape or opening date.
 
-This gives **8,967 listings in 35 cells across 4,081 hosts**. The review target is `number_of_reviews_ltm >= 22`; its threshold equals the main cohort's observed P75. **2,315 listings (25.8169%)** meet it, with ties retained, and **1,428 zero-review listings** remain. The threshold is fixed following scope exploration and is not a universal market standard. See [scope counts](tables/review_scope_summary.csv).
+A deterministic hash reserves approximately 20% of hosts for benchmark development. They are excluded from every model training and evaluation sample. Final LGA × class × bedroom cells need at least 50 analysis listings after all restrictions. The resulting analysis has **3,810 listings in 14 cells across 1,699 hosts**, including **333 zero-review listings**.
 
-A separate sensitivity requires first review on or before **1 June 2025** and recalculates cell eligibility. It contains 4,812 listings in 16 cells. First review measures observed history, not listing age or uninterrupted operation.
+A separate reference of **899 eligible listings from 424 benchmark hosts** in those same cells gives **P75 = 30**. The event is `number_of_reviews_ltm >= 30`, with **957 analysis listings (25.1181%)** meeting it. The threshold is calculated only from reference outcomes and held fixed across segments and sensitivity samples. It is not a whole-market or profitability standard. See [configuration](../config/review_analysis.json), [scope counts](tables/review_scope_summary.csv) and [analysis plan](rq-analysis-plan.md).
+
+Removing the first-review condition leaves 6,675 analysis listings in 22 cells; removing the price restriction while retaining history leaves 5,647 in 19 cells. Benchmark hosts remain excluded and the 50-listing rule is reapplied. First review measures observed history, not uninterrupted operation.
 
 ## Limits of the financial fields
 
