@@ -94,3 +94,7 @@ source("scripts/07_descriptive_analytics.R")
 ```
 
 The scripts use R with data.table, ggplot2, scales, stringr, broom and sandwich. Script 07 additionally uses dplyr, tidyr, skimr and patchwork. Processed R objects can be regenerated; the summary outputs are available for review without rerunning the pipeline.
+
+### Data validation
+
+[Validation record, 13 September 2026](reports/data-validation-2026-09-13.md): the current report's main statistics and 13 regenerated result tables match the saved processed data. Raw-to-clean validation remains incomplete because the local raw CSV links are currently broken. The record also identifies historical wording errors and a derived availability-window issue.
