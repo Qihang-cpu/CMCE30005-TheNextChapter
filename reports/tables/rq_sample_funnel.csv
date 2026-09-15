@@ -1,0 +1,10 @@
+branch,stage,n_listings,n_hosts
+all,source_listings,25728,14113
+all,entire_home_1_to_3_bedrooms,16576,9296
+all,standard_dwelling_types,14895,8286
+all,quoted_price_range,11099,5410
+all,established_review_history,6891,3488
+analysis,before_segment_support,5549,2809
+analysis,retained_analysis_segments,3873,1726
+benchmark_development,before_segment_support,1342,679
+benchmark_development,retained_analysis_segments,906,426

@@ -1,0 +1,738 @@
+[
+  {
+    "mean_predicted_probability": 0.25150893234850175,
+    "observed_target_share": 0.2532920216886135,
+    "mean_prediction_minus_observed": -0.001783089340111732,
+    "expected_calibration_error_10_equal_width_bins": 0.03927332206236611,
+    "calibration_status": "Raw model scores; no fitted probability calibration.",
+    "high_score_at_least_0_5": {
+      "n": 82,
+      "observed_target_share": 0.4146341463414634,
+      "mean_predicted_probability": 0.5512971520876606
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.6071155904086354,
+    "average_precision": 0.3098296254508319,
+    "brier_score": 0.18685328527475176,
+    "log_loss": 0.5574317624567976,
+    "precision_top_quarter": 0.30959752321981426,
+    "confusion_matrix_at_0_5": [
+      [
+        2844,
+        48
+      ],
+      [
+        947,
+        34
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2532920216886135,
+      "precision_top_quarter": 0.2532920216886135,
+      "brier_score": 0.18913517343750846,
+      "log_loss": 0.5659229842719192,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "extended_property_only",
+    "model": "logistic",
+    "n": 3873,
+    "n_hosts": 1726,
+    "n_segments": 14,
+    "common_review_threshold": 30,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "latitude",
+      "longitude",
+      "beds",
+      "has_wifi",
+      "has_pool",
+      "has_aircon",
+      "has_free_parking",
+      "has_kitchen",
+      "has_washer",
+      "has_workspace",
+      "has_dryer",
+      "has_private_entrance",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 3155,
+        "n_validation": 718,
+        "n_validation_hosts": 331,
+        "roc_auc": 0.6499566566292545,
+        "average_precision": 0.3081529134534032,
+        "brier_score": 0.16591152622270278,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 1,
+        "n_train": 3059,
+        "n_validation": 814,
+        "n_validation_hosts": 376,
+        "roc_auc": 0.642005893191087,
+        "average_precision": 0.4040478755201574,
+        "brier_score": 0.21732184649307443,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 2,
+        "n_train": 3113,
+        "n_validation": 760,
+        "n_validation_hosts": 329,
+        "roc_auc": 0.6117153168192865,
+        "average_precision": 0.3760322679054392,
+        "brier_score": 0.20874271114788615,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 3,
+        "n_train": 3124,
+        "n_validation": 749,
+        "n_validation_hosts": 332,
+        "roc_auc": 0.5585074662468393,
+        "average_precision": 0.26310851338614694,
+        "brier_score": 0.1596620346607069,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 4,
+        "n_train": 3041,
+        "n_validation": 832,
+        "n_validation_hosts": 358,
+        "roc_auc": 0.604668260996025,
+        "average_precision": 0.28406171799872865,
+        "brier_score": 0.17959974827234074,
+        "inner_host_folds": 0
+      }
+    ],
+    "exploratory_status": "Six fixed extensions evaluated after examination of the baseline results. There is no untouched final test set or hyperparameter search.",
+    "baseline_comparison": {
+      "scenario": "property_only",
+      "model": "logistic",
+      "auc_difference": 0.033966420072666925,
+      "average_precision_difference": 0.025187624123828134,
+      "brier_difference": -0.0017059339383422578,
+      "interpretation": "Paired descriptive differences on the same outer validation rows; these are not significance tests."
+    }
+  },
+  {
+    "mean_predicted_probability": 0.24977928007466282,
+    "observed_target_share": 0.2532920216886135,
+    "mean_prediction_minus_observed": -0.003512741613950654,
+    "expected_calibration_error_10_equal_width_bins": 0.016277351411440915,
+    "calibration_status": "Raw model scores; no fitted probability calibration.",
+    "high_score_at_least_0_5": {
+      "n": 51,
+      "observed_target_share": 0.3333333333333333,
+      "mean_predicted_probability": 0.5427315826809758
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.6395887350672458,
+    "average_precision": 0.3499323114109318,
+    "brier_score": 0.18131594811274154,
+    "log_loss": 0.5442118654390103,
+    "precision_top_quarter": 0.3735810113519092,
+    "confusion_matrix_at_0_5": [
+      [
+        2858,
+        34
+      ],
+      [
+        964,
+        17
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2532920216886135,
+      "precision_top_quarter": 0.2532920216886135,
+      "brier_score": 0.18913517343750846,
+      "log_loss": 0.5659229842719192,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "extended_property_only",
+    "model": "random_forest",
+    "n": 3873,
+    "n_hosts": 1726,
+    "n_segments": 14,
+    "common_review_threshold": 30,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "latitude",
+      "longitude",
+      "beds",
+      "has_wifi",
+      "has_pool",
+      "has_aircon",
+      "has_free_parking",
+      "has_kitchen",
+      "has_washer",
+      "has_workspace",
+      "has_dryer",
+      "has_private_entrance",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 3155,
+        "n_validation": 718,
+        "n_validation_hosts": 331,
+        "roc_auc": 0.6995905192079569,
+        "average_precision": 0.38272508571494074,
+        "brier_score": 0.15776189208056854,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 1,
+        "n_train": 3059,
+        "n_validation": 814,
+        "n_validation_hosts": 376,
+        "roc_auc": 0.5979587752651591,
+        "average_precision": 0.4117199510624033,
+        "brier_score": 0.2214990179274533,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 2,
+        "n_train": 3113,
+        "n_validation": 760,
+        "n_validation_hosts": 329,
+        "roc_auc": 0.7209756217317655,
+        "average_precision": 0.45242474040586,
+        "brier_score": 0.1924556268934679,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 3,
+        "n_train": 3124,
+        "n_validation": 749,
+        "n_validation_hosts": 332,
+        "roc_auc": 0.5936799293926817,
+        "average_precision": 0.25896629091015577,
+        "brier_score": 0.15555451206468185,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 4,
+        "n_train": 3041,
+        "n_validation": 832,
+        "n_validation_hosts": 358,
+        "roc_auc": 0.6153007142164626,
+        "average_precision": 0.304046712119196,
+        "brier_score": 0.17534473793073377,
+        "inner_host_folds": 0
+      }
+    ],
+    "exploratory_status": "Six fixed extensions evaluated after examination of the baseline results. There is no untouched final test set or hyperparameter search.",
+    "baseline_comparison": {
+      "scenario": "property_only",
+      "model": "logistic",
+      "auc_difference": 0.06643956473127732,
+      "average_precision_difference": 0.065290310083928,
+      "brier_difference": -0.007243271100352472,
+      "interpretation": "Paired descriptive differences on the same outer validation rows; these are not significance tests."
+    }
+  },
+  {
+    "mean_predicted_probability": 0.2456292304195562,
+    "observed_target_share": 0.2532920216886135,
+    "mean_prediction_minus_observed": -0.007662791269057279,
+    "expected_calibration_error_10_equal_width_bins": 0.034745195295857685,
+    "calibration_status": "Raw model scores; no fitted probability calibration.",
+    "high_score_at_least_0_5": {
+      "n": 215,
+      "observed_target_share": 0.413953488372093,
+      "mean_predicted_probability": 0.5669882228123917
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.6474905993968387,
+    "average_precision": 0.35934180119923254,
+    "brier_score": 0.1820982226408163,
+    "log_loss": 0.5459719018339895,
+    "precision_top_quarter": 0.38183694530443757,
+    "confusion_matrix_at_0_5": [
+      [
+        2766,
+        126
+      ],
+      [
+        892,
+        89
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2532920216886135,
+      "precision_top_quarter": 0.2532920216886135,
+      "brier_score": 0.18913517343750846,
+      "log_loss": 0.5659229842719192,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "extended_property_only",
+    "model": "hist_gradient_boosting",
+    "n": 3873,
+    "n_hosts": 1726,
+    "n_segments": 14,
+    "common_review_threshold": 30,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "latitude",
+      "longitude",
+      "beds",
+      "has_wifi",
+      "has_pool",
+      "has_aircon",
+      "has_free_parking",
+      "has_kitchen",
+      "has_washer",
+      "has_workspace",
+      "has_dryer",
+      "has_private_entrance",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 3155,
+        "n_validation": 718,
+        "n_validation_hosts": 331,
+        "roc_auc": 0.6906994251300301,
+        "average_precision": 0.3876717212724179,
+        "brier_score": 0.15783512157404564,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 1,
+        "n_train": 3059,
+        "n_validation": 814,
+        "n_validation_hosts": 376,
+        "roc_auc": 0.6400598980077703,
+        "average_precision": 0.44080705996216446,
+        "brier_score": 0.21818686403567106,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 2,
+        "n_train": 3113,
+        "n_validation": 760,
+        "n_validation_hosts": 329,
+        "roc_auc": 0.6915154788500724,
+        "average_precision": 0.44582518898124784,
+        "brier_score": 0.19703463985264105,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 3,
+        "n_train": 3124,
+        "n_validation": 749,
+        "n_validation_hosts": 332,
+        "roc_auc": 0.6037700968465245,
+        "average_precision": 0.2647772887530295,
+        "brier_score": 0.15795347367547805,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 4,
+        "n_train": 3041,
+        "n_validation": 832,
+        "n_validation_hosts": 358,
+        "roc_auc": 0.6339761820120867,
+        "average_precision": 0.31924861777470337,
+        "brier_score": 0.1758211701943994,
+        "inner_host_folds": 0
+      }
+    ],
+    "exploratory_status": "Six fixed extensions evaluated after examination of the baseline results. There is no untouched final test set or hyperparameter search.",
+    "baseline_comparison": {
+      "scenario": "property_only",
+      "model": "logistic",
+      "auc_difference": 0.07434142906087027,
+      "average_precision_difference": 0.07469979987222874,
+      "brier_difference": -0.006460996572277722,
+      "interpretation": "Paired descriptive differences on the same outer validation rows; these are not significance tests."
+    }
+  },
+  {
+    "mean_predicted_probability": 0.24959609692065068,
+    "observed_target_share": 0.2532920216886135,
+    "mean_prediction_minus_observed": -0.003695924767962794,
+    "expected_calibration_error_10_equal_width_bins": 0.021926007809820368,
+    "calibration_status": "Sigmoid calibration fitted on inner host-grouped OOF predictions within each outer training fold; the underlying pipeline is then refitted on that entire outer training fold.",
+    "high_score_at_least_0_5": {
+      "n": 0,
+      "observed_target_share": null,
+      "mean_predicted_probability": null
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.6367304864345102,
+    "average_precision": 0.3547847793002774,
+    "brier_score": 0.18165023281942172,
+    "log_loss": 0.545597233314479,
+    "precision_top_quarter": 0.37770897832817335,
+    "confusion_matrix_at_0_5": [
+      [
+        2892,
+        0
+      ],
+      [
+        981,
+        0
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2532920216886135,
+      "precision_top_quarter": 0.2532920216886135,
+      "brier_score": 0.18913517343750846,
+      "log_loss": 0.5659229842719192,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "extended_property_only",
+    "model": "hist_gradient_boosting_sigmoid",
+    "n": 3873,
+    "n_hosts": 1726,
+    "n_segments": 14,
+    "common_review_threshold": 30,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "latitude",
+      "longitude",
+      "beds",
+      "has_wifi",
+      "has_pool",
+      "has_aircon",
+      "has_free_parking",
+      "has_kitchen",
+      "has_washer",
+      "has_workspace",
+      "has_dryer",
+      "has_private_entrance",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 3155,
+        "n_validation": 718,
+        "n_validation_hosts": 331,
+        "roc_auc": 0.6906994251300301,
+        "average_precision": 0.3876717212724179,
+        "brier_score": 0.16143966362583978,
+        "inner_host_folds": 3
+      },
+      {
+        "fold": 1,
+        "n_train": 3059,
+        "n_validation": 814,
+        "n_validation_hosts": 376,
+        "roc_auc": 0.6400598980077703,
+        "average_precision": 0.44080705996216446,
+        "brier_score": 0.2178984940453612,
+        "inner_host_folds": 3
+      },
+      {
+        "fold": 2,
+        "n_train": 3113,
+        "n_validation": 760,
+        "n_validation_hosts": 329,
+        "roc_auc": 0.6915154788500724,
+        "average_precision": 0.44582518898124784,
+        "brier_score": 0.2005629718039268,
+        "inner_host_folds": 3
+      },
+      {
+        "fold": 3,
+        "n_train": 3124,
+        "n_validation": 749,
+        "n_validation_hosts": 332,
+        "roc_auc": 0.6037700968465245,
+        "average_precision": 0.2647772887530295,
+        "brier_score": 0.1519240069798291,
+        "inner_host_folds": 3
+      },
+      {
+        "fold": 4,
+        "n_train": 3041,
+        "n_validation": 832,
+        "n_validation_hosts": 358,
+        "roc_auc": 0.6339761820120867,
+        "average_precision": 0.31924861777470337,
+        "brier_score": 0.17311221066642657,
+        "inner_host_folds": 3
+      }
+    ],
+    "exploratory_status": "Six fixed extensions evaluated after examination of the baseline results. There is no untouched final test set or hyperparameter search.",
+    "baseline_comparison": {
+      "scenario": "property_only",
+      "model": "logistic",
+      "auc_difference": 0.06358131609854178,
+      "average_precision_difference": 0.07014277797327362,
+      "brier_difference": -0.006908986393672295,
+      "interpretation": "Paired descriptive differences on the same outer validation rows; these are not significance tests."
+    }
+  },
+  {
+    "mean_predicted_probability": 0.2520930566761593,
+    "observed_target_share": 0.2532920216886135,
+    "mean_prediction_minus_observed": -0.0011989650124542006,
+    "expected_calibration_error_10_equal_width_bins": 0.022209083899708628,
+    "calibration_status": "Raw model scores; no fitted probability calibration.",
+    "high_score_at_least_0_5": {
+      "n": 481,
+      "observed_target_share": 0.5488565488565489,
+      "mean_predicted_probability": 0.6161837595148748
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.7492897557041605,
+    "average_precision": 0.4852800542537494,
+    "brier_score": 0.1623564327387642,
+    "log_loss": 0.4909901699203026,
+    "precision_top_quarter": 0.4850361197110423,
+    "confusion_matrix_at_0_5": [
+      [
+        2675,
+        217
+      ],
+      [
+        717,
+        264
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2532920216886135,
+      "precision_top_quarter": 0.2532920216886135,
+      "brier_score": 0.18913517343750846,
+      "log_loss": 0.5659229842719192,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "extended_operating_controls",
+    "model": "hist_gradient_boosting",
+    "n": 3873,
+    "n_hosts": 1726,
+    "n_segments": 14,
+    "common_review_threshold": 30,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "latitude",
+      "longitude",
+      "beds",
+      "has_wifi",
+      "has_pool",
+      "has_aircon",
+      "has_free_parking",
+      "has_kitchen",
+      "has_washer",
+      "has_workspace",
+      "has_dryer",
+      "has_private_entrance",
+      "log_price",
+      "log_minimum_nights",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 3155,
+        "n_validation": 718,
+        "n_validation_hosts": 331,
+        "roc_auc": 0.8054966237795419,
+        "average_precision": 0.5020208966176394,
+        "brier_score": 0.13714783357623703,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 1,
+        "n_train": 3059,
+        "n_validation": 814,
+        "n_validation_hosts": 376,
+        "roc_auc": 0.7364936203101171,
+        "average_precision": 0.5663241734131337,
+        "brier_score": 0.19382080641881252,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 2,
+        "n_train": 3113,
+        "n_validation": 760,
+        "n_validation_hosts": 329,
+        "roc_auc": 0.8140410314323357,
+        "average_precision": 0.5853937871511598,
+        "brier_score": 0.16336404157346374,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 3,
+        "n_train": 3124,
+        "n_validation": 749,
+        "n_validation_hosts": 332,
+        "roc_auc": 0.6712823815657649,
+        "average_precision": 0.3630361143589733,
+        "brier_score": 0.15083786109371697,
+        "inner_host_folds": 0
+      },
+      {
+        "fold": 4,
+        "n_train": 3041,
+        "n_validation": 832,
+        "n_validation_hosts": 358,
+        "roc_auc": 0.7143618912193387,
+        "average_precision": 0.43274563170361324,
+        "brier_score": 0.1627763864297545,
+        "inner_host_folds": 0
+      }
+    ],
+    "exploratory_status": "Six fixed extensions evaluated after examination of the baseline results. There is no untouched final test set or hyperparameter search.",
+    "baseline_comparison": {
+      "scenario": "operating_controls",
+      "model": "logistic",
+      "auc_difference": 0.03520996442786373,
+      "average_precision_difference": 0.08597346250787058,
+      "brier_difference": -0.009599968338057902,
+      "interpretation": "Paired descriptive differences on the same outer validation rows; these are not significance tests."
+    }
+  },
+  {
+    "mean_predicted_probability": 0.24668437623433828,
+    "observed_target_share": 0.2532920216886135,
+    "mean_prediction_minus_observed": -0.006607645454275196,
+    "expected_calibration_error_10_equal_width_bins": 0.030768129678683944,
+    "calibration_status": "Sigmoid calibration fitted on inner host-grouped OOF predictions within each outer training fold; the underlying pipeline is then refitted on that entire outer training fold.",
+    "high_score_at_least_0_5": {
+      "n": 214,
+      "observed_target_share": 0.602803738317757,
+      "mean_predicted_probability": 0.5611319527947902
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.7466750697555068,
+    "average_precision": 0.48403201835685294,
+    "brier_score": 0.16294006950122866,
+    "log_loss": 0.4936945673520848,
+    "precision_top_quarter": 0.48297213622291024,
+    "confusion_matrix_at_0_5": [
+      [
+        2807,
+        85
+      ],
+      [
+        852,
+        129
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2532920216886135,
+      "precision_top_quarter": 0.2532920216886135,
+      "brier_score": 0.18913517343750846,
+      "log_loss": 0.5659229842719192,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "extended_operating_controls",
+    "model": "hist_gradient_boosting_sigmoid",
+    "n": 3873,
+    "n_hosts": 1726,
+    "n_segments": 14,
+    "common_review_threshold": 30,
+    "predictors": [
+      "accommodates",
+      "bathrooms_num",
+      "n_amenities",
+      "latitude",
+      "longitude",
+      "beds",
+      "has_wifi",
+      "has_pool",
+      "has_aircon",
+      "has_free_parking",
+      "has_kitchen",
+      "has_washer",
+      "has_workspace",
+      "has_dryer",
+      "has_private_entrance",
+      "log_price",
+      "log_minimum_nights",
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 3155,
+        "n_validation": 718,
+        "n_validation_hosts": 331,
+        "roc_auc": 0.8054966237795419,
+        "average_precision": 0.5020208966176394,
+        "brier_score": 0.13932206861708754,
+        "inner_host_folds": 3
+      },
+      {
+        "fold": 1,
+        "n_train": 3059,
+        "n_validation": 814,
+        "n_validation_hosts": 376,
+        "roc_auc": 0.7364936203101171,
+        "average_precision": 0.5663241734131337,
+        "brier_score": 0.19544926944543148,
+        "inner_host_folds": 3
+      },
+      {
+        "fold": 2,
+        "n_train": 3113,
+        "n_validation": 760,
+        "n_validation_hosts": 329,
+        "roc_auc": 0.8140410314323357,
+        "average_precision": 0.5853937871511598,
+        "brier_score": 0.17085918135071074,
+        "inner_host_folds": 3
+      },
+      {
+        "fold": 3,
+        "n_train": 3124,
+        "n_validation": 749,
+        "n_validation_hosts": 332,
+        "roc_auc": 0.6712823815657649,
+        "average_precision": 0.3630361143589733,
+        "brier_score": 0.14496029582304357,
+        "inner_host_folds": 3
+      },
+      {
+        "fold": 4,
+        "n_train": 3041,
+        "n_validation": 832,
+        "n_validation_hosts": 358,
+        "roc_auc": 0.7143618912193387,
+        "average_precision": 0.43274563170361324,
+        "brier_score": 0.1604683884430394,
+        "inner_host_folds": 3
+      }
+    ],
+    "exploratory_status": "Six fixed extensions evaluated after examination of the baseline results. There is no untouched final test set or hyperparameter search.",
+    "baseline_comparison": {
+      "scenario": "operating_controls",
+      "model": "logistic",
+      "auc_difference": 0.032595278479210066,
+      "average_precision_difference": 0.0847254266109741,
+      "brier_difference": -0.00901633157559345,
+      "interpretation": "Paired descriptive differences on the same outer validation rows; these are not significance tests."
+    }
+  }
+]

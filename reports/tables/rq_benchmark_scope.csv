@@ -1,15 +1,15 @@
 neighbourhood_cleansed,configuration,n,n_benchmark_listings,n_benchmark_hosts,benchmark_cell_descriptive_p75,common_review_threshold
-Melbourne,1BR Apartment/unit,918,192,106,31.5,30
-Melbourne,2BR Apartment/unit,1207,270,102,40.0,30
-Melbourne,3BR Apartment/unit,304,44,24,63.25,30
-Moreland,1BR Apartment/unit,53,24,19,19.0,30
-Port Phillip,1BR Apartment/unit,301,92,65,18.0,30
-Port Phillip,2BR Apartment/unit,217,55,35,13.5,30
+Melbourne,1BR Apartment/unit,936,193,106,31.0,30
+Melbourne,2BR Apartment/unit,1235,273,103,39.0,30
+Melbourne,3BR Apartment/unit,306,45,24,63.0,30
+Merri-bek,1BR Apartment/unit,54,24,19,19.0,30
+Port Phillip,1BR Apartment/unit,305,93,66,18.0,30
+Port Phillip,2BR Apartment/unit,219,55,35,13.5,30
 Port Phillip,3BR House/townhouse,56,11,10,16.0,30
-Stonnington,1BR Apartment/unit,184,40,30,18.25,30
-Stonnington,2BR Apartment/unit,95,35,30,19.5,30
-Yarra,1BR Apartment/unit,175,51,40,24.0,30
-Yarra,2BR Apartment/unit,101,47,37,29.5,30
-Yarra,2BR House/townhouse,59,14,12,25.25,30
-Yarra Ranges,2BR House/townhouse,50,13,13,35.0,30
-Yarra Ranges,3BR House/townhouse,90,11,11,38.0,30
+Stonnington,1BR Apartment/unit,185,40,30,18.25,30
+Stonnington,2BR Apartment/unit,97,35,30,19.5,30
+Yarra,1BR Apartment/unit,177,51,40,24.0,30
+Yarra,2BR Apartment/unit,102,48,37,29.25,30
+Yarra,2BR House/townhouse,60,14,12,25.0,30
+Yarra Ranges,2BR House/townhouse,51,13,13,35.0,30
+Yarra Ranges,3BR House/townhouse,90,11,11,37.5,30

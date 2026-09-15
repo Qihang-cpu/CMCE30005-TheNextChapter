@@ -8,56 +8,65 @@ Eric Huang, Loc Le, Qihang Sun and Maksym Xu
 
 Repository: [Qihang-cpu/CMCE30005-TheNextChapter](https://github.com/Qihang-cpu/CMCE30005-TheNextChapter/tree/interim-report-2026-09-13)
 
+Report body including table: 1,206 words | Updated 15 September 2026
+
 ## Introduction
 
-A prospective operator considering several Melbourne Airbnb properties needs to compare locations and dwelling configurations before committing to leases and furnishings. The school-supplied Inside Airbnb snapshot shows substantial variation in quoted prices and guest reviews. Comparisons across conventional apartments and specialised holiday accommodation may reflect different property mixes.
+A prospective operator considering several Melbourne Airbnb properties must compare locations and dwelling configurations before committing to leases, furnishings and launch costs. These choices are difficult to reverse and an unsuitable property can tie up limited capital. In this report, location is measured by Local Government Area (LGA), meaning a municipal area within Greater Melbourne. The business therefore needs a consistent way to compare similar properties rather than relying on nightly price alone.
 
-Our project combines descriptive comparisons with predictive modelling of review activity to develop a preliminary segment shortlist. Reviews are observable, but they do not measure profit. The supplied data lack actual rental and operating costs, so financial viability and externally sourced rent scenarios are outside this analysis.
+The school-supplied Inside Airbnb snapshot shows substantial variation in quoted prices and guest reviews. We combine descriptive comparisons with predictive modelling to assess which market segments are associated with stronger review activity. Reviews are observable and provide a limited indicator of guest activity, but they are not bookings or profit. Because the supplied data contain neither actual rent nor operating costs, this interim analysis supports preliminary market screening rather than a financial investment recommendation.
 
 ## Problem Definition and Objectives
 
-Our research question is: **Among established standard entire-home listings with one to three bedrooms in Greater Melbourne, which LGA × dwelling-type × bedroom-count segments with at least 50 eligible listings have the highest mean out-of-sample predicted probability of meeting a common upper-quartile review-count benchmark in the 12 months preceding the snapshot?**
+Our research question is: Among established standard entire-home listings with one to three bedrooms in Greater Melbourne, which LGA, dwelling-class and bedroom-count segments with at least 50 eligible analysis listings have the highest mean out-of-sample predicted probability of meeting a common upper-quartile review-count benchmark over the 365 days ending on each listing’s scrape date?
 
-The descriptive objective is to compare review distributions, observed benchmark attainment and property attributes. The predictive objective is to test how well property information distinguishes higher-activity listings whose hosts are excluded from training.
+The descriptive objective is to compare review distributions, observed benchmark attainment and property attributes across eligible segments. The predictive objective is to test whether information available about a property's location, dwelling configuration, capacity, bathrooms and amenities can distinguish higher-activity listings when evaluated on hosts excluded from model training.
 
-Established means first review on or before 1 June 2025, relative to the start of the June 2026 snapshot month. This indicates review history, not an opening date or continuous operation. We retain entire rental units, condos, homes and townhouses with quoted prices of AUD30–1,500. Units and condos form one dwelling class; homes and townhouses form the other. These rules define comparable residential stock without establishing lease or subletting availability. Every reported segment needs at least 50 analysis listings after all eligibility and host-partition restrictions.
+Established means the first observed review occurred at least 365 days before that listing’s scrape date. This indicates review history, not an opening date or continuous operation. We retain entire rental units, condos, homes and townhouses with one to three bedrooms and quoted prices of AUD30–1,500. Units and condos form the apartment class; homes and townhouses form the house class. These categories identify comparable residential stock without proving lease or subletting availability. Each reported segment needs at least 50 analysis listings after all restrictions.
 
-The common benchmark is calculated from a separate group of reference hosts. It is not hard-coded in the research question or taken from a whole-market P75. Industry percentile comparisons provide methodological context (Cushman & Wakefield Georgia, 2019), but the numerical review threshold comes solely from the supplied data and does not indicate profitability.
+A separate group of reference hosts supplies one common upper-quartile benchmark. Its numerical value is calculated from the supplied data, rather than fixed in the research question. It is neither a whole-market standard nor a profitability threshold.
 
 ## Data Description
 
-The saved June 2026 data contain 25,728 listings, approximately 9.39 million calendar records and 1.03 million reviews. Variables include listing and host identifiers, LGA, dwelling type, bedrooms, capacity, bathrooms, amenities, quoted price, first review and recent review counts. Calendar availability does not establish bookings, and the calendar contains no prices.
+The school’s June 2026 files contain 25,728 listings, 9,390,720 calendar records and 1,026,690 reviews. The 90 listing variables cover identifiers, LGA, property type, capacity, bathrooms, amenities, price, minimum stay and reviews. Scrape dates range from 17 June to 1 July 2026. Calendar availability cannot establish bookings and the calendar contains no prices.
 
-Cleaning addresses currency strings, missing values, bathroom descriptions and amenity lists. Revised parsers preserve identifier text, recognise half-baths and avoid counting commas inside amenity names as extra amenities. Quoted price is missing for 6,553 listings and bedrooms for 4,679. The median quoted price is AUD243.67 among 19,175 non-missing values. Price eligibility is a scope assumption, not proof that excluded values are erroneous.
+Cleaning converts currency strings, standardises missing values, extracts bathroom counts and parses amenity lists without splitting names containing commas. Quoted price is missing for 6,553 listings and bedrooms for 4,679. Median price is AUD243.67 across 19,175 non-missing records. The price restriction supports comparability; it does not establish that excluded prices are errors. Source identifier text is preserved because scientific notation can already contain irrecoverable rounding.
 
-After dwelling, price and history restrictions, 6,786 listings remain before partition and minimum-support rules. The final reference group has 899 listings from 424 hosts; its pooled P75 is 30 reviews. The separate analysis group contains 3,810 listings, 1,699 hosts and 14 segments, including 333 zero-review listings. Of these, 957 meet the benchmark (25.12%); integer ties are retained. Their median amenity count is 44 versus 43 below the benchmark. Both groups have median guest capacity four, so these pooled contrasts offer limited separation.
+The final reference group’s P75 is 29.75, rounded upward to a 30-review event. The separate analysis group contains 3,873 listings from 1,726 hosts across 14 segments, including 334 zero-review listings. Of these, 981 meet the benchmark (25.33%); ties are retained. Median amenity counts are 44 among listings meeting the benchmark and 43 below it, while median guest capacity is four in both groups. These pooled differences offer limited separation.
 
-The original CSV links remain broken. This update uses saved cleaned data and aggregates; raw identifier precision, parsing and per-listing trailing-year review windows still require source verification. The history reference date does not substitute for an actual scrape date.
+Full-source checks revealed a one-day boundary difference: the supplied recent-review field matches the inclusive interval from scrape date minus 365 days through scrape date, covering 366 dates. We retain that field and derive reviews_365d over the strict 365-day interval, excluding its start boundary. This removes 352 reviews across 350 listings and changes one analysis listing’s target label. Independent reconstruction agrees with every derived count; original total-review counts and first/last review dates also match.
+
+Table 1. Sample filters and separate host branches
+
+| Stage | Listings | Hosts | Role |
+| --- | --- | --- | --- |
+| Raw listings | 25,728 | 14,113 | Source snapshot |
+| After scope filters | 6,891 | 3,488 | Before host partition |
+| Analysis before support | 5,549 | 2,809 | Before 50-listing rule |
+| Final analysis | 3,873 | 1,726 | 14 supported segments |
+| Reference before support | 1,342 | 679 | Separate benchmark hosts |
+| Final reference | 906 | 426 | Same 14 segments; defines P75 |
 
 ## Methodology and Analytical Approach
 
-A fixed hash of host identifiers reserves approximately 20% of hosts for benchmark development. After removing those hosts, we apply the 50-listing rule to analysis cells. Reference listings satisfy the same primary eligibility and belong to those supported cells. Their pooled P75, rounded upward to an integer, supplies one common cutoff. Reference hosts enter no model training, evaluation or sensitivity analysis pool, and analysis outcomes cannot change the cutoff.
+A fixed hash of host identifiers reserves approximately 20% of hosts for benchmark development. These hosts enter no model training, evaluation or sensitivity analysis. After removing them, analysis segments must contain at least 50 listings. Eligible reference listings in those supported segments supply one pooled P75, using linear interpolation and upward integer rounding. That cutoff remains fixed across segments and sensitivity samples.
 
-Descriptive tables report listing and distinct-host counts, quantiles, actual attainment and attribute profiles. Host-cluster bootstrap intervals account for shared operators. Wider dwelling and unrestricted-history comparisons assess composition sensitivity without claiming that excluded properties cannot be rented.
+Descriptive tables report listing and distinct-host counts, review quantiles, observed attainment and attribute profiles. Pointwise 90% intervals resample hosts to account for properties sharing an operator. Wider dwelling definitions and unrestricted review histories assess how the chosen scope affects comparisons.
 
-We fitted logistic regression and random forest using LGA, dwelling–bedroom configuration, capacity, bathrooms and amenities. Five-fold cross-validation separates analysis hosts. Imputation, encoding and scaling are fitted within training folds. Review-derived fields, ratings and host badges are excluded. Current price and minimum stay enter only an operating-controls sensitivity. Both models use fixed settings; no hyperparameter search has been conducted.
+Baseline logistic regression and random forest use LGA, dwelling–bedroom configuration, capacity, bathrooms and amenity counts. We then compare six fixed extensions adding coordinates, beds and nine specific facilities, including pool, parking and kitchen indicators; these also test histogram gradient boosting. These comparisons retain the same 3,873 listings and five host-disjoint outer folds. Preprocessing is learned within training folds. Ratings, review-derived predictors and host badges are excluded; price and minimum stay enter labelled operating-controls variants.
 
-Evaluation covers ROC-AUC, average precision, Brier score, calibration bins and precision among the highest-scored quarter. Main logistic AUC is 0.568, average precision 0.278 and top-quarter precision 28.8%, against prevalence 25.1%. Its Brier score is 0.188, only slightly below the training-prevalence baseline of 0.190; forest AUC is 0.553. Calibration error across ten fixed-width bins is 3.66 percentage points for logistic regression. Only 22 listings receive scores of at least 0.5; these average 57.4%, but observed attainment is 31.8%, illustrating sparse and unreliable high-score estimates. Calibration has been assessed, not corrected.
-
-Mean out-of-fold scores rank Melbourne three-bedroom apartments first at 34.6%, versus 36.5% observed across 304 listings. Conditional 95% host-bootstrap intervals hold fitted scores and the benchmark fixed, omitting model-fitting and benchmark-estimation uncertainty. The weak discrimination and calibration results do not establish a reliable best location. R supports cleaning and descriptive analysis; Python and scikit-learn support modelling.
+ROC-AUC and average precision assess discrimination; Brier score and calibration assess probability quality against a training-prevalence baseline. Two boosting variants fit sigmoid calibration using three host-disjoint folds inside each outer training set. Thus no outer validation outcome enters calibration. R supports cleaning and descriptive analysis; Python and scikit-learn support modelling.
 
 ## Analysis Plan and Progress to Date
 
-The revised scope, reference partition, descriptive comparisons, two predictive baselines and three sensitivities have been implemented. Separate R and Python calculations agree on sample membership and the benchmark. Tests check host separation, minimum support and the cutoff's independence from analysis outcomes. Earlier corrections include the 90-date calendar window and exclusion of the incomplete final month from seasonality.
+The complete raw-data workflow and independent checks now agree on review counts, samples, benchmark and baseline metrics. Baseline logistic AUC is 0.573 and forest AUC is 0.560. Detailed property features improve forest AUC to 0.640, average precision to 0.350 and Brier score to 0.181, versus baseline logistic Brier 0.189. Its ten-bin calibration error is 1.63 percentage points. Boosting achieves AUC 0.647 but Brier 0.182. We provisionally prefer the enhanced forest for probability ranking because it has the lowest Brier score among the property-only extensions; discrimination remains moderate.
 
-Removing the history restriction gives 6,675 analysis listings in 22 segments; removing the price filter gives 5,647 in 19. Their P75 values are both 23, while the reference cutoff remains 30. Adding operating controls raises logistic AUC to 0.713, which does not establish comparable performance using pre-opening information.
+The enhanced forest ranks Melbourne three-bedroom apartments first: mean probability 34.4%, observed attainment 36.6%, and 306 listings. Its conditional 95% host-bootstrap interval is 33.0–35.8%; fixed scores and cutoff omit model-refitting and benchmark-estimation uncertainty. Removing the history restriction gives 6,675 analysis listings; removing the price filter gives 5,720. Adding current price and minimum stay to enhanced boosting raises AUC to 0.749. These contemporaneous settings provide useful context but do not establish a causal effect or a pre-opening forecast. Sigmoid calibration does not improve every metric.
 
-This design follows earlier exploration of the snapshot and provides no untouched final test. Week 9 will address raw-source verification and sparse outcomes. Week 10 will examine repeated host splits, broader dwelling definitions and calibration fitted within training data. Weeks 11–12 will cover nested tuning, refitted ranking uncertainty and final reporting. The README reproduces this report and links the code and outputs. Findings concern existing listings' preceding-year activity, not a new operator's future income.
+All six extensions are reported. Their comparison follows baseline inspection, so model preference is exploratory and there is no untouched final test. Next steps are repeated host partitions, model selection within nested grouped validation, and ranking intervals with model refitting. Findings describe existing listings’ preceding-year review activity, not future income or profitability. The README reproduces this report and links the code, validation and outputs.
 
 ## References
 
-Cushman & Wakefield Georgia. (2019, June). *Tbilisi hospitality series: Airbnb* (pp. 13–14). [Report](https://cushwake.ge/wp-content/uploads/2025/06/MKTB_JUNE_AIRBNB.pdf).
+Inside Airbnb. (2026). Melbourne listings, calendar and reviews [June 2026 dataset supplied through CMCE30005 LMS].
 
-Inside Airbnb. (2026). *Melbourne listings, calendar and reviews* [June 2026 dataset supplied through CMCE30005 LMS].
-
-Scikit-learn developers. (n.d.). *Cross-validation* and *Probability calibration*. Retrieved 13 September 2026. [Grouped validation](https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data); [Calibration guidance](https://scikit-learn.org/stable/modules/calibration.html).
+Scikit-learn developers. (n.d.). *Cross-validation* and *Probability calibration*. [Grouped validation](https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data); [Calibration guidance](https://scikit-learn.org/stable/modules/calibration.html).

@@ -1,5 +1,5 @@
 # CMCE30005: descriptive review activity in established residential listings.
-# Run from the repository root after the supplied data have been cleaned.
+# Run from the repository root after cleaning and the Python review analysis.
 # Common eligibility and benchmark-partition rules are in config/review_analysis.json.
 # First review measures recorded history, not launch date or continuous operation.
 
@@ -15,7 +15,12 @@ cfg <- fromJSON("config/review_analysis.json")
 MIN_LISTINGS <- as.integer(cfg$minimum_segment_listings)
 BOOT_REPS <- 1000L
 BOOT_SEED <- as.integer(cfg$seed)
-FIRST_REVIEW_CUTOFF <- as.Date(cfg$established_first_review_on_or_before)
+HISTORY_DAYS <- cfg$established_history_days
+REVIEW_WINDOW_DAYS <- cfg$review_window_days
+stopifnot(length(HISTORY_DAYS) == 1L, is.finite(HISTORY_DAYS), HISTORY_DAYS >= 1,
+          HISTORY_DAYS == as.integer(HISTORY_DAYS),
+          length(REVIEW_WINDOW_DAYS) == 1L, is.finite(REVIEW_WINDOW_DAYS), REVIEW_WINDOW_DAYS >= 1,
+          REVIEW_WINDOW_DAYS == as.integer(REVIEW_WINDOW_DAYS))
 SEGMENT_COLS <- c("lga", "dwelling_class", "bedrooms")
 PROPERTY_MAP <- unlist(cfg$property_map)
 MAIN_SCOPE <- sprintf("Established standard entire homes, 1-3 bedrooms, price AUD%s-%s; non-benchmark hosts; final segment n>=%s",
@@ -52,10 +57,94 @@ canonical_id <- function(s) {
   if (!nzchar(answer)) "0" else answer
 }
 
+# Missing first reviews are retained for the all-history sensitivity. A missing
+# or malformed scrape date cannot define either eligibility or a review window.
+parse_listing_date <- function(x, field, allow_missing = FALSE) {
+  if (inherits(x, "POSIXt")) x <- as.Date(x, tz = "UTC")
+  raw <- trimws(as.character(x))
+  missing <- is.na(raw) | raw == ""
+  parsed <- suppressWarnings(as.Date(raw, format = "%Y-%m-%d"))
+  invalid <- !missing & (!grepl("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", raw) |
+                          is.na(parsed) | as.character(parsed) != raw)
+  if (any(invalid)) stop(field, " contains ", sum(invalid), " invalid date(s). Rebuild the cleaned data from validated raw files.")
+  if (!allow_missing && any(missing)) stop(field, " contains ", sum(missing), " missing date(s). Rebuild the cleaned data from validated raw files.")
+  parsed[missing] <- as.Date(NA)
+  parsed
+}
+
+has_established_history <- function(first_review, last_scraped, history_days) {
+  !is.na(first_review) & first_review <= last_scraped - history_days
+}
+
+verify_analysis_inputs <- function(root = ".") {
+  fail <- function(reason) stop(reason,
+    "\nRestore the raw files, then run scripts/01_data_cleaning.R, scripts/rq_scope_feasibility.py and scripts/08_peer_ranking.R in that order.",
+    call. = FALSE)
+  read_record <- function(relative_path) {
+    path <- file.path(root, relative_path)
+    if (!file.exists(path)) fail(paste("Required verification file is missing:", relative_path))
+    tryCatch(fromJSON(path, simplifyVector = FALSE),
+             error = function(e) fail(paste("Cannot read verification file:", relative_path)))
+  }
+  recorded_hash <- function(entries, relative_path) {
+    if (!is.list(entries) || !length(entries)) fail("The cleaning manifest has no input/output records.")
+    matches <- vapply(entries, function(entry) is.list(entry) && identical(entry$path, relative_path), logical(1))
+    if (sum(matches) != 1L) fail(paste("The cleaning manifest needs one record for", relative_path))
+    entries[[which(matches)]]$sha256
+  }
+  actual_hash <- function(relative_path) {
+    path <- file.path(root, relative_path)
+    if (!file.exists(path) || dir.exists(path)) fail(paste("Required input file is missing:", relative_path))
+    digest(path, file = TRUE, algo = "sha256")
+  }
+  manifest <- read_record("data/processed/cleaning_manifest.json")
+  summary <- read_record("reports/tables/rq_scope_summary.json")
+  provenance <- summary$provenance
+  validation <- provenance$raw_review_validation
+  if (!isTRUE(provenance$raw_validation) || !isTRUE(validation$passed) ||
+      !identical(validation$validation_population, "all source listings") ||
+      !isTRUE(validation$validation_listings == validation$all_source_listings)) {
+    fail("The Python review reconstruction has not passed for every source listing.")
+  }
+  if (!identical(summary$config_sha256, actual_hash("config/review_analysis.json"))) {
+    fail("The Python results use a different review-analysis configuration.")
+  }
+  cleaned_path <- "data/processed/listings_clean.rds"
+  if (!identical(recorded_hash(manifest$outputs, cleaned_path), actual_hash(cleaned_path))) {
+    fail("The cleaned listings do not match the cleaning manifest.")
+  }
+  for (name in c("listings", "calendar", "reviews")) {
+    path <- paste0("data/raw/", name, "_airbnb.csv")
+    expected <- recorded_hash(manifest$inputs, path)
+    if (!identical(expected, provenance$raw_file_sha256[[path]]) ||
+        !identical(expected, actual_hash(path))) {
+      fail(paste("Cleaning, Python validation and the current raw file disagree:", path))
+    }
+  }
+  summary
+}
+
+verified_summary <- verify_analysis_inputs()
 listings <- readRDS("data/processed/listings_clean.rds")
 required <- c("id", "host_id", "room_type", "property_type", "bedrooms",
-              "neighbourhood_cleansed", "price_num", "number_of_reviews_ltm", "first_review")
-stopifnot(all(required %in% names(listings)), !anyDuplicated(listings$id))
+              "neighbourhood_cleansed", "price_num", "reviews_365d", "first_review", "last_scraped")
+missing_columns <- setdiff(required, names(listings))
+if (length(missing_columns)) stop("Cleaned listings are missing required columns: ",
+                                paste(missing_columns, collapse = ", "),
+                                ". Rebuild them from validated raw files before ranking.")
+stopifnot(!anyDuplicated(listings$id))
+listings[, last_scraped := parse_listing_date(last_scraped, "last_scraped")]
+listings[, first_review := parse_listing_date(first_review, "first_review", allow_missing = TRUE)]
+if (any(listings$first_review > listings$last_scraped, na.rm = TRUE)) {
+  stop("At least one first_review date is after its listing's last_scraped date.")
+}
+listings[, established_history := has_established_history(first_review, last_scraped, HISTORY_DAYS)]
+# Python has checked reviews_365d against the same raw review file:
+# last_scraped - REVIEW_WINDOW_DAYS < review date <= last_scraped.
+if (anyNA(listings$reviews_365d) || any(!is.finite(listings$reviews_365d)) ||
+    any(listings$reviews_365d < 0) || any(listings$reviews_365d %% 1 != 0)) {
+  stop("reviews_365d must contain non-negative integer counts for every listing.")
+}
 raw_hosts <- unique(listings$host_id)
 host_map <- setNames(vapply(raw_hosts, canonical_id, character(1)), raw_hosts)
 listings[, canonical_host_id := unname(host_map[host_id])]
@@ -74,9 +163,9 @@ entire13 <- copy(listings[room_type == cfg$room_type & bedrooms %in% cfg$bedroom
 entire13[, standard_type := !is.na(dwelling_class)]
 standard <- entire13[standard_type == TRUE]
 priced <- standard[!is.na(price_num) & price_num >= cfg$minimum_price & price_num <= cfg$maximum_price]
-established <- priced[!is.na(first_review) & first_review <= FIRST_REVIEW_CUTOFF]
-stopifnot(!anyNA(established$number_of_reviews_ltm), !anyNA(established$canonical_host_id),
-          !anyNA(established$lga), all(established$number_of_reviews_ltm >= 0))
+established <- priced[established_history == TRUE]
+stopifnot(!anyNA(established$reviews_365d), !anyNA(established$canonical_host_id),
+          !anyNA(established$lga), all(established$reviews_365d >= 0))
 
 eligible_cohort <- function(x) {
   cells <- x[, .(n_listings = .N), by = SEGMENT_COLS][n_listings >= MIN_LISTINGS]
@@ -89,28 +178,39 @@ benchmark_before_cells <- established[benchmark_host == TRUE]
 benchmark <- benchmark_before_cells[main_cells, on = SEGMENT_COLS, nomatch = 0]
 stopifnot(nrow(main) > 0, nrow(benchmark) > 0,
           !length(intersect(main$canonical_host_id, benchmark$canonical_host_id)))
-benchmark_p75 <- unname(quantile(benchmark$number_of_reviews_ltm, cfg$benchmark_quantile, type = 7))
+benchmark_p75 <- unname(quantile(benchmark$reviews_365d, cfg$benchmark_quantile, type = 7))
 REVIEW_TARGET <- as.integer(ceiling(benchmark_p75))
-main[, meets_target := number_of_reviews_ltm >= REVIEW_TARGET]
-benchmark[, meets_target := number_of_reviews_ltm >= REVIEW_TARGET]
+main[, meets_target := reviews_365d >= REVIEW_TARGET]
+benchmark[, meets_target := reviews_365d >= REVIEW_TARGET]
+agreement <- c(
+  source_listings = isTRUE(nrow(listings) == verified_summary$provenance$raw_review_validation$all_source_listings),
+  review_target = isTRUE(REVIEW_TARGET == verified_summary$common_review_threshold),
+  analysis_listings = isTRUE(nrow(main) == verified_summary$eligible_listings),
+  analysis_hosts = isTRUE(uniqueN(main$canonical_host_id) == verified_summary$eligible_hosts),
+  analysis_segments = isTRUE(nrow(main_cells) == verified_summary$eligible_cells_ge_50),
+  reference_listings = isTRUE(nrow(benchmark) == verified_summary$benchmark_development$n_listings),
+  reference_hosts = isTRUE(uniqueN(benchmark$canonical_host_id) == verified_summary$benchmark_development$n_hosts))
+if (!all(agreement)) {
+  stop("R and Python disagree on: ", paste(names(agreement)[!agreement], collapse = ", "),
+       ". Resolve the cleaning/scope differences and rerun 01, Python review analysis and 08 before publishing rankings.")
+}
 
 # Remove all benchmark hosts from every analysis sensitivity, not just the
 # benchmark hosts whose listings supplied the primary reference distribution.
 all_histories <- eligible_cohort(priced[benchmark_host == FALSE])
-all_histories[, meets_target := number_of_reviews_ltm >= REVIEW_TARGET]
-no_price <- eligible_cohort(standard[benchmark_host == FALSE & !is.na(first_review) &
-                                    first_review <= FIRST_REVIEW_CUTOFF])
-no_price[, meets_target := number_of_reviews_ltm >= REVIEW_TARGET]
+all_histories[, meets_target := reviews_365d >= REVIEW_TARGET]
+no_price <- eligible_cohort(standard[benchmark_host == FALSE & established_history == TRUE])
+no_price[, meets_target := reviews_365d >= REVIEW_TARGET]
 stopifnot(!any(main$benchmark_host), !any(all_histories$benchmark_host), !any(no_price$benchmark_host))
 
 scope_row <- function(x, stage) data.table(
   stage = stage, n_listings = nrow(x), n_hosts = uniqueN(x$canonical_host_id),
   n_segments = uniqueN(x[, ..SEGMENT_COLS]),
-  n_zero_reviews = sum(x$number_of_reviews_ltm == 0),
-  n_meeting_target = sum(x$number_of_reviews_ltm >= REVIEW_TARGET),
-  observed_target_rate = mean(x$number_of_reviews_ltm >= REVIEW_TARGET),
-  reviews_median = median(x$number_of_reviews_ltm),
-  reviews_p75 = unname(quantile(x$number_of_reviews_ltm, .75, type = 7)),
+  n_zero_reviews = sum(x$reviews_365d == 0),
+  n_meeting_target = sum(x$reviews_365d >= REVIEW_TARGET),
+  observed_target_rate = mean(x$reviews_365d >= REVIEW_TARGET),
+  reviews_median = median(x$reviews_365d),
+  reviews_p75 = unname(quantile(x$reviews_365d, .75, type = 7)),
   review_target = REVIEW_TARGET)
 scope <- rbindlist(list(
   scope_row(entire13, "Entire homes with 1-3 bedrooms, all host partitions"),
@@ -131,8 +231,8 @@ partition_summary <- rbindlist(lapply(list(
 ), function(entry) entry$x[, .(
   population = entry$population, n_listings = .N, n_hosts = uniqueN(canonical_host_id),
   n_segments = uniqueN(.SD), review_target = REVIEW_TARGET,
-  n_meeting_target = sum(number_of_reviews_ltm >= REVIEW_TARGET),
-  observed_target_rate = mean(number_of_reviews_ltm >= REVIEW_TARGET)
+  n_meeting_target = sum(reviews_365d >= REVIEW_TARGET),
+  observed_target_rate = mean(reviews_365d >= REVIEW_TARGET)
 ), by = .(partition = fifelse(benchmark_host, "benchmark development", "analysis")), .SDcols = SEGMENT_COLS]))
 partition_summary[, benchmark_raw_p75 := benchmark_p75]
 partition_summary[, partition_rule := sprintf("SHA256(%s + canonical host ID), first %s hex %% %s == %s",
@@ -167,7 +267,7 @@ fwrite(excluded, "reports/tables/excluded_dwelling_types.csv")
 # price and host-partition rules. Broad classes are held fixed across stages:
 # apartment-like = rental unit, condo, serviced apartment or loft; other entire
 # homes = every remaining entire-home type. Recompute n>=50 in each stage.
-broad <- entire13[benchmark_host == FALSE & !is.na(first_review) & first_review <= FIRST_REVIEW_CUTOFF &
+broad <- entire13[benchmark_host == FALSE & established_history == TRUE &
                   !is.na(price_num) & price_num >= cfg$minimum_price & price_num <= cfg$maximum_price]
 broad[, broad_class := fifelse(property_type %in% c("Entire rental unit", "Entire condo",
                                                    "Entire serviced apartment", "Entire loft"),
@@ -175,10 +275,10 @@ broad[, broad_class := fifelse(property_type %in% c("Entire rental unit", "Entir
 type_sensitivity <- rbindlist(lapply(c(FALSE, TRUE), function(after) {
   x <- if (after) broad[standard_type == TRUE] else broad
   ans <- x[, .(n_listings = .N, n_hosts = uniqueN(canonical_host_id),
-                n_meeting_target = sum(number_of_reviews_ltm >= REVIEW_TARGET),
-                n_zero_reviews = sum(number_of_reviews_ltm == 0),
-                observed_target_rate = mean(number_of_reviews_ltm >= REVIEW_TARGET),
-                reviews_p75 = unname(quantile(number_of_reviews_ltm, .75))), by = .(lga, broad_class, bedrooms)]
+                n_meeting_target = sum(reviews_365d >= REVIEW_TARGET),
+                n_zero_reviews = sum(reviews_365d == 0),
+                observed_target_rate = mean(reviews_365d >= REVIEW_TARGET),
+                reviews_p75 = unname(quantile(reviews_365d, .75))), by = .(lga, broad_class, bedrooms)]
   ans[, stage := if (after) "After four-type whitelist" else "Before four-type whitelist"]
   ans[, eligible_n50 := n_listings >= MIN_LISTINGS]
   ans[eligible_n50 == TRUE, rank_observed_rate := frank(-observed_target_rate, ties.method = "min")]
@@ -196,11 +296,11 @@ fwrite(type_sensitivity, "reports/tables/type_whitelist_sensitivity.csv")
 # groups differ from the primary segments and are not a replacement ranking.
 composition_stats <- function(x) x[, .(
   n_listings = .N, n_hosts = uniqueN(canonical_host_id),
-  n_meeting_target = sum(number_of_reviews_ltm >= REVIEW_TARGET),
-  n_zero_reviews = sum(number_of_reviews_ltm == 0),
-  observed_target_rate = mean(number_of_reviews_ltm >= REVIEW_TARGET),
-  reviews_median = as.numeric(median(number_of_reviews_ltm)),
-  reviews_p75 = unname(quantile(number_of_reviews_ltm, .75))
+  n_meeting_target = sum(reviews_365d >= REVIEW_TARGET),
+  n_zero_reviews = sum(reviews_365d == 0),
+  observed_target_rate = mean(reviews_365d >= REVIEW_TARGET),
+  reviews_median = as.numeric(median(reviews_365d)),
+  reviews_p75 = unname(quantile(reviews_365d, .75))
 ), by = .(lga, bedrooms)]
 composition <- merge(composition_stats(broad), composition_stats(broad[standard_type == TRUE]),
                      by = c("lga", "bedrooms"), suffixes = c("_before", "_after"))
@@ -229,10 +329,10 @@ cluster_rate_ci <- function(y, host, reps = BOOT_REPS) {
 }
 summarise_groups <- function(x, by_cols, scope_text) {
   ans <- x[, {
-    q <- quantile(number_of_reviews_ltm, c(.25, .50, .75, .90), type = 7, names = FALSE)
+    q <- quantile(reviews_365d, c(.25, .50, .75, .90), type = 7, names = FALSE)
     ci <- cluster_rate_ci(meets_target, canonical_host_id)
     .(n_listings = .N, n_hosts = uniqueN(canonical_host_id),
-      n_meeting_target = sum(meets_target), n_zero_reviews = sum(number_of_reviews_ltm == 0),
+      n_meeting_target = sum(meets_target), n_zero_reviews = sum(reviews_365d == 0),
       reviews_p25 = q[1], reviews_median = q[2], reviews_p75 = q[3], reviews_p90 = q[4],
       observed_target_rate = mean(meets_target), ci90_lo = ci[1], ci90_hi = ci[2])
   }, by = by_cols]
@@ -265,7 +365,9 @@ sensitivity <- merge(
   all_history_ladder[, c(SEGMENT_COLS, "n_listings", "observed_target_rate"), with = FALSE],
   by = SEGMENT_COLS, all = TRUE, suffixes = c("_established_main", "_all_histories"))
 sensitivity[, rate_difference := observed_target_rate_established_main - observed_target_rate_all_histories]
-sensitivity[, first_review_cutoff := as.character(FIRST_REVIEW_CUTOFF)]
+sensitivity[, established_history_days := HISTORY_DAYS]
+sensitivity[, established_definition := "first_review <= each listing last_scraped - established_history_days"]
+sensitivity[, review_window_days := REVIEW_WINDOW_DAYS]
 sensitivity[, review_target := REVIEW_TARGET]
 fwrite(sensitivity, "reports/tables/review_exposure_sensitivity.csv")
 
@@ -274,14 +376,14 @@ fwrite(sensitivity, "reports/tables/review_exposure_sensitivity.csv")
 # segments and sensitivities. This revised separation follows earlier exploration.
 benchmark_values <- data.table(
   benchmark = c("Benchmark-development P50", "Common upper-quartile target", "Benchmark-development P90"),
-  raw_quantile = unname(quantile(benchmark$number_of_reviews_ltm, c(.50, .75, .90), type = 7)))
+  raw_quantile = unname(quantile(benchmark$reviews_365d, c(.50, .75, .90), type = 7)))
 benchmark_values[, review_target := ceiling(raw_quantile)]
 map_benchmarks <- function(x, cols = character()) rbindlist(lapply(seq_len(nrow(benchmark_values)), function(i) {
   cut <- benchmark_values$review_target[i]
   x[, .(benchmark = benchmark_values$benchmark[i], raw_quantile = benchmark_values$raw_quantile[i],
-        review_target = cut, n_listings = .N, n_below = sum(number_of_reviews_ltm < cut),
-        n_at_threshold = sum(number_of_reviews_ltm == cut), n_at_least = sum(number_of_reviews_ltm >= cut),
-        share_below = mean(number_of_reviews_ltm < cut), share_at_least = mean(number_of_reviews_ltm >= cut),
+        review_target = cut, n_listings = .N, n_below = sum(reviews_365d < cut),
+        n_at_threshold = sum(reviews_365d == cut), n_at_least = sum(reviews_365d >= cut),
+        share_below = mean(reviews_365d < cut), share_at_least = mean(reviews_365d >= cut),
         reference_scope = "Benchmark-development hosts, primary eligibility and final main cells"), by = cols]
 }))
 fwrite(map_benchmarks(main, SEGMENT_COLS), "reports/tables/benchmark_map_by_segment.csv")
@@ -338,8 +440,8 @@ p16 <- ggplot(plot_dt, aes(y = label_key, colour = dwelling_class)) +
        x = sprintf("Observed proportion with at least %d reviews", REVIEW_TARGET), y = NULL,
        caption = sprintf(paste0("Dots: observed proportions. Lines: pointwise 90%% host-cluster bootstrap intervals (1,000 draws).\n",
                                 "Dashed line: pooled rate, %.2f%%. Each segment has at least 50 eligible listings; zero-review listings are retained.\n",
-                                "First review on/before 1 June 2025. Benchmark hosts supply the common cutoff and are excluded from the analysis."),
-                         100 * pooled_rate)) +
+                                "First review at least %d days before each listing's scrape date. Benchmark hosts supply the cutoff and are excluded."),
+                         100 * pooled_rate, HISTORY_DAYS)) +
   theme(legend.position = "bottom", panel.grid.major.y = element_blank(),
         panel.grid.minor = element_blank(), strip.text = element_text(face = "bold", hjust = 0),
         plot.title.position = "plot", plot.caption = element_text(hjust = 0, size = 9))
@@ -363,7 +465,7 @@ p17 <- ggplot(profile_plot, aes(x = group, y = value, fill = group)) +
   labs(title = "Listing attributes by recent review activity",
        subtitle = sprintf("Common benchmark-derived target: at least %d reviews | %s meet it; %s fall below it",
                           REVIEW_TARGET, comma(sum(main$meets_target)), comma(sum(!main$meets_target))),
-       x = "Guest reviews in the preceding 12 months", y = NULL,
+       x = sprintf("Guest reviews in the %d days ending on each listing's scrape date", REVIEW_WINDOW_DAYS), y = NULL,
        caption = "Pooled, unadjusted attributes in the established analysis cohort; benchmark hosts excluded. Available values are used for each attribute.\nDifferences describe composition and are not causal effects. The common cutoff comes from the separate benchmark reference.") +
   theme(legend.position = "none", panel.grid.major.x = element_blank(),
         panel.grid.minor = element_blank(), strip.text = element_text(face = "bold", size = 10),
@@ -373,7 +475,7 @@ ggsave("reports/figures/17_top_quartile_profile.png", p17, width = 12.5, height 
 
 stopifnot(all(ladder$n_listings >= MIN_LISTINGS), sum(ladder$n_listings) == nrow(main),
           sum(ladder$n_meeting_target) == sum(main$meets_target),
-          sum(ladder$n_zero_reviews) == sum(main$number_of_reviews_ltm == 0),
+          sum(ladder$n_zero_reviews) == sum(main$reviews_365d == 0),
           all(ladder$ci90_lo >= 0 & ladder$ci90_hi <= 1),
           !any(main$benchmark_host), !any(all_histories$benchmark_host), !any(no_price$benchmark_host))
 obsolete <- "reports/tables/segment_ladder_mature_sensitivity.csv"
@@ -383,6 +485,6 @@ cat(sprintf("Benchmark reference: %s listings, %s hosts; P75 %.3f; common intege
 cat(sprintf("Established analysis: %s listings, %s hosts, %d segments; %s meet target (%.4f%%); %s zero reviews.\n",
             comma(nrow(main)), comma(uniqueN(main$canonical_host_id)), nrow(ladder),
             comma(sum(main$meets_target)), 100 * mean(main$meets_target),
-            comma(sum(main$number_of_reviews_ltm == 0))))
+            comma(sum(main$reviews_365d == 0))))
 cat(sprintf("All-history sensitivity: %s listings in %d eligible segments, %.4f%% meet the same target.\n",
             comma(nrow(all_histories)), nrow(all_history_ladder), 100 * mean(all_histories$meets_target)))

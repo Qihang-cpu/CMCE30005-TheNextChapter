@@ -1,0 +1,1003 @@
+{
+  "validated_on": "2026-09-15",
+  "passed": true,
+  "source": "School-supplied Inside Airbnb Melbourne CSVs",
+  "raw_files": {
+    "listings": {
+      "bytes": 71511304,
+      "sha256": "3862a5dc66cfc7d852ea5bddc350466803cf8a1ab7cb3bc87f68ea352a5102c7",
+      "rows": 25728,
+      "scientific_listing_ids": 142,
+      "scientific_host_ids": 2,
+      "duplicate_text_ids": 0,
+      "duplicate_canonical_ids": 0
+    },
+    "calendar": {
+      "bytes": 378205787,
+      "sha256": "0db5b4d2fb58216536c738f0f960357676415e21642fbfafa1e77ff37386f24e",
+      "rows": 9390720,
+      "invalid_dates": 0,
+      "unknown_listing_ids": 0,
+      "missing_listing_ids": 0,
+      "invalid_availability": 0,
+      "duplicate_listing_date_keys": 0,
+      "date_min": "2026-06-17",
+      "date_max": "2027-06-30",
+      "minimum_rows_per_listing": 365,
+      "maximum_rows_per_listing": 365,
+      "listings_with_not_365_rows": 0
+    },
+    "reviews": {
+      "bytes": 278971471,
+      "sha256": "a56c6046cdd265b83657d493bc1e9b34bd4c8c62c418d971d432b9051726a913",
+      "rows": 1026690,
+      "invalid_dates": 0,
+      "unknown_listing_ids": 0,
+      "missing_listing_ids": 0,
+      "future_dates": 0,
+      "scientific_listing_ids": 2783,
+      "scientific_review_ids": 5699,
+      "duplicate_canonical_review_ids": 0
+    }
+  },
+  "scrape_dates": {
+    "scrape_min": "2026-06-17",
+    "scrape_max": "2026-07-01",
+    "invalid_scrape": 0,
+    "invalid_supplied_first": 0,
+    "first_after_scrape": 0
+  },
+  "review_window": {
+    "status": "completed",
+    "review_file_sha256": "a56c6046cdd265b83657d493bc1e9b34bd4c8c62c418d971d432b9051726a913",
+    "passed": true,
+    "validation_listings": 25728,
+    "all_source_listings": 25728,
+    "raw_review_rows": 1026690,
+    "validation_population": "all source listings",
+    "outcome_column": "reviews_365d",
+    "window": "(each listing last_scraped minus 365 days, last_scraped]",
+    "supplied_ltm_window": "[each listing last_scraped minus 365 days, last_scraped], containing 366 calendar dates",
+    "source_ltm_exact_match_share": 1.0,
+    "source_ltm_mismatched_listings": 0,
+    "source_ltm_max_absolute_difference": 0,
+    "listings_with_boundary_day_reviews": 350,
+    "boundary_day_reviews": 352,
+    "invalid_review_dates": 0,
+    "future_review_dates": 0,
+    "unknown_listing_id_rows": 0,
+    "missing_listing_id_rows": 0,
+    "qualification": "The supplied ltm field is retained unchanged. The primary outcome excludes the extra boundary date. Matching cannot recover rounded identifier digits.",
+    "source_ltm_label_changes_at_common_threshold": 4,
+    "analysis_label_changes_at_common_threshold": 1
+  },
+  "primary_analysis": {
+    "eligible_listings": 3873,
+    "eligible_hosts": 1726,
+    "eligible_cells_ge_50": 14,
+    "positive_n": 981,
+    "positive_share_with_ties": 0.2532920216886135,
+    "zero_recent_review_listings": 334,
+    "common_review_threshold": 30
+  },
+  "reference": {
+    "n_listings": 906,
+    "n_hosts": 426,
+    "n_segments": 14,
+    "quantile_probability": 0.75,
+    "pooled_review_quantile": 29.75,
+    "common_integer_review_threshold": 30,
+    "reference_share_meeting_threshold": 0.25055187637969095,
+    "reference_zero_recent_reviews": 111,
+    "host_partition": {
+      "hash_prefix": "30005|benchmark|",
+      "hash_algorithm": "sha256",
+      "hex_characters": 7,
+      "modulus": 5,
+      "benchmark_remainder": 0,
+      "canonical_host_id": "Expand scientific-notation text as an exact decimal integer without conversion through floating point. This cannot recover precision already lost upstream.",
+      "usage": "Benchmark hosts supply the common cutoff only and are excluded from all model training, OOF evaluation and sensitivity analysis pools."
+    },
+    "scope": "Primary listing eligibility within the final primary analysis cells. Benchmark hosts supply the common cutoff only and are excluded from every model fit, OOF prediction and sensitivity sample."
+  },
+  "independent_checks": [
+    {
+      "check": "independent reference P75 and integer threshold",
+      "passed": true
+    },
+    {
+      "check": "host manifest covers every source host once",
+      "passed": true
+    },
+    {
+      "check": "reference hosts receive no model fold",
+      "passed": true
+    },
+    {
+      "check": "analysis fold manifest matches independently seeded allocation",
+      "passed": true
+    },
+    {
+      "check": "benchmark listing set and raw-derived outcome match",
+      "passed": true
+    },
+    {
+      "check": "R cleaned all 25728 listing outcomes match independent raw reconstruction",
+      "passed": true
+    },
+    {
+      "check": "R preserves all supplied ltm values",
+      "passed": true
+    },
+    {
+      "check": "exactly eight model outputs",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic listing coverage exactly once",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic source outcomes and host identity",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic common threshold fixed at 30",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic reference hosts excluded",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic one declared fold per host",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic all five held-out folds host-disjoint",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic finite probability per listing",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic independently recomputed AUC/AP/Brier/log loss",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic fold sizes and fold AUC",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic train-fold prevalence Brier baseline",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic all calibration-bin counts and probabilities",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic ECE and mean calibration",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic every segment aggregate and mean probability",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic descending segment ranks",
+      "passed": true
+    },
+    {
+      "check": "property_only/logistic conditional 95 percent bootstrap intervals",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest listing coverage exactly once",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest source outcomes and host identity",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest common threshold fixed at 30",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest reference hosts excluded",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest one declared fold per host",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest all five held-out folds host-disjoint",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest finite probability per listing",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest independently recomputed AUC/AP/Brier/log loss",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest fold sizes and fold AUC",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest train-fold prevalence Brier baseline",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest all calibration-bin counts and probabilities",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest ECE and mean calibration",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest every segment aggregate and mean probability",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest descending segment ranks",
+      "passed": true
+    },
+    {
+      "check": "property_only/random_forest conditional 95 percent bootstrap intervals",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic listing coverage exactly once",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic source outcomes and host identity",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic common threshold fixed at 30",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic reference hosts excluded",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic one declared fold per host",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic all five held-out folds host-disjoint",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic finite probability per listing",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic independently recomputed AUC/AP/Brier/log loss",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic fold sizes and fold AUC",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic train-fold prevalence Brier baseline",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic all calibration-bin counts and probabilities",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic ECE and mean calibration",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic every segment aggregate and mean probability",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic descending segment ranks",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/logistic conditional 95 percent bootstrap intervals",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest listing coverage exactly once",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest source outcomes and host identity",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest common threshold fixed at 30",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest reference hosts excluded",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest one declared fold per host",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest all five held-out folds host-disjoint",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest finite probability per listing",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest independently recomputed AUC/AP/Brier/log loss",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest fold sizes and fold AUC",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest train-fold prevalence Brier baseline",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest all calibration-bin counts and probabilities",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest ECE and mean calibration",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest every segment aggregate and mean probability",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest descending segment ranks",
+      "passed": true
+    },
+    {
+      "check": "operating_controls/random_forest conditional 95 percent bootstrap intervals",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic listing coverage exactly once",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic source outcomes and host identity",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic common threshold fixed at 30",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic reference hosts excluded",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic one declared fold per host",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic all five held-out folds host-disjoint",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic finite probability per listing",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic independently recomputed AUC/AP/Brier/log loss",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic fold sizes and fold AUC",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic train-fold prevalence Brier baseline",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic all calibration-bin counts and probabilities",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic ECE and mean calibration",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic every segment aggregate and mean probability",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic descending segment ranks",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/logistic conditional 95 percent bootstrap intervals",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest listing coverage exactly once",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest source outcomes and host identity",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest common threshold fixed at 30",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest reference hosts excluded",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest one declared fold per host",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest all five held-out folds host-disjoint",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest finite probability per listing",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest independently recomputed AUC/AP/Brier/log loss",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest fold sizes and fold AUC",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest train-fold prevalence Brier baseline",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest all calibration-bin counts and probabilities",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest ECE and mean calibration",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest every segment aggregate and mean probability",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest descending segment ranks",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories/random_forest conditional 95 percent bootstrap intervals",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic listing coverage exactly once",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic source outcomes and host identity",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic common threshold fixed at 30",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic reference hosts excluded",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic one declared fold per host",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic all five held-out folds host-disjoint",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic finite probability per listing",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic independently recomputed AUC/AP/Brier/log loss",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic fold sizes and fold AUC",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic train-fold prevalence Brier baseline",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic all calibration-bin counts and probabilities",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic ECE and mean calibration",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic every segment aggregate and mean probability",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic descending segment ranks",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/logistic conditional 95 percent bootstrap intervals",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest listing coverage exactly once",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest source outcomes and host identity",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest common threshold fixed at 30",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest reference hosts excluded",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest one declared fold per host",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest all five held-out folds host-disjoint",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest finite probability per listing",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest independently recomputed AUC/AP/Brier/log loss",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest fold sizes and fold AUC",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest train-fold prevalence Brier baseline",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest all calibration-bin counts and probabilities",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest ECE and mean calibration",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest every segment aggregate and mean probability",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest descending segment ranks",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter/random_forest conditional 95 percent bootstrap intervals",
+      "passed": true
+    },
+    {
+      "check": "property_only R segment ladder matches independent raw scope",
+      "passed": true
+    },
+    {
+      "check": "all_review_histories R segment ladder matches independent raw scope",
+      "passed": true
+    },
+    {
+      "check": "no_price_filter R segment ladder matches independent raw scope",
+      "passed": true
+    },
+    {
+      "check": "Python observed segment table matches independent raw scope",
+      "passed": true
+    }
+  ],
+  "independent_checks_passed": 132,
+  "full_feature_agreement": {
+    "n_amenities": {
+      "matched": 25728,
+      "mismatched": 0
+    },
+    "bathrooms_num": {
+      "matched": 25728,
+      "mismatched": 0
+    },
+    "price_num": {
+      "matched": 25728,
+      "mismatched": 0
+    }
+  },
+  "regression_checks": {
+    "python_design": 12,
+    "R_cleaning": 12,
+    "R_input_gate": 7
+  },
+  "script_hashes": {
+    "scripts/01_data_cleaning.R": "698cea98f92deb33034ac13d9c65e416949c5b0c146aef02f6c2ca9d81a5012b",
+    "scripts/08_peer_ranking.R": "01be0fdd5f5ab2be3248da713ecdbd5c86666341d2a75395b079b1c6a8cece27",
+    "scripts/rq_scope_feasibility.py": "6c913cc27a4c1d22bf1ab58fc6fd229de985c3253059951c83602e8fce778e61"
+  },
+  "config_sha256": "1b32d38a989a9888560d04269f054275d7a953b6b33850858ddab41ed784ffde",
+  "limitations": [
+    "Identifiers already rounded in the source cannot be recovered.",
+    "The study is exploratory and has no untouched final test.",
+    "Probability intervals hold fitted models and the common threshold fixed.",
+    "Review activity does not establish bookings, profitability or lease availability."
+  ],
+  "extension_validation": {
+    "passed": true,
+    "n_checks": 51,
+    "checks": [
+      {
+        "check": "six prespecified model variants",
+        "passed": true
+      },
+      {
+        "check": "extension script hash current",
+        "passed": true
+      },
+      {
+        "check": "every original source and baseline output hash unchanged",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/logistic complete frozen listing and label coverage",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/logistic host and outer folds unchanged",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/logistic reference excluded",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/logistic finite probabilities",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/logistic independently recomputed AUC/AP/Brier",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/logistic calibration bins and ECE",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/logistic all segment means and observed counts",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/random_forest complete frozen listing and label coverage",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/random_forest host and outer folds unchanged",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/random_forest reference excluded",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/random_forest finite probabilities",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/random_forest independently recomputed AUC/AP/Brier",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/random_forest calibration bins and ECE",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/random_forest all segment means and observed counts",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting complete frozen listing and label coverage",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting host and outer folds unchanged",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting reference excluded",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting finite probabilities",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting independently recomputed AUC/AP/Brier",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting calibration bins and ECE",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting all segment means and observed counts",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid complete frozen listing and label coverage",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid host and outer folds unchanged",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid reference excluded",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid finite probabilities",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid independently recomputed AUC/AP/Brier",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid calibration bins and ECE",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid all segment means and observed counts",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid calibration never sees an outer held-out listing",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid every outer training row gets exactly one inner prediction",
+        "passed": true
+      },
+      {
+        "check": "extended_property_only/hist_gradient_boosting_sigmoid all fifteen inner splits host-disjoint",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting complete frozen listing and label coverage",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting host and outer folds unchanged",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting reference excluded",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting finite probabilities",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting independently recomputed AUC/AP/Brier",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting calibration bins and ECE",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting all segment means and observed counts",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid complete frozen listing and label coverage",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid host and outer folds unchanged",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid reference excluded",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid finite probabilities",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid independently recomputed AUC/AP/Brier",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid calibration bins and ECE",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid all segment means and observed counts",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid calibration never sees an outer held-out listing",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid every outer training row gets exactly one inner prediction",
+        "passed": true
+      },
+      {
+        "check": "extended_operating_controls/hist_gradient_boosting_sigmoid all fifteen inner splits host-disjoint",
+        "passed": true
+      }
+    ],
+    "models": [
+      {
+        "scenario": "extended_property_only",
+        "model": "logistic",
+        "auc": 0.6071155904086355,
+        "ap": 0.3098296254508319,
+        "brier": 0.18685328527475176,
+        "ece": 0.039273322062366126,
+        "fold_auc_range": [
+          0.5585074662468393,
+          0.6499566566292545
+        ],
+        "top_segment": [
+          "Melbourne",
+          "3BR Apartment/unit"
+        ],
+        "top_mean_probability": 0.3628430791050374,
+        "top_conditional95": [
+          0.3405637835331436,
+          0.3842466068040484
+        ]
+      },
+      {
+        "scenario": "extended_property_only",
+        "model": "random_forest",
+        "auc": 0.6395887350672459,
+        "ap": 0.34993231141093184,
+        "brier": 0.18131594811274154,
+        "ece": 0.016277351411440925,
+        "fold_auc_range": [
+          0.5936799293926817,
+          0.7209756217317655
+        ],
+        "top_segment": [
+          "Melbourne",
+          "3BR Apartment/unit"
+        ],
+        "top_mean_probability": 0.3444673937131592,
+        "top_conditional95": [
+          0.3299681866061428,
+          0.3580891480274684
+        ]
+      },
+      {
+        "scenario": "extended_property_only",
+        "model": "hist_gradient_boosting",
+        "auc": 0.6474905993968387,
+        "ap": 0.35934180119923265,
+        "brier": 0.18209822264081632,
+        "ece": 0.0347451952958577,
+        "fold_auc_range": [
+          0.6037700968465245,
+          0.6915154788500724
+        ],
+        "top_segment": [
+          "Melbourne",
+          "3BR Apartment/unit"
+        ],
+        "top_mean_probability": 0.3416354419468652,
+        "top_conditional95": [
+          0.3079500795524393,
+          0.3692892167047175
+        ]
+      },
+      {
+        "scenario": "extended_property_only",
+        "model": "hist_gradient_boosting_sigmoid",
+        "auc": 0.6367304864345101,
+        "ap": 0.35478477930027735,
+        "brier": 0.18165023281942172,
+        "ece": 0.021926007809820392,
+        "fold_auc_range": [
+          0.6037700968465245,
+          0.6915154788500724
+        ],
+        "top_segment": [
+          "Melbourne",
+          "3BR Apartment/unit"
+        ],
+        "top_mean_probability": 0.2943982257850137,
+        "top_conditional95": [
+          0.2796624794241162,
+          0.3072218074947934
+        ]
+      },
+      {
+        "scenario": "extended_operating_controls",
+        "model": "hist_gradient_boosting",
+        "auc": 0.7492897557041606,
+        "ap": 0.4852800542537494,
+        "brier": 0.1623564327387642,
+        "ece": 0.022209083899708645,
+        "fold_auc_range": [
+          0.6712823815657649,
+          0.8140410314323357
+        ],
+        "top_segment": [
+          "Melbourne",
+          "3BR Apartment/unit"
+        ],
+        "top_mean_probability": 0.3345636873801412,
+        "top_conditional95": [
+          0.2961945812806108,
+          0.3744367476203482
+        ]
+      },
+      {
+        "scenario": "extended_operating_controls",
+        "model": "hist_gradient_boosting_sigmoid",
+        "auc": 0.7466750697555068,
+        "ap": 0.48403201835685306,
+        "brier": 0.16294006950122866,
+        "ece": 0.030768129678683948,
+        "fold_auc_range": [
+          0.6712823815657649,
+          0.8140410314323357
+        ],
+        "top_segment": [
+          "Melbourne",
+          "3BR Apartment/unit"
+        ],
+        "top_mean_probability": 0.3057962593616747,
+        "top_conditional95": [
+          0.2807469497439821,
+          0.3334295176365087
+        ]
+      }
+    ]
+  }
+}

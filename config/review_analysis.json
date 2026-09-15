@@ -1,9 +1,13 @@
 {
-  "reference_date": "2026-06-01",
-  "established_first_review_on_or_before": "2025-06-01",
-  "reference_date_basis": "First day of the supplied June 2026 snapshot month. This is an explicit review-history eligibility reference, not a verified scrape date or launch date.",
+  "review_window_days": 365,
+  "established_history_days": 365,
+  "date_basis": "Each listing's last_scraped date. Established means first_review <= last_scraped minus 365 days; the review-count window is (last_scraped minus 365 days, last_scraped]. This does not establish a launch date or continuous operation.",
   "room_type": "Entire home/apt",
-  "bedrooms": [1, 2, 3],
+  "bedrooms": [
+    1,
+    2,
+    3
+  ],
   "property_map": {
     "Entire rental unit": "Apartment/unit",
     "Entire condo": "Apartment/unit",
@@ -27,5 +31,7 @@
   },
   "segment_support": "Apply all eligibility filters and remove benchmark hosts, then retain segments with at least 50 analysis listings. Benchmark rows must satisfy primary eligibility and belong to these retained primary segments.",
   "threshold_usage": "Compute the pooled benchmark-development P75 once; hold the resulting integer cutoff fixed across all segments, models and sensitivity samples. Analysis-pool outcomes do not determine this cutoff.",
-  "exploratory_status": "This revised design follows prior exploration of the supplied snapshot. Computational separation does not create a previously untouched final test or remove the influence of earlier research choices."
+  "exploratory_status": "This revised design follows prior exploration of the supplied snapshot. Computational separation does not create a previously untouched final test or remove the influence of earlier research choices.",
+  "outcome_column": "reviews_365d",
+  "source_review_count_note": "The supplied number_of_reviews_ltm matches the inclusive 366-date window [last_scraped - 365 days, last_scraped]. Preserve it and derive reviews_365d from raw dates using the open-left 365-day window."
 }

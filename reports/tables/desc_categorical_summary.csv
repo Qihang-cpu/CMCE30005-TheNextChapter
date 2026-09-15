@@ -1,10 +1,10 @@
 "variable","level","n","pct"
-"has_aircon","TRUE",17329,67.4
-"has_aircon","FALSE",8399,32.6
+"has_aircon","TRUE",19221,74.7
+"has_aircon","FALSE",6507,25.3
 "has_free_parking","TRUE",13541,52.6
 "has_free_parking","FALSE",12187,47.4
-"has_pool","FALSE",20985,81.6
-"has_pool","TRUE",4743,18.4
+"has_pool","FALSE",19326,75.1
+"has_pool","TRUE",6402,24.9
 "host_is_superhost","FALSE",17843,69.4
 "host_is_superhost","TRUE",7885,30.6
 "min_nights_grp","2-6",12737,49.5

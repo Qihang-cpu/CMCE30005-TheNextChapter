@@ -1,5 +1,7 @@
 # Analysis validation record
 
+Historical record of the 13–14 September cached-data analysis. The [15 September raw-data verification](data-validation-2026-09-15.md) supersedes its source availability, date-window and primary sample results.
+
 Updated 14 September 2026 after the established-history and reference-benchmark revision.
 
 ## Conclusion

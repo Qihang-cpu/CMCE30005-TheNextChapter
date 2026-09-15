@@ -1,11 +1,11 @@
 stage,n_listings,n_hosts,n_segments,n_zero_reviews,n_meeting_target,observed_target_rate,reviews_median,reviews_p75,review_target
-"Entire homes with 1-3 bedrooms, all host partitions",16576,9296,258,5317,2004,0.120897683397683,5,17,30
-"Four standard dwelling types, all host partitions",14895,8286,172,4835,1730,0.116146357838201,4,16,30
-"Standard types with eligible price, all host partitions",11099,5410,171,1882,1671,0.150554103973331,8,21,30
-"Established history and price eligible, all host partitions",6786,3439,165,725,1407,0.207338638373121,12,26,30
-"Established analysis hosts, before segment size rule",5455,2764,163,538,1142,0.209349220898258,13,26,30
-Main established analysis cohort after segment n>=50,3810,1699,14,333,957,0.251181102362205,15,30,30
-Established benchmark hosts before main-cell restriction,1331,675,123,187,265,0.199098422238918,11,24,30
-Benchmark reference within final main analysis cells,899,424,14,111,227,0.252502780867631,14,30,30
-All-review-histories analysis sensitivity after segment n>=50,6675,2924,22,1007,1170,0.175280898876405,10,23,30
-Established no-price-filter analysis sensitivity after segment n>=50,5647,3064,19,1657,1020,0.180626881530016,8,23,30
+"Entire homes with 1-3 bedrooms, all host partitions",16576,9296,258,5320,2000,0.120656370656371,5,17,30
+"Four standard dwelling types, all host partitions",14895,8286,172,4837,1726,0.115877811346089,4,16,30
+"Standard types with eligible price, all host partitions",11099,5410,171,1882,1668,0.150283809352194,8,21,30
+"Established history and price eligible, all host partitions",6891,3488,165,726,1437,0.208532868959512,13,26,30
+"Established analysis hosts, before segment size rule",5549,2809,163,539,1171,0.211029014236799,13,26,30
+Main established analysis cohort after segment n>=50,3873,1726,14,334,981,0.253292021688613,15,30,30
+Established benchmark hosts before main-cell restriction,1342,679,124,187,266,0.198211624441133,11,24,30
+Benchmark reference within final main analysis cells,906,426,14,111,227,0.250551876379691,14,29.75,30
+All-review-histories analysis sensitivity after segment n>=50,6675,2924,22,1007,1169,0.175131086142322,10,23,30
+Established no-price-filter analysis sensitivity after segment n>=50,5720,3096,19,1660,1046,0.182867132867133,8,23,30

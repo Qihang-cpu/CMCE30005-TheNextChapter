@@ -14,7 +14,6 @@ from pathlib import Path
 import platform
 import re
 import shutil
-import subprocess
 import tempfile
 
 import numpy as np
@@ -39,7 +38,8 @@ CONFIG_PATH = ROOT / "config" / "review_analysis.json"
 CONFIG = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
 SEED = int(CONFIG["seed"])
 N_FOLDS = 5
-ESTABLISHED_CUTOFF = pd.Timestamp(CONFIG["established_first_review_on_or_before"])
+REVIEW_WINDOW_DAYS = int(CONFIG["review_window_days"])
+ESTABLISHED_HISTORY_DAYS = int(CONFIG["established_history_days"])
 MINIMUM_SEGMENT_LISTINGS = int(CONFIG["minimum_segment_listings"])
 BOOTSTRAP_REPLICATES = 500
 CELL_KEYS = ["neighbourhood_cleansed", "configuration"]
@@ -92,46 +92,26 @@ def parse_amenities(value):
         items = json.loads(value)
     except (TypeError, json.JSONDecodeError):
         return np.nan
-    return len(items) if isinstance(items, list) else np.nan
+    return len(items) if isinstance(items, list) and all(isinstance(item, str) for item in items) else np.nan
 
 
 def read_source():
-    raw_path = ROOT / "data/raw/listings_airbnb.csv"
-    cached_path = ROOT / "data/processed/listings_clean.rds"
-    if raw_path.is_file():
-        frame = pd.read_csv(raw_path, dtype={"id": "string", "host_id": "string"}, low_memory=False)
-        frame["price_num"] = pd.to_numeric(
-            frame["price"].astype("string").str.replace(r"[$,]", "", regex=True), errors="coerce"
-        )
-        frame["bathrooms_num"] = parse_bathrooms(frame["bathrooms_text"])
-        frame["n_amenities"] = frame["amenities"].map(parse_amenities)
-        provenance = {"source_kind": "raw_listings", "source_file": "data/raw/listings_airbnb.csv"}
-        source_path = raw_path
-    elif cached_path.is_file():
-        executable = shutil.which("Rscript")
-        if executable is None:
-            raise RuntimeError("Rscript is required to read the available listings_clean.rds snapshot.")
-        with tempfile.TemporaryDirectory(prefix="cmce30005-review-") as directory:
-            exported = Path(directory) / "listings.csv"
-            expression = (
-                'args <- commandArgs(trailingOnly=TRUE); d <- readRDS(args[1]); '
-                'd$id <- as.character(d$id); d$host_id <- as.character(d$host_id); '
-                'write.csv(as.data.frame(d), args[2], row.names=FALSE, na="")'
-            )
-            subprocess.run([executable, "-e", expression, str(cached_path), str(exported)], check=True)
-            frame = pd.read_csv(exported, dtype={"id": "string", "host_id": "string"}, low_memory=False)
-        provenance = {
-            "source_kind": "processed_snapshot",
-            "source_file": "data/processed/listings_clean.rds",
-            "limitation": (
-                "Raw CSV files are unavailable. Cached cleaning features are reused; raw parsing, "
-                "original identifier precision and review-date reconstruction have not been revalidated."
-            ),
-        }
-        source_path = cached_path
-    else:
-        raise FileNotFoundError("Provide raw listings_airbnb.csv or the existing listings_clean.rds snapshot.")
-    provenance["source_sha256"] = file_sha256(source_path)
+    raw_paths = [ROOT / "data/raw" / f"{name}_airbnb.csv" for name in ("listings", "calendar", "reviews")]
+    missing = [path.name for path in raw_paths if not path.is_file()]
+    if missing:
+        raise FileNotFoundError("Restore the school-supplied CSV files in data/raw: " + ", ".join(missing))
+    raw_path = raw_paths[0]
+    source_hashes = {str(path.relative_to(ROOT)): file_sha256(path) for path in raw_paths}
+    frame = pd.read_csv(raw_path, dtype={"id": "string", "host_id": "string"}, low_memory=False)
+    frame["price_num"] = pd.to_numeric(
+        frame["price"].astype("string").str.replace(r"[$,]", "", regex=True), errors="coerce"
+    )
+    frame["bathrooms_num"] = parse_bathrooms(frame["bathrooms_text"])
+    frame["n_amenities"] = frame["amenities"].map(parse_amenities)
+    provenance = {
+        "source_kind": "raw_listings", "source_file": "data/raw/listings_airbnb.csv",
+        "source_sha256": source_hashes["data/raw/listings_airbnb.csv"], "raw_file_sha256": source_hashes,
+    }
     provenance["scientific_notation_listing_ids"] = int(frame["id"].str.contains(r"[eE]", na=False).sum())
     for column in ["id", "host_id"]:
         frame[column] = frame[column].map(canonical_id).astype("string")
@@ -145,9 +125,33 @@ def read_source():
     reviews = frame["number_of_reviews_ltm"]
     if reviews.isna().any() or (reviews < 0).any() or (reviews % 1 != 0).any():
         raise ValueError("The review-count outcome must contain non-missing, non-negative integers.")
-    frame["first_review_date"] = pd.to_datetime(frame["first_review"], errors="coerce").dt.normalize()
+    frame = observation_dates(frame)
+    frame["neighbourhood_cleansed"] = frame["neighbourhood_cleansed"].replace({"Moreland": "Merri-bek"})
     frame["dwelling_class"] = frame["property_type"].map(PROPERTY_MAP)
     return frame, provenance
+
+
+def iso_dates(values):
+    text = values.astype("string").str.strip()
+    valid_format = text.str.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", na=False)
+    return pd.to_datetime(text.where(valid_format), format="%Y-%m-%d", errors="coerce")
+
+
+def observation_dates(frame):
+    """Retain never-reviewed listings, but reject unusable observation dates."""
+    if "last_scraped" not in frame:
+        raise ValueError("Per-listing last_scraped dates are required; restore and clean the raw data.")
+    frame = frame.copy()
+    frame["last_scraped_date"] = iso_dates(frame["last_scraped"])
+    if frame["last_scraped_date"].isna().any():
+        raise ValueError("Missing or invalid last_scraped dates; resolve them before analysis.")
+    frame["first_review_date"] = iso_dates(frame["first_review"])
+    supplied = frame["first_review"].notna() & frame["first_review"].astype("string").str.strip().ne("")
+    if (supplied & frame["first_review_date"].isna()).any():
+        raise ValueError("Invalid first_review dates; resolve them before analysis.")
+    if frame["first_review_date"].gt(frame["last_scraped_date"]).any():
+        raise ValueError("A first_review date occurs after that listing's last_scraped date.")
+    return frame
 
 
 def host_role(host_id):
@@ -163,7 +167,8 @@ def eligible_base(frame, *, price_filter=True, established=True):
     if price_filter:
         mask &= frame["price_num"].between(CONFIG["minimum_price"], CONFIG["maximum_price"])
     if established:
-        mask &= frame["first_review_date"].le(ESTABLISHED_CUTOFF)
+        cutoff = frame["last_scraped_date"] - pd.Timedelta(days=ESTABLISHED_HISTORY_DAYS)
+        mask &= frame["first_review_date"].le(cutoff)
     base = frame.loc[mask].copy()
     base["bedrooms"] = base["bedrooms"].astype(int)
     base["configuration"] = base["bedrooms"].astype(str) + "BR " + base["dwelling_class"]
@@ -193,48 +198,66 @@ def develop_benchmark(benchmark_frame, analysis_cells):
     )
     if reference.empty:
         raise ValueError("No eligible benchmark-development listings remain in the primary analysis cells.")
-    quantile = float(reference["number_of_reviews_ltm"].quantile(CONFIG["benchmark_quantile"], interpolation="linear"))
+    quantile = float(reference["reviews_365d"].quantile(CONFIG["benchmark_quantile"], interpolation="linear"))
     return reference, quantile, int(np.ceil(quantile))
 
 
 def attach_outcome(sample, threshold):
     labelled = sample.copy()
-    labelled["review_target_met"] = labelled["number_of_reviews_ltm"].ge(threshold).astype(int)
+    labelled["review_target_met"] = labelled["reviews_365d"].ge(threshold).astype(int)
     return labelled
 
 
-def validate_raw_reviews(frame, sample, provenance, threshold):
+def reconstruct_raw_reviews(frame, provenance):
+    """Keep the supplied 366-date field and derive the declared 365-day outcome."""
     path = ROOT / "data/raw/reviews_airbnb.csv"
+    frame = frame.copy()
     if provenance["source_kind"] != "raw_listings" or not path.is_file() or "last_scraped" not in frame:
-        return {"status": "blocked", "reason": "Raw listings, review dates and per-listing scrape dates are required; they are not all available."}
-    dates = pd.to_datetime(frame["last_scraped"], errors="coerce").dt.normalize()
+        return frame, {"status": "blocked", "passed": False, "reason": "Raw listings, reviews and per-listing scrape dates are required."}
+    dates = iso_dates(frame["last_scraped"])
     snapshot_by_id = pd.Series(dates.to_numpy(), index=frame["id"])
-    if snapshot_by_id.loc[sample["id"]].isna().any():
-        return {"status": "blocked", "reason": "At least one eligible listing has no valid last_scraped date."}
-    ids = set(sample["id"])
-    cutoff_by_id = snapshot_by_id.map(lambda date: date - pd.DateOffset(years=1) if pd.notna(date) else pd.NaT)
-    counts = Counter()
-    invalid_dates = 0
+    if dates.isna().any():
+        return frame, {"status": "blocked", "passed": False, "reason": "At least one listing has no valid last_scraped date."}
+    cutoff_by_id = snapshot_by_id - pd.Timedelta(days=REVIEW_WINDOW_DAYS)
+    counts, boundary_counts = Counter(), Counter()
+    invalid_dates = future_dates = unknown_listing_ids = missing_listing_ids = review_rows = 0
     for chunk in pd.read_csv(path, usecols=["listing_id", "date"], dtype={"listing_id": "string"}, chunksize=250_000):
+        review_rows += len(chunk)
         chunk["listing_id"] = chunk["listing_id"].map(canonical_id)
-        chunk = chunk.loc[chunk["listing_id"].isin(ids)].copy()
-        review_dates = pd.to_datetime(chunk["date"], errors="coerce").dt.normalize()
+        missing_listing_ids += int(chunk["listing_id"].isna().sum())
+        unknown_listing_ids += int((chunk["listing_id"].notna() & ~chunk["listing_id"].isin(snapshot_by_id.index)).sum())
+        review_dates = iso_dates(chunk["date"])
         invalid_dates += int(review_dates.isna().sum())
-        valid = review_dates.gt(chunk["listing_id"].map(cutoff_by_id)) & review_dates.le(chunk["listing_id"].map(snapshot_by_id))
+        end = chunk["listing_id"].map(snapshot_by_id)
+        start = chunk["listing_id"].map(cutoff_by_id)
+        future_dates += int(review_dates.gt(end).sum())
+        valid = review_dates.gt(start) & review_dates.le(end)
+        boundary = review_dates.eq(start)
         counts.update(chunk.loc[valid, "listing_id"].value_counts().to_dict())
-    check = sample[["id", "number_of_reviews_ltm"]].copy()
-    check["rebuilt_reviews"] = check["id"].map(counts).fillna(0).astype(int)
-    check["difference"] = check["rebuilt_reviews"] - check["number_of_reviews_ltm"]
-    check["label_changed"] = check["rebuilt_reviews"].ge(threshold) != check["number_of_reviews_ltm"].ge(threshold)
-    check.loc[check["difference"].ne(0)].to_csv(PRIVATE_OUTPUT / "rq_review_reconstruction_mismatches.csv", index=False)
-    return {
+        boundary_counts.update(chunk.loc[boundary, "listing_id"].value_counts().to_dict())
+    frame["reviews_365d"] = frame["id"].map(counts).fillna(0).astype(int)
+    check = frame[["id", "number_of_reviews_ltm", "reviews_365d"]].copy()
+    check["boundary_day_reviews"] = check["id"].map(boundary_counts).fillna(0).astype(int)
+    check["rebuilt_source_ltm"] = check["reviews_365d"] + check["boundary_day_reviews"]
+    check["source_difference"] = check["rebuilt_source_ltm"] - check["number_of_reviews_ltm"]
+    check.to_csv(PRIVATE_OUTPUT / "rq_review_window_comparison.csv", index=False)
+    mismatches = int(check["source_difference"].ne(0).sum())
+    return frame, {
         "status": "completed", "review_file_sha256": file_sha256(path),
-        "window": "(each listing last_scraped minus one calendar year, last_scraped]",
-        "exact_match_share": float(check["difference"].eq(0).mean()),
-        "mismatched_listings": int(check["difference"].ne(0).sum()),
-        "max_absolute_difference": int(check["difference"].abs().max()),
-        "target_label_changes": int(check["label_changed"].sum()), "invalid_review_dates": invalid_dates,
-        "qualification": "Matching cannot recover digits rounded in the supplied identifier fields.",
+        "passed": bool(len(check) and not any((mismatches, invalid_dates, future_dates, unknown_listing_ids, missing_listing_ids))),
+        "validation_listings": len(check), "all_source_listings": len(frame), "raw_review_rows": review_rows,
+        "validation_population": "all source listings",
+        "outcome_column": "reviews_365d",
+        "window": f"(each listing last_scraped minus {REVIEW_WINDOW_DAYS} days, last_scraped]",
+        "supplied_ltm_window": "[each listing last_scraped minus 365 days, last_scraped], containing 366 calendar dates",
+        "source_ltm_exact_match_share": float(check["source_difference"].eq(0).mean()),
+        "source_ltm_mismatched_listings": mismatches,
+        "source_ltm_max_absolute_difference": int(check["source_difference"].abs().max()) if len(check) else None,
+        "listings_with_boundary_day_reviews": int(check["boundary_day_reviews"].gt(0).sum()),
+        "boundary_day_reviews": int(check["boundary_day_reviews"].sum()),
+        "invalid_review_dates": invalid_dates, "future_review_dates": future_dates,
+        "unknown_listing_id_rows": unknown_listing_ids, "missing_listing_id_rows": missing_listing_ids,
+        "qualification": "The supplied ltm field is retained unchanged. The primary outcome excludes the extra boundary date. Matching cannot recover rounded identifier digits.",
     }
 
 
@@ -372,7 +395,7 @@ def evaluate(sample, host_folds, benchmark_hosts, *, threshold, scenario, model_
     metrics.update({
         "scenario": scenario, "model": model_name, "n": len(data), "n_hosts": data["host_id"].nunique(),
         "n_segments": data.groupby(CELL_KEYS).ngroups,
-        "descriptive_review_p75_in_this_scope": float(data["number_of_reviews_ltm"].quantile(0.75)),
+        "descriptive_review_p75_in_this_scope": float(data["reviews_365d"].quantile(0.75)),
         "common_review_threshold": threshold,
         "predictors": columns, "folds": fold_metrics,
         "training_fold_prevalence_baseline": {
@@ -380,7 +403,7 @@ def evaluate(sample, host_folds, benchmark_hosts, *, threshold, scenario, model_
             "log_loss": float(log_loss(y, baseline_probability, labels=[0, 1])),
         },
     })
-    private = data[["id", "host_id", "host_role", "fold", *CELL_KEYS, "number_of_reviews_ltm", "review_target_met"]].copy()
+    private = data[["id", "host_id", "host_role", "fold", *CELL_KEYS, "reviews_365d", "review_target_met"]].copy()
     private["common_review_threshold"] = threshold
     private["oof_probability"] = probability
     private.to_csv(PRIVATE_OUTPUT / f"rq_oof_{scenario}_{model_name}.csv", index=False)
@@ -390,10 +413,40 @@ def evaluate(sample, host_folds, benchmark_hosts, *, threshold, scenario, model_
     return metrics, ranking, calibration
 
 
-def main():
+def scope_funnel(frame, cells):
+    """Show sequential filters followed by the two disjoint host branches."""
+    rows = []
+
+    def record(branch, stage, data):
+        rows.append({"branch": branch, "stage": stage, "n_listings": len(data), "n_hosts": data["host_id"].nunique()})
+
+    data = frame
+    record("all", "source_listings", data)
+    data = data.loc[data["room_type"].eq(CONFIG["room_type"]) & data["bedrooms"].isin(CONFIG["bedrooms"])]
+    record("all", "entire_home_1_to_3_bedrooms", data)
+    data = data.loc[data["dwelling_class"].notna()]
+    record("all", "standard_dwelling_types", data)
+    data = data.loc[data["price_num"].between(CONFIG["minimum_price"], CONFIG["maximum_price"])]
+    record("all", "quoted_price_range", data)
+    data = data.loc[data["first_review_date"].le(data["last_scraped_date"] - pd.Timedelta(days=ESTABLISHED_HISTORY_DAYS))]
+    record("all", "established_review_history", data)
+    for role in ("analysis", "benchmark_development"):
+        branch = eligible_base(data.loc[data["host_role"].eq(role)])
+        record(role, "before_segment_support", branch)
+        branch = branch.merge(cells[CELL_KEYS], on=CELL_KEYS, how="inner", validate="many_to_one")
+        record(role, "retained_analysis_segments", branch)
+    return pd.DataFrame(rows)
+
+
+def run_analysis():
     OUTPUT.mkdir(parents=True, exist_ok=True)
     PRIVATE_OUTPUT.mkdir(parents=True, exist_ok=True)
     frame, provenance = read_source()
+    frame, raw_validation = reconstruct_raw_reviews(frame, provenance)
+    provenance["raw_validation"] = raw_validation["passed"]
+    provenance["raw_review_validation"] = raw_validation
+    if not raw_validation["passed"]:
+        raise ValueError("Raw review validation did not pass; results have not been published. " + json.dumps(raw_validation))
     frame["host_role"] = frame["host_id"].map(host_role)
     benchmark_frame = frame.loc[frame["host_role"].eq("benchmark_development")].copy()
     analysis_frame = frame.loc[frame["host_role"].eq("analysis")].copy()
@@ -407,6 +460,8 @@ def main():
     no_price_filter, _, _ = make_scope(analysis_frame, price_filter=False)
     sample, all_histories, no_price_filter = [attach_outcome(part, threshold) for part in (sample, all_histories, no_price_filter)]
     reference = attach_outcome(reference, threshold)
+    raw_validation["source_ltm_label_changes_at_common_threshold"] = int((frame["number_of_reviews_ltm"].ge(threshold) != frame["reviews_365d"].ge(threshold)).sum())
+    raw_validation["analysis_label_changes_at_common_threshold"] = int((sample["number_of_reviews_ltm"].ge(threshold) != sample["reviews_365d"].ge(threshold)).sum())
     # Benchmark hosts have no model fold. All other hosts retain a common fold
     # across primary models and sensitivity samples, including hosts outside the
     # primary reporting cells who become eligible in a sensitivity.
@@ -416,19 +471,16 @@ def main():
     host_manifest = frame[["host_id", "host_role"]].drop_duplicates().sort_values("host_id")
     host_manifest["fold"] = host_manifest["host_id"].map(host_folds).astype("Int64")
     host_manifest.to_csv(PRIVATE_OUTPUT / "rq_host_fold_manifest.csv", index=False)
-    private_columns = ["id", "host_id", "host_role", *CELL_KEYS, "number_of_reviews_ltm", "review_target_met"]
+    private_columns = ["id", "host_id", "host_role", *CELL_KEYS, "reviews_365d", "review_target_met"]
     reference[private_columns].assign(common_review_threshold=threshold).to_csv(PRIVATE_OUTPUT / "rq_benchmark_reference.csv", index=False)
     sample[private_columns].assign(fold=sample["host_id"].map(host_folds), common_review_threshold=threshold).to_csv(PRIVATE_OUTPUT / "rq_analysis_main_manifest.csv", index=False)
-    raw_validation = validate_raw_reviews(frame, pd.concat([sample, reference], ignore_index=True), provenance, threshold)
-    provenance["raw_validation"] = raw_validation["status"] == "completed"
-    provenance["raw_review_validation"] = raw_validation
     benchmark_details = {
         "n_listings": len(reference), "n_hosts": reference["host_id"].nunique(),
         "n_segments": reference.groupby(CELL_KEYS).ngroups,
         "quantile_probability": CONFIG["benchmark_quantile"], "pooled_review_quantile": benchmark_q75,
         "common_integer_review_threshold": threshold,
         "reference_share_meeting_threshold": float(reference["review_target_met"].mean()),
-        "reference_zero_recent_reviews": int(reference["number_of_reviews_ltm"].eq(0).sum()),
+        "reference_zero_recent_reviews": int(reference["reviews_365d"].eq(0).sum()),
         "host_partition": CONFIG["benchmark_partition"],
         "scope": "Primary listing eligibility within the final primary analysis cells. Benchmark hosts supply the common cutoff only and are excluded from every model fit, OOF prediction and sensitivity sample.",
     }
@@ -437,10 +489,10 @@ def main():
         "established_eligible_all_roles_before_cell_filter": len(eligible_base(frame)),
         "analysis_eligible_before_cell_filter": n_before_cells,
         "eligible_cells_ge_50": len(cells), "eligible_listings": len(sample), "eligible_hosts": sample["host_id"].nunique(),
-        "analysis_pool_descriptive_p75_reviews_ltm": float(sample["number_of_reviews_ltm"].quantile(.75)),
+        "analysis_pool_descriptive_p75_reviews_365d": float(sample["reviews_365d"].quantile(.75)),
         "common_review_threshold": threshold, "positive_n": int(sample["review_target_met"].sum()),
         "positive_share_with_ties": float(sample["review_target_met"].mean()),
-        "zero_recent_review_listings": int(sample["number_of_reviews_ltm"].eq(0).sum()),
+        "zero_recent_review_listings": int(sample["reviews_365d"].eq(0).sum()),
         "benchmark_development": benchmark_details,
         "all_source_hosts_by_role": {role: int(count) for role, count in host_manifest["host_role"].value_counts().items()},
         "threshold_definition": CONFIG["threshold_usage"],
@@ -448,7 +500,9 @@ def main():
         "validation_definition": "Revised exploratory five-fold host-grouped cross-validation, with a computationally separate benchmark-development host partition. No independent untouched final test set or hyperparameter search.",
         "scope_support_definition": CONFIG["segment_support"],
         "ranking_intervals": f"95% percentile intervals from {BOOTSTRAP_REPLICATES} within-segment host-cluster resamples, conditional on existing OOF probabilities; models are not refitted and intervals exclude model-fitting and model-selection uncertainty.",
-        "established_definition": f"First review on or before {ESTABLISHED_CUTOFF.date()}, using reference date {CONFIG['reference_date']}. This is a review-history criterion, not listing launch date or proof of continuous operation.",
+        "review_outcome": "reviews_365d, reconstructed directly from raw review dates; supplied number_of_reviews_ltm is retained separately",
+        "established_definition": f"First review on or before each listing's last_scraped minus {ESTABLISHED_HISTORY_DAYS} days. This is a review-history criterion, not listing launch date or proof of continuous operation.",
+        "scrape_date_range": {"minimum": str(frame["last_scraped_date"].min().date()), "maximum": str(frame["last_scraped_date"].max().date())},
         "main_model_interpretation": "Physical listing attributes associated with review activity in the preceding year, evaluated on held-out analysis hosts. These are not verified pre-opening measurements or forecasts of a new operator's next year.",
         "operating_controls_sensitivity": "Current quoted price and minimum stay are contemporaneous operating characteristics, included only as a separately labelled sensitivity.",
         "calibration_status": "No post-hoc calibration is fitted. ECE uses ten fixed equal-width bins; sparse high-score bins limit calibration interpretation.",
@@ -459,15 +513,16 @@ def main():
         "model_settings": {"logistic": {"C": 1.0, "max_iter": 2000}, "random_forest": {"n_estimators": 250, "min_samples_leaf": 10, "max_features": "sqrt", "n_jobs": 2}},
     }
     observations = sample.groupby(CELL_KEYS).agg(
-        n=("id", "size"), n_hosts=("host_id", "nunique"), median_reviews_ltm=("number_of_reviews_ltm", "median"),
-        p75_reviews_ltm=("number_of_reviews_ltm", lambda values: values.quantile(.75)),
+        n=("id", "size"), n_hosts=("host_id", "nunique"), median_reviews_365d=("reviews_365d", "median"),
+        p75_reviews_365d=("reviews_365d", lambda values: values.quantile(.75)),
         positive_n=("review_target_met", "sum"), observed_review_target_share=("review_target_met", "mean"),
         median_quoted_price=("price_num", "median"),
     ).reset_index().sort_values("observed_review_target_share", ascending=False)
     observations["common_review_threshold"] = threshold
+    scope_funnel(frame, cells).to_csv(OUTPUT / "rq_sample_funnel.csv", index=False)
     observations.to_csv(OUTPUT / "rq_observed_segment_outcomes.csv", index=False)
     cells.sort_values(CELL_KEYS).to_csv(OUTPUT / "rq_eligible_lga_configurations.csv", index=False)
-    reference_cells = reference.groupby(CELL_KEYS).agg(n_benchmark_listings=("id", "size"), n_benchmark_hosts=("host_id", "nunique"), benchmark_cell_descriptive_p75=("number_of_reviews_ltm", lambda values: values.quantile(.75))).reset_index()
+    reference_cells = reference.groupby(CELL_KEYS).agg(n_benchmark_listings=("id", "size"), n_benchmark_hosts=("host_id", "nunique"), benchmark_cell_descriptive_p75=("reviews_365d", lambda values: values.quantile(.75))).reset_index()
     reference_cells = cells.merge(reference_cells, on=CELL_KEYS, how="left", validate="one_to_one")
     reference_cells["common_review_threshold"] = threshold
     reference_cells.to_csv(OUTPUT / "rq_benchmark_scope.csv", index=False)
@@ -484,8 +539,48 @@ def main():
     pd.concat(calibrations, ignore_index=True).to_csv(OUTPUT / "rq_calibration.csv", index=False)
     (OUTPUT / "rq_scope_summary.json").write_text(json.dumps(summary, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     (OUTPUT / "rq_model_metrics.json").write_text(json.dumps(all_metrics, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    for relative_path, expected in provenance["raw_file_sha256"].items():
+        if file_sha256(ROOT / relative_path) != expected:
+            raise RuntimeError(f"Raw input changed during analysis: {relative_path}. Results have not been published.")
     print(f"Benchmark development: {len(reference)} listings / {reference.host_id.nunique()} hosts; P75={benchmark_q75:g}, integer threshold={threshold}.", flush=True)
-    print(f"Primary analysis: {len(sample)} listings / {sample.host_id.nunique()} hosts / {len(cells)} segments; analysis P75={summary['analysis_pool_descriptive_p75_reviews_ltm']:g}.", flush=True)
+    print(f"Primary analysis: {len(sample)} listings / {sample.host_id.nunique()} hosts / {len(cells)} segments; analysis P75={summary['analysis_pool_descriptive_p75_reviews_365d']:g}.", flush=True)
+
+
+def publish_outputs(directories):
+    """Publish complete results, restoring prior files on an ordinary I/O failure."""
+    with tempfile.TemporaryDirectory(prefix="review-output-backup-") as backup_directory:
+        backups = []
+        try:
+            for source_directory, destination_directory in directories:
+                destination_directory.mkdir(parents=True, exist_ok=True)
+                for source in sorted(source_directory.iterdir()):
+                    destination = destination_directory / source.name
+                    backup = Path(backup_directory) / str(len(backups)) if destination.exists() else None
+                    if backup is not None:
+                        shutil.copy2(destination, backup)
+                    backups.append((destination, backup))
+                    source.replace(destination)
+        except Exception:
+            for destination, backup in reversed(backups):
+                if backup is None:
+                    destination.unlink(missing_ok=True)
+                else:
+                    shutil.copy2(backup, destination)
+            raise
+
+
+def main():
+    global OUTPUT, PRIVATE_OUTPUT
+    output, private_output = OUTPUT, PRIVATE_OUTPUT
+    output.parent.mkdir(parents=True, exist_ok=True)
+    private_output.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix=".review-tables-", dir=output.parent) as public_stage, tempfile.TemporaryDirectory(prefix=".review-private-", dir=private_output.parent) as private_stage:
+        OUTPUT, PRIVATE_OUTPUT = Path(public_stage), Path(private_stage)
+        try:
+            run_analysis()
+            publish_outputs([(OUTPUT, output), (PRIVATE_OUTPUT, private_output)])
+        finally:
+            OUTPUT, PRIVATE_OUTPUT = output, private_output
     print("Aggregate results written to reports/tables; reference identifiers, host roles and OOF rows remain in data/processed.", flush=True)
 
 
