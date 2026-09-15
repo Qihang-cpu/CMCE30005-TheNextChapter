@@ -1,0 +1,23 @@
+lga,dwelling_class,bedrooms,n_listings_established_main,observed_target_rate_established_main,n_listings_all_histories,observed_target_rate_all_histories,rate_difference,established_history_days,established_definition,review_window_days,review_target
+Boroondara,Apartment/unit,2,,,55,0.0909090909090909,,365,first_review <= each listing last_scraped - established_history_days,365,30
+Glen Eira,Apartment/unit,2,,,55,0.0909090909090909,,365,first_review <= each listing last_scraped - established_history_days,365,30
+Melbourne,Apartment/unit,1,936,0.253205128205128,1474,0.183175033921303,0.0700300942838256,365,first_review <= each listing last_scraped - established_history_days,365,30
+Melbourne,Apartment/unit,2,1235,0.327935222672065,2154,0.221448467966574,0.106486754705491,365,first_review <= each listing last_scraped - established_history_days,365,30
+Melbourne,Apartment/unit,3,306,0.366013071895425,468,0.27991452991453,0.0860985419808949,365,first_review <= each listing last_scraped - established_history_days,365,30
+Merri-bek,Apartment/unit,1,54,0.166666666666667,75,0.133333333333333,0.0333333333333333,365,first_review <= each listing last_scraped - established_history_days,365,30
+Merri-bek,Apartment/unit,2,,,52,0.134615384615385,,365,first_review <= each listing last_scraped - established_history_days,365,30
+Port Phillip,Apartment/unit,1,305,0.114754098360656,477,0.0838574423480084,0.0308966560126474,365,first_review <= each listing last_scraped - established_history_days,365,30
+Port Phillip,Apartment/unit,2,219,0.168949771689498,360,0.111111111111111,0.0578386605783866,365,first_review <= each listing last_scraped - established_history_days,365,30
+Port Phillip,House/townhouse,2,,,75,0.0666666666666667,,365,first_review <= each listing last_scraped - established_history_days,365,30
+Port Phillip,House/townhouse,3,56,0.125,101,0.0693069306930693,0.0556930693069307,365,first_review <= each listing last_scraped - established_history_days,365,30
+Stonnington,Apartment/unit,1,185,0.135135135135135,254,0.102362204724409,0.0327729304107257,365,first_review <= each listing last_scraped - established_history_days,365,30
+Stonnington,Apartment/unit,2,97,0.0824742268041237,142,0.0563380281690141,0.0261361986351096,365,first_review <= each listing last_scraped - established_history_days,365,30
+Stonnington,House/townhouse,3,,,61,0.0819672131147541,,365,first_review <= each listing last_scraped - established_history_days,365,30
+Whitehorse,Apartment/unit,2,,,71,0.0140845070422535,,365,first_review <= each listing last_scraped - established_history_days,365,30
+Wyndham,House/townhouse,3,,,52,0.0384615384615385,,365,first_review <= each listing last_scraped - established_history_days,365,30
+Yarra,Apartment/unit,1,177,0.220338983050847,248,0.173387096774194,0.0469518862766539,365,first_review <= each listing last_scraped - established_history_days,365,30
+Yarra,Apartment/unit,2,102,0.147058823529412,161,0.111801242236025,0.0352575812933869,365,first_review <= each listing last_scraped - established_history_days,365,30
+Yarra,House/townhouse,2,60,0.233333333333333,80,0.2125,0.0208333333333333,365,first_review <= each listing last_scraped - established_history_days,365,30
+Yarra,House/townhouse,3,,,76,0.144736842105263,,365,first_review <= each listing last_scraped - established_history_days,365,30
+Yarra Ranges,House/townhouse,2,51,0.215686274509804,67,0.208955223880597,0.00673105062920693,365,first_review <= each listing last_scraped - established_history_days,365,30
+Yarra Ranges,House/townhouse,3,90,0.3,117,0.230769230769231,0.0692307692307692,365,first_review <= each listing last_scraped - established_history_days,365,30

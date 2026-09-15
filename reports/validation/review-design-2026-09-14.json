@@ -1,0 +1,82 @@
+{
+  "checked_on": "2026-09-14",
+  "reference_listings": 899,
+  "reference_hosts": 424,
+  "reference_p75": 30,
+  "analysis_listings": 3810,
+  "analysis_hosts": 1699,
+  "analysis_segments": 14,
+  "analysis_positive_n": 957,
+  "analysis_zero_review_n": 333,
+  "source_hash_matches": true,
+  "script_and_config_hashes_match": true,
+  "r_python_segment_counts_and_rates_match": true,
+  "verified_models": [
+    {
+      "scenario": "property_only",
+      "model": "logistic",
+      "n": 3810,
+      "metrics_match": true,
+      "benchmark_host_overlap": 0,
+      "host_fold_overlap": 0
+    },
+    {
+      "scenario": "property_only",
+      "model": "random_forest",
+      "n": 3810,
+      "metrics_match": true,
+      "benchmark_host_overlap": 0,
+      "host_fold_overlap": 0
+    },
+    {
+      "scenario": "operating_controls",
+      "model": "logistic",
+      "n": 3810,
+      "metrics_match": true,
+      "benchmark_host_overlap": 0,
+      "host_fold_overlap": 0
+    },
+    {
+      "scenario": "operating_controls",
+      "model": "random_forest",
+      "n": 3810,
+      "metrics_match": true,
+      "benchmark_host_overlap": 0,
+      "host_fold_overlap": 0
+    },
+    {
+      "scenario": "all_review_histories",
+      "model": "logistic",
+      "n": 6675,
+      "metrics_match": true,
+      "benchmark_host_overlap": 0,
+      "host_fold_overlap": 0
+    },
+    {
+      "scenario": "all_review_histories",
+      "model": "random_forest",
+      "n": 6675,
+      "metrics_match": true,
+      "benchmark_host_overlap": 0,
+      "host_fold_overlap": 0
+    },
+    {
+      "scenario": "no_price_filter",
+      "model": "logistic",
+      "n": 5647,
+      "metrics_match": true,
+      "benchmark_host_overlap": 0,
+      "host_fold_overlap": 0
+    },
+    {
+      "scenario": "no_price_filter",
+      "model": "random_forest",
+      "n": 5647,
+      "metrics_match": true,
+      "benchmark_host_overlap": 0,
+      "host_fold_overlap": 0
+    }
+  ],
+  "raw_to_clean_validation": "Incomplete: original CSV files remain unavailable.",
+  "interpretation": "Checks concern the revised computational separation and saved-data outputs; the snapshot was explored before this design."
+}

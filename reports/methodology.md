@@ -1,103 +1,45 @@
-# Methodology
+# Analytical methodology
 
-## Question
+The project compares review activity among established standard residential Airbnb listings in Greater Melbourne. It asks which supported property segments have the highest mean out-of-fold probability of meeting a common upper-quartile review-count benchmark over the 365 days ending on each listing's scrape date. Reviews do not establish occupancy, income or profit.
 
-A client intends to list several properties on Airbnb in Melbourne. Three
-decisions follow: where to buy or lease, what property type to run, and how to
-price it. The analysis addresses them in that order.
+## Sample and common outcome
 
-## Sample definition
+The [shared configuration](../config/review_analysis.json) defines entire homes with one to three bedrooms, a quoted price of AUD30–1,500 and four property types. Rental units and condos form Apartment/unit; homes and townhouses form House/townhouse. Established means `first_review <= last_scraped - 365 days` for each listing. This is review history, not an opening date or continuous exposure. Neither the whitelist nor the quoted-price range establishes lease availability or verified data errors.
 
-| Stage | Rule | Remaining |
-|---|---|---|
-| Full snapshot | Inside Airbnb, 16 June 2026 | 25,728 |
-| Priced sample | price present and within $30–$1,500 | 18,927 |
-| Model sample | plus bedrooms, baths, capacity, both review scores and a minimum-nights group present, and at least 3 reviews | 12,223 |
+The primary count, `reviews_365d`, is reconstructed from raw review dates in `(last_scraped - 365 days, last_scraped]`. The supplied `number_of_reviews_ltm` field instead matches the interval with both endpoints included, containing 366 calendar dates. It is preserved as supplied and is not the primary target. Full-source checks explain all 350 affected listings by reviews on the extra boundary date; see [data notes](data-notes.md).
 
-Two judgement calls worth defending in the report:
+Approximately 20% of hosts are assigned to benchmark development using a fixed hash of their text identifiers. These hosts are excluded from all model training and analysis samples. Among the remaining hosts, every reported LGA × dwelling class × bedroom cell must contain at least 50 listings after all eligibility filters. This support criterion uses covariates, not review outcomes.
 
-- **The $30–$1,500 window.** Below $30 the listings are mis-entered rates or
-  monthly figures divided oddly; above $1,500 sit 248 luxury outliers. Both tails
-  distort a logged price distribution.
-- **At least three reviews.** Listings that have never been booked still carry an
-  asking price, but that price has had no market test. Requiring three reviews
-  keeps the model on prices someone has actually paid.
+Benchmark-host listings must satisfy the primary eligibility rules and belong to the supported primary cells. Their pooled P75, calculated by linear interpolation and rounded upward to an integer, defines one common event for all segments and models. The reference comprises **906 listings from 426 hosts**, with **P75 = 29.75 reviews**, giving an integer cutoff of **30**. No validation-host outcomes enter that calculation.
 
-## Price model
+The primary analysis contains **3,873 listings, 1,726 hosts and 14 segments**. It retains **334 zero-review listings**. The fixed event `reviews_365d >= 30` occurs for **981 listings (25.3292%)**. Threshold ties are retained; neither the reference nor the analysis is forced into an exact 25% positive class. The count of 30 is a computed result, not part of the wording of the research question. [The analysis plan](rq-analysis-plan.md) records the full partition algorithm.
 
-```r
-lm(log(price) ~ room_type + accommodates + bedrooms + bathrooms_num +
-     shared_bath + n_amenities + host_is_superhost + review_scores_rating +
-     review_scores_location + min_nights_grp + lga)
-```
+## Descriptive comparison and composition checks
 
-- The response is logged because price is heavily right skewed; each coefficient
-  reads as a percentage effect via `exp(beta) - 1`.
-- LGAs with fewer than 200 listings are pooled into "Other"; the reference level
-  is the Melbourne LGA, so every area coefficient is a premium or discount
-  relative to the central city.
-- `instant_bookable` is dropped — see `data-notes.md`, it is entirely missing.
+[Script 08](../scripts/08_peer_ranking.R) describes the same analysis listings used by the predictive workflow. It reports counts, distinct hosts, review quantiles, zero outcomes, actual attainment and property-attribute profiles. Host-cluster resampling retains all listings of each sampled host. Its pointwise 90% percentile intervals use 1,000 draws and do not measure confidence in a segment's rank.
 
-## Demand seasonality
+Wider dwelling and unrestricted-history summaries show how inclusion rules change composition. These comparisons do not demonstrate that excluded dwellings cannot be rented, or that younger review histories would perform like established histories after another year. Pooled attribute differences do not establish causal effects.
 
-Monthly review volume over three full years (Jul 2023 – Jun 2026) is used as the
-demand proxy, indexed so the mean month equals 1. The forward calendar cannot
-serve this purpose: most hosts have not opened distant dates, so an unavailable
-night usually means "not yet listed" rather than "booked".
+## Predictive validation and calibration
 
-## Revenue analysis (script 04)
+The [baseline Python workflow](../scripts/rq_scope_feasibility.py) evaluates logistic regression and random forest with five host-grouped folds. Every scored listing is excluded from training together with its host. Preprocessing is learned inside each training fold. Baseline predictors are guest capacity, bathrooms, amenity count, LGA and bedroom–dwelling configuration. Current price and minimum stay are reserved for a labelled operating-controls sensitivity.
 
-The revenue question needs a different design from the price model, because the
-revenue field is not a measurement. It is computed by Inside Airbnb as
-`round(price x min(reviews_ltm x 2 x max(minimum_nights, 3), 255))`, which we
-verified reproduces the published values exactly. Three rules follow:
+ROC-AUC and average precision assess discrimination. Brier score, log loss, mean predicted versus observed rates, ten fixed-width calibration bins and their weighted absolute error assess probability quality. A training-fold-prevalence baseline provides a comparison. Bin sizes accompany calibration summaries, especially where high predicted probabilities are sparse. The original baseline models have no fitted calibration correction; the extensions below test calibration within training folds.
 
-- **Never regress revenue on price, review count or minimum nights.** They are
-  revenue by construction; the fit would be tautological.
-- **Model review counts, not occupancy.** Occupancy is the review count rescaled
-  by the host's own minimum-night rule.
-- **Read rankings, not levels.** Dollar amounts inherit Inside Airbnb's
-  assumptions about review rates and stay lengths.
+Mean out-of-fold probabilities provide the reference segment ranking. Its conditional 95% intervals use 500 host-cluster resamples around fixed predictions and a fixed benchmark. They omit uncertainty from estimating the benchmark, fitting or choosing models, and selecting the highest rank. They differ from the descriptive 90% intervals for observed rates.
 
-The design is then:
+## Property features and model extensions
 
-1. **Three-way variance decomposition.** Below the 255-night cap,
-   `log(revenue) = log(price) + log(stay multiplier) + log(reviews)` holds
-   exactly, so the host's minimum-night policy is separated from review activity
-   instead of being bundled into a single "volume" term. This is arithmetic on
-   an identity — no specification, no causal claim.
-2. **Sample censoring is reported, not assumed away.** The priced sample excludes
-   6,801 listings that are 82% inactive, against 23.7% in the analysis set. Every
-   activity rate is therefore conditional on having a usable price.
-3. **A two-part model.** The extensive margin (any recent review activity,
-   logistic) and the intensive margin (review count among active listings, OLS on
-   logs) are estimated separately, because pooling them produces inflated group
-   comparisons.
-4. **Host-clustered standard errors throughout.** 55.8% of listings belong to
-   multi-property hosts, so listings are not independent observations. Clustering
-   roughly doubles the standard errors relative to the classical ones.
-5. **Exposure-adjusted listing age.** Listings under a year old cannot accrue
-   twelve months of reviews, so age comparisons use reviews per month of exposure.
+[Script 10](../scripts/10_model_extensions.py) holds the 3,873-listing cohort, reference cutoff and five outer host folds fixed. It adds latitude, longitude, beds and nine amenity indicators: Wi-Fi, pool, air conditioning, free parking, kitchen, washer, workspace, dryer and private entrance. These are extracted from the supplied snapshot; 125 missing bed counts are imputed within training folds. Current property attributes are not verified measurements from before opening.
 
-**Terminology is deliberate.** The data observe reviews, not bookings. The
-analysis says "review activity", "modelled nights" and "modelled revenue"
-throughout, and never calls a coefficient an elasticity.
+Six fixed candidates are reported: extended property-only logistic regression, random forest, histogram gradient boosting and sigmoid-calibrated boosting, plus boosting with operating controls with and without sigmoid calibration. The calibration variants use three host-disjoint inner folds within each outer training subset; preprocessing and calibration receive no outer validation outcomes. No hyperparameter search was performed. These comparisons followed baseline inspection, so selecting a preferred model remains exploratory.
 
-**What the design does not fix.** The price coefficient is a cross-sectional
-association: the response accumulates over twelve months while the regressor is
-a single-day snapshot at the end of that window, price is chosen by the host in
-response to unobserved demand, and quality that drives both is not measured.
-Robustness across control sets does not address any of this, so no counterfactual
-is computed from it.
+The extended property-only random forest is provisionally used for probability ranking because its Brier score of **0.181316** is the lowest among the property-only candidates. Its AUC is **0.640** and average precision **0.350**; ten-bin calibration error is **1.63 percentage points**. Boosting has a higher AUC of 0.647 but a higher Brier score of 0.182098. The preferred forest itself has no fitted calibration correction. Sigmoid calibration did not improve every metric or both scenarios. [All candidate metrics](tables/rq_extension_metrics.csv), [calibration bins](tables/rq_extension_calibration.csv) and [provenance](tables/rq_extension_provenance.json) remain available alongside all eight original baseline/scenario results. Confirmation on independent data is still needed.
 
-## Limitations to state in the report
+## Sensitivity and limits
 
-1. Occupancy and revenue are Inside Airbnb estimates, not booking records, and
-   understate true occupancy. They support relative comparison only.
-2. The regression is cross-sectional. Coefficients describe association in a
-   market equilibrium, not the causal return on adding a bedroom.
-3. Adjusted R-squared is 0.558. Roughly 44% of price variation is unexplained,
-   most plausibly fit-out quality, photography and views — none of which the
-   data captures.
-4. The snapshot is a single day in June. Prices carry no seasonal adjustment
-   the hosts may apply later in the year.
+Removing the history restriction gives 6,675 analysis listings in 22 segments. Removing the price filter but retaining established history gives 5,720 in 19 segments. Both exclude all benchmark hosts, recalculate minimum support and retain the primary reference's 30-review event. Adding current price and minimum stay changes the predictor set rather than the primary sample. Comparisons between different samples require attention to prevalence and composition.
+
+The revised design follows prior exploration of the snapshot. Computational separation of reference and validation hosts does not create an untouched final test. Repeated splits, nested model selection, further calibration assessment and refitted uncertainty remain future work. Cross-sectional scores describe existing listings in the preceding year, not new operators' future performance.
+
+All numerical inputs are from the school's supplied data. The 15 September run rebuilt processed data from all three raw files, checked source review counts for every listing and used matching file and configuration hashes across the model and descriptive workflows. Some identifiers were already rounded in the source; reconstruction cannot restore those digits. Financial feasibility, subletting eligibility and causal effects remain outside the evidence.

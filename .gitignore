@@ -71,7 +71,12 @@ data/raw/*
 # Intermediate objects rebuilt by scripts/01 and scripts/03
 data/processed/*
 !data/processed/.gitkeep
-.positai
+.posit*
+
+# Python environments and bytecode
+.venv/
+__pycache__/
+*.py[cod]
 
 # Official reference tables (small, versioned)
 !data/external/*.csv

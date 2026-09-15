@@ -1,0 +1,159 @@
+{
+  "n_primary_listings": 3873,
+  "n_primary_hosts": 1726,
+  "reference_n": 906,
+  "common_review_threshold": 30,
+  "primary_source_and_outputs_sha256": {
+    "data/raw/listings_airbnb.csv": "3862a5dc66cfc7d852ea5bddc350466803cf8a1ab7cb3bc87f68ea352a5102c7",
+    "data/raw/calendar_airbnb.csv": "0db5b4d2fb58216536c738f0f960357676415e21642fbfafa1e77ff37386f24e",
+    "data/raw/reviews_airbnb.csv": "a56c6046cdd265b83657d493bc1e9b34bd4c8c62c418d971d432b9051726a913",
+    "config/review_analysis.json": "1b32d38a989a9888560d04269f054275d7a953b6b33850858ddab41ed784ffde",
+    "scripts/rq_scope_feasibility.py": "6c913cc27a4c1d22bf1ab58fc6fd229de985c3253059951c83602e8fce778e61",
+    "reports/tables/rq_scope_summary.json": "f8fa1d33ba8866e2af24b9e0dc6743d1591033746352eb93574c5b969bd9a5cd",
+    "data/processed/cleaning_manifest.json": "03ed99ee6e243ceffc7e2b41fbad4586cb7e67f790ee9a0335771fde75c91a27",
+    "data/processed/rq_analysis_main_manifest.csv": "b236304538a321060ab6712788891abb0a0189245afd956a07d9d98c82c6ddf6",
+    "data/processed/rq_benchmark_reference.csv": "a1fa2fd96d795159d0041e1bf8543ea6f20e1d90a9021ff95efb7625565e2ae7",
+    "data/processed/rq_host_fold_manifest.csv": "bb338b03fb1ced898d357c2227a664dfcb0b3217879b31c157cc71fbefa8935a",
+    "reports/tables/rq_model_metrics.json": "79570dde5b8d5719b009b2737ae66c372cf6c7099395a22e00dedeedb05b7b15",
+    "reports/tables/rq_oof_segment_ranking.csv": "4b1306beaafe08676010ab9578c122d0647d33821f7574855345ad415a78f22c",
+    "reports/tables/rq_calibration.csv": "dd020802d3340a903e065525d5ea33ffdea05b28c9a8b7c18bfc43c4acb49919",
+    "data/processed/rq_oof_all_review_histories_logistic.csv": "97559d54767a5965eabf54b4e0aa373855fc775c26d3399e15724de325a7292a",
+    "data/processed/rq_oof_all_review_histories_random_forest.csv": "e1039b8a5f96086d0a2922ddbbcb3546d0f9f0c1a088b5c735171203fb83f235",
+    "data/processed/rq_oof_no_price_filter_logistic.csv": "48ea68f29dd4b680fb766c84da97f6a8ed3c151f04482f6835f12f8c955fab0e",
+    "data/processed/rq_oof_no_price_filter_random_forest.csv": "bee98b083b39035b3f5544d3a3a1147f293750a4efdba714078ac0bebac45969",
+    "data/processed/rq_oof_operating_controls_logistic.csv": "61366f34ef57abe5e5da923942d889597b7c55f02298864d6485e2453336d610",
+    "data/processed/rq_oof_operating_controls_random_forest.csv": "603eadf47c36db4c309c1a632484ecd9e0997bf22894b261cf1cafe8347b8467",
+    "data/processed/rq_oof_property_only_logistic.csv": "2a2d6e5ac851a373a57e3447d72770daa6f9e60737a8940ba311a574e7d4252c",
+    "data/processed/rq_oof_property_only_random_forest.csv": "eb47597f39ace40af9a14b5eb820ad813de543e0bdf84a1b37d7b82844cdf735"
+  },
+  "extension_script_sha256": "f64fa756afd60503cb68fbac5030c8852879d18177676666f80dfacdbef756b3",
+  "candidates": [
+    {
+      "scenario": "extended_property_only",
+      "model": "logistic",
+      "operating_controls": false,
+      "sigmoid_calibration": false
+    },
+    {
+      "scenario": "extended_property_only",
+      "model": "random_forest",
+      "operating_controls": false,
+      "sigmoid_calibration": false
+    },
+    {
+      "scenario": "extended_property_only",
+      "model": "hist_gradient_boosting",
+      "operating_controls": false,
+      "sigmoid_calibration": false
+    },
+    {
+      "scenario": "extended_property_only",
+      "model": "hist_gradient_boosting_sigmoid",
+      "operating_controls": false,
+      "sigmoid_calibration": true
+    },
+    {
+      "scenario": "extended_operating_controls",
+      "model": "hist_gradient_boosting",
+      "operating_controls": true,
+      "sigmoid_calibration": false
+    },
+    {
+      "scenario": "extended_operating_controls",
+      "model": "hist_gradient_boosting_sigmoid",
+      "operating_controls": true,
+      "sigmoid_calibration": true
+    }
+  ],
+  "hist_gradient_boosting_settings": {
+    "max_iter": 150,
+    "learning_rate": 0.05,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 20,
+    "l2_regularization": 10,
+    "early_stopping": false,
+    "random_state": 30005
+  },
+  "logistic_settings": {
+    "C": 1.0,
+    "max_iter": 2000
+  },
+  "random_forest_settings": {
+    "n_estimators": 250,
+    "min_samples_leaf": 10,
+    "max_features": "sqrt"
+  },
+  "features_added": [
+    "latitude",
+    "longitude",
+    "beds",
+    "has_wifi",
+    "has_pool",
+    "has_aircon",
+    "has_free_parking",
+    "has_kitchen",
+    "has_washer",
+    "has_workspace",
+    "has_dryer",
+    "has_private_entrance"
+  ],
+  "amenity_patterns": {
+    "has_wifi": [
+      "wi-?fi",
+      null
+    ],
+    "has_pool": [
+      "\\bpool\\b",
+      "pool table"
+    ],
+    "has_aircon": [
+      "air conditioning",
+      null
+    ],
+    "has_free_parking": [
+      "free parking",
+      null
+    ],
+    "has_kitchen": [
+      "\\bkitchen(?:ette)?\\b",
+      null
+    ],
+    "has_washer": [
+      "\\bwasher\\b|\\bwashing machine\\b",
+      null
+    ],
+    "has_workspace": [
+      "\\bworkspace\\b",
+      null
+    ],
+    "has_dryer": [
+      "\\bdryer\\b",
+      "hair dryer"
+    ],
+    "has_private_entrance": [
+      "private entrance",
+      null
+    ]
+  },
+  "numeric_missingness": {
+    "accommodates": 0,
+    "bathrooms_num": 0,
+    "n_amenities": 0,
+    "latitude": 0,
+    "longitude": 0,
+    "beds": 125,
+    "has_wifi": 0,
+    "has_pool": 0,
+    "has_aircon": 0,
+    "has_free_parking": 0,
+    "has_kitchen": 0,
+    "has_washer": 0,
+    "has_workspace": 0,
+    "has_dryer": 0,
+    "has_private_entrance": 0
+  },
+  "validation": "The original five outer host folds are unchanged. Sigmoid calibration uses three host-disjoint folds inside each outer training subset, with training-only preprocessing and no outer validation outcomes supplied to calibration.",
+  "scope": "All features are extracted from the supplied listing snapshot. Current price and minimum stay occur only in the labelled operating-controls sensitivity.",
+  "intervals": "95% conditional host-cluster intervals use fixed outer-fold scores; models are not refitted in the bootstrap.",
+  "selection_limit": "These extensions follow baseline inspection; selection of a preferred variant requires confirmation on a later independent dataset. All six comparisons are reported."
+}

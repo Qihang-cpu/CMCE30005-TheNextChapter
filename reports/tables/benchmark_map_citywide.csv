@@ -1,0 +1,4 @@
+benchmark,raw_quantile,review_target,n_listings,n_below,n_at_threshold,n_at_least,share_below,share_at_least,reference_scope
+Benchmark-development P50,14,14,3873,1832,92,2041,0.473018332042344,0.526981667957656,"Benchmark-development hosts, primary eligibility and final main cells"
+Common upper-quartile target,29.75,30,3873,2892,58,981,0.746707978311386,0.253292021688613,"Benchmark-development hosts, primary eligibility and final main cells"
+Benchmark-development P90,49,49,3873,3534,12,339,0.912470952749806,0.0875290472501937,"Benchmark-development hosts, primary eligibility and final main cells"
