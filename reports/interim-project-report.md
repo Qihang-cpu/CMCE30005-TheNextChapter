@@ -8,7 +8,7 @@ Eric Huang, Loc Le, Qihang Sun and Maksym Xu
 
 Repository: [Qihang-cpu/CMCE30005-TheNextChapter](https://github.com/Qihang-cpu/CMCE30005-TheNextChapter/tree/interim-report-2026-09-13)
 
-Report body including table: 1,254 words | Updated 16 September 2026
+Report body including table: 1,378 words | Updated 16 September 2026
 
 ## Introduction
 
@@ -55,7 +55,7 @@ Descriptive tables report listing and distinct-host counts, review quantiles, ob
 
 Baseline logistic regression and random forest use LGA, dwelling–bedroom configuration, capacity, bathrooms and amenity counts. Six fixed extensions add coordinates, beds and nine facilities and also test histogram gradient boosting. All comparisons use the same 3,873 listings and five test folds that keep each host in one fold. Each fold learns missing-value treatment and encoding only from its training data. Ratings, review-derived predictors and host badges are excluded; price and minimum stay appear only in labelled operating-controls variants.
 
-Model assessment uses four measures. AUC measures ranking ability; average precision measures how accurately the model identifies listings reaching the benchmark; the Brier score measures probability error, where lower is better; and calibration checks whether predicted probabilities agree with observed rates. Brier scores are also compared with a simple training-prevalence forecast. Two boosting variants adjust probabilities using three host-separated groups within each training fold, without using held-out outcomes. R supports cleaning and descriptive analysis; Python and scikit-learn support modelling.
+Model assessment uses four measures. AUC measures ranking ability; average precision measures how accurately the model identifies listings reaching the benchmark; the Brier score measures probability error, where lower is better; and calibration checks whether predicted probabilities agree with observed rates. Every model is also compared with two references on the same folds: a training-prevalence forecast, and a segment-rate baseline that gives each validation listing its segment’s attainment rate among training hosts, shrunk towards the training rate by a prior weight of ten fixed before the run. Two boosting variants adjust probabilities using three host-separated groups within each training fold, without using held-out outcomes. R supports cleaning and descriptive analysis; Python and scikit-learn support modelling.
 
 ## Analysis Plan and Progress to Date
 
@@ -63,7 +63,9 @@ The complete raw-data workflow and independent checks now agree on review counts
 
 The enhanced forest ranks Melbourne three-bedroom apartments first: mean probability 34.4%, observed attainment 36.6%, and 306 listings. Resampling hosts gives a conditional 95% interval of 33.0–35.8%; this interval holds the fitted model and review cutoff fixed. Removing the history restriction gives 6,675 analysis listings; removing the price filter gives 5,720. Adding current price and minimum stay to enhanced boosting raises AUC to 0.749. These contemporaneous settings provide useful context but do not establish a causal effect or a pre-opening forecast. Probability adjustment does not improve every metric.
 
-All six extensions are reported. Their comparison follows baseline inspection, so model preference is exploratory and there is no untouched final test. Next steps are to repeat the host partitions, choose models within the training data, and recalculate ranking intervals while refitting the model. Findings describe existing listings’ preceding-year review activity, not future income or profitability. The README reproduces this report and links the code, validation and outputs.
+The segment-rate baseline reaches AUC 0.581 and Brier score 0.187. Both original property-only models fall below it, exceeding its AUC in one of five folds; the enhanced forest exceeds it in every fold, by 0.059 AUC overall. Every model places the same three segments first, so the models add listing-level discrimination rather than a different segment order. Across 20 repeated host partitions the enhanced forest exceeds the baseline in all 20 (AUC 0.589–0.648); Melbourne three-bedroom apartments rank first in every partition and the same top three recur in 19.
+
+All six extensions and the baseline are reported. Their comparison follows baseline inspection, so model preference is exploratory and there is no untouched final test. Next steps are to choose models within the training data and recalculate ranking intervals while refitting the model. Findings describe existing listings’ preceding-year review activity, not future income or profitability. The README reproduces this report and links the code, validation and outputs.
 
 ## References
 

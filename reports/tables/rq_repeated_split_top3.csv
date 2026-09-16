@@ -1,0 +1,43 @@
+scenario,model,neighbourhood_cleansed,configuration,repeats,share_ranked_first,share_in_top_3,median_rank,best_rank,worst_rank,mean_of_segment_mean_probability
+extended_property_only,random_forest,Melbourne,3BR Apartment/unit,20,1.0,1.0,1.0,1,1,0.35920959
+extended_property_only,random_forest,Melbourne,2BR Apartment/unit,20,0.0,1.0,2.0,2,2,0.32085026
+extended_property_only,random_forest,Yarra Ranges,3BR House/townhouse,20,0.0,0.95,3.0,3,4,0.27852938
+extended_property_only,random_forest,Melbourne,1BR Apartment/unit,20,0.0,0.05,4.0,3,5,0.26617189
+extended_property_only,random_forest,Yarra Ranges,2BR House/townhouse,20,0.0,0.0,5.0,4,5,0.25519749
+extended_property_only,random_forest,Yarra,1BR Apartment/unit,20,0.0,0.0,6.5,6,7,0.21718337
+extended_property_only,random_forest,Yarra,2BR House/townhouse,20,0.0,0.0,7.0,6,8,0.21636048
+extended_property_only,random_forest,Merri-bek,1BR Apartment/unit,20,0.0,0.0,8.0,6,8,0.20730349
+extended_property_only,random_forest,Yarra,2BR Apartment/unit,20,0.0,0.0,9.0,9,9,0.1846054
+extended_property_only,random_forest,Port Phillip,3BR House/townhouse,20,0.0,0.0,10.0,10,10,0.16192993
+extended_property_only,random_forest,Port Phillip,2BR Apartment/unit,20,0.0,0.0,11.0,11,11,0.14009401
+extended_property_only,random_forest,Port Phillip,1BR Apartment/unit,20,0.0,0.0,12.0,12,13,0.1285247
+extended_property_only,random_forest,Stonnington,1BR Apartment/unit,20,0.0,0.0,13.0,12,13,0.12591378
+extended_property_only,random_forest,Stonnington,2BR Apartment/unit,20,0.0,0.0,14.0,14,14,0.11122042
+property_only,logistic,Melbourne,3BR Apartment/unit,20,1.0,1.0,1.0,1,1,0.36203803
+property_only,logistic,Melbourne,2BR Apartment/unit,20,0.0,1.0,2.0,2,2,0.31944997
+property_only,logistic,Yarra Ranges,3BR House/townhouse,20,0.0,1.0,3.0,3,3,0.27986709
+property_only,logistic,Melbourne,1BR Apartment/unit,20,0.0,0.0,4.0,4,5,0.26337578
+property_only,logistic,Yarra Ranges,2BR House/townhouse,20,0.0,0.0,5.0,4,5,0.25074266
+property_only,logistic,Yarra,2BR Apartment/unit,20,0.0,0.0,6.0,6,6,0.22315049
+property_only,logistic,Yarra,2BR House/townhouse,20,0.0,0.0,7.0,7,7,0.2093894
+property_only,logistic,Yarra,1BR Apartment/unit,20,0.0,0.0,8.0,8,8,0.18582479
+property_only,logistic,Merri-bek,1BR Apartment/unit,20,0.0,0.0,9.0,9,10,0.16676005
+property_only,logistic,Port Phillip,3BR House/townhouse,20,0.0,0.0,10.0,9,10,0.16427237
+property_only,logistic,Port Phillip,2BR Apartment/unit,20,0.0,0.0,11.0,11,11,0.14834948
+property_only,logistic,Stonnington,2BR Apartment/unit,20,0.0,0.0,12.0,12,12,0.13394211
+property_only,logistic,Port Phillip,1BR Apartment/unit,20,0.0,0.0,13.0,13,13,0.1222856
+property_only,logistic,Stonnington,1BR Apartment/unit,20,0.0,0.0,14.0,14,14,0.11227232
+segment_rate,segment_rate_baseline,Melbourne,3BR Apartment/unit,20,1.0,1.0,1.0,1,1,0.35832837
+segment_rate,segment_rate_baseline,Melbourne,2BR Apartment/unit,20,0.0,1.0,2.0,2,2,0.32784484
+segment_rate,segment_rate_baseline,Yarra Ranges,3BR House/townhouse,20,0.0,1.0,3.0,3,3,0.2950508
+segment_rate,segment_rate_baseline,Melbourne,1BR Apartment/unit,20,0.0,0.0,4.0,4,4,0.25371743
+segment_rate,segment_rate_baseline,Yarra,2BR House/townhouse,20,0.0,0.0,5.0,5,6,0.23851565
+segment_rate,segment_rate_baseline,Yarra Ranges,2BR House/townhouse,20,0.0,0.0,6.0,5,7,0.22873458
+segment_rate,segment_rate_baseline,Yarra,1BR Apartment/unit,20,0.0,0.0,7.0,6,7,0.2236079
+segment_rate,segment_rate_baseline,Merri-bek,1BR Apartment/unit,20,0.0,0.0,8.0,8,8,0.18352668
+segment_rate,segment_rate_baseline,Port Phillip,2BR Apartment/unit,20,0.0,0.0,9.0,9,9,0.16805144
+segment_rate,segment_rate_baseline,Yarra,2BR Apartment/unit,20,0.0,0.0,10.0,10,10,0.16053358
+segment_rate,segment_rate_baseline,Port Phillip,3BR House/townhouse,20,0.0,0.0,11.0,11,12,0.15031988
+segment_rate,segment_rate_baseline,Stonnington,1BR Apartment/unit,20,0.0,0.0,12.0,11,12,0.14386482
+segment_rate,segment_rate_baseline,Port Phillip,1BR Apartment/unit,20,0.0,0.0,13.0,13,13,0.12025402
+segment_rate,segment_rate_baseline,Stonnington,2BR Apartment/unit,20,0.0,0.0,14.0,14,14,0.10208612

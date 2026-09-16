@@ -46,10 +46,40 @@ The extended property-only random forest is provisionally preferred for the RQ's
 
 Under the extended forest, Melbourne 3BR Apartment/unit ranks first with mean OOF probability **34.45%**, conditional 95% interval **33.00%–35.81%**, and observed attainment **112/306 = 36.60%**. The interval holds model scores and the common cutoff fixed; it excludes model-fitting, benchmark-estimation and model-selection uncertainty. The [extension ranking](tables/rq_extension_ranking.csv) reports every candidate. Candidates were compared after inspecting baseline results, without hyperparameter search or an untouched final test, so the model preference and ranking require independent confirmation.
 
+## Is any model more useful than the segment's historical rate?
+
+A segment-rate baseline answers this directly on the same 3,873 listings, 30-review event and five host folds. Each validation listing receives the attainment rate of its LGA × configuration segment among training hosts, shrunk towards the training-set rate by a prior weight of ten fixed before the run. The smallest training segment has 37 listings, so the shrinkage is immaterial (unsmoothed AUC 0.5806 versus 0.5810).
+
+| Predictor | ROC-AUC | Average precision | Brier score | Ten-bin calibration error | Folds with AUC above the segment rate |
+|---|---:|---:|---:|---:|---:|
+| Training-fold prevalence (constant) | 0.500 | 0.253 | 0.190719 | — | — |
+| **Segment rate, training hosts only** | **0.581** | **0.285** | **0.186789** | **1.78 pp** | — |
+| Baseline property-only logistic | 0.573 | 0.285 | 0.188559 | 3.92 pp | 1 of 5 |
+| Baseline property-only random forest | 0.560 | 0.280 | 0.191370 | 5.65 pp | 1 of 5 |
+| Extended property-only logistic | 0.607 | 0.310 | 0.186853 | 3.93 pp | 3 of 5 |
+| Extended property-only random forest | 0.640 | 0.350 | 0.181316 | 1.63 pp | 5 of 5 |
+| Extended property-only boosting | 0.647 | 0.359 | 0.182098 | 3.47 pp | 5 of 5 |
+
+**Both original property-only models are worse than the segment rate** on AUC and Brier score, and beat it in only one fold of five. Their features did not add information beyond the segment identity. The extended forest exceeds the segment rate in every fold (AUC +0.016 to +0.054 per fold; +0.059 pooled) and has the lower Brier score in every fold; extended boosting does the same. The extended logistic model is ahead in three folds only. Adding contemporaneous price and minimum stay puts every variant ahead in all five folds, but that remains an operating-controls sensitivity.
+
+The segment ranking barely depends on the model. Every candidate ranks Melbourne 3BR Apartment/unit first, exactly as the training-host rates do; the extended forest's ranking has Spearman correlation 0.978 with the segment-rate ranking and the same top three. The models therefore add discrimination *between listings within a segment*, not a different answer to which segment leads. The baseline's own ranking, with conditional 95% host-cluster intervals, is in [rq_baseline_segment_ranking.csv](tables/rq_baseline_segment_ranking.csv); see also [the comparison table](tables/rq_baseline_comparison.csv), [per-fold differences](tables/rq_baseline_fold_comparison.csv) and [ranking agreement](tables/rq_baseline_ranking_comparison.csv). Differences are descriptive, on the same rows, and are not significance tests.
+
+## Stability under repeated host partitions
+
+Reassigning analysis hosts to five folds under 20 further seeds, with the sample, event, features and model settings fixed, gives:
+
+| Predictor | AUC range over 20 partitions | Mean AUC | Partitions with AUC above the segment rate |
+|---|---:|---:|---:|
+| Segment rate, training hosts only | 0.569–0.594 | 0.586 | — |
+| Baseline property-only logistic | 0.576–0.610 | 0.594 | 17 of 20 |
+| Extended property-only random forest | 0.589–0.648 | 0.626 | 20 of 20 |
+
+The primary partition's forest AUC of 0.640 sits in the upper part of its range; the mean across partitions is 0.626, and its margin over the segment rate is 0.015–0.064 (mean 0.040). The original logistic model is ahead of the segment rate in 17 partitions but by 0.008 on average, so its advantage is small and partition-dependent. **Melbourne 3BR Apartment/unit ranks first in all 20 partitions under all three predictors.** Melbourne 2BR Apartment/unit is second in all 20, and Yarra Ranges 3BR House/townhouse third in 19 under the forest (fourth once, swapping with Melbourne 1BR apartments) and in all 20 under the other two. Full results: [rq_repeated_split_summary.csv](tables/rq_repeated_split_summary.csv), [rq_repeated_split_top3.csv](tables/rq_repeated_split_top3.csv). No intervals are computed inside the repeats and no model was added or tuned.
+
 ## Baseline segment scores and scope sensitivities
 
 The original baseline logistic ranking places Melbourne 3BR Apartment/unit first, with mean OOF score **34.78%** and conditional 95% interval **33.53%–36.26%**. Melbourne 2BR apartments follow at 31.50%, then Yarra Ranges 3BR houses/townhouses at 27.85%. These intervals hold fitted scores and the benchmark fixed, omit their estimation uncertainty, and do not establish a definitive winner. [The baseline ranking table](tables/rq_oof_segment_ranking.csv) includes both original models and all scenarios.
 
 Adding contemporaneous price and minimum stay gives logistic AUC 0.714 and forest AUC 0.713. This is a separate operating-controls sensitivity, not evidence of prediction from verified pre-opening information. Removing the history restriction yields 6,675 listings in 22 segments, with 17.51% meeting 30; removing the price filter while retaining history yields 5,720 in 19, with 18.29% meeting 30. Both samples have P75 23; the reference event remains unchanged.
 
-The next stage must examine repeated host splits, further calibration assessment and broader dwelling mappings, and report uncertainty with models and thresholds refitted. The design follows prior snapshot exploration; it creates no untouched final test. Current outputs have been rebuilt from raw files with full-listing review reconstruction and matching input hashes. Raw validation confirms the available identifiers, but cannot recover digits already rounded before delivery.
+The next stage must examine further calibration assessment and broader dwelling mappings, choose models within training data, and report uncertainty with models and thresholds refitted. The design follows prior snapshot exploration; it creates no untouched final test. Current outputs have been rebuilt from raw files with full-listing review reconstruction and matching input hashes. Raw validation confirms the available identifiers, but cannot recover digits already rounded before delivery.

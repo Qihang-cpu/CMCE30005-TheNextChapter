@@ -1,0 +1,227 @@
+{
+  "metrics": {
+    "mean_predicted_probability": 0.2542609048878708,
+    "observed_target_share": 0.2532920216886135,
+    "mean_prediction_minus_observed": 0.0009688831992573088,
+    "expected_calibration_error_10_equal_width_bins": 0.017782362584968944,
+    "calibration_status": "Training-fold attainment rates; no fitted calibration.",
+    "high_score_at_least_0_5": {
+      "n": 0,
+      "observed_target_share": null,
+      "mean_predicted_probability": null
+    },
+    "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
+    "roc_auc": 0.5810323533019487,
+    "average_precision": 0.28530535014818226,
+    "brier_score": 0.18678892380879344,
+    "log_loss": 0.5592714180119917,
+    "precision_top_quarter": 0.28068961330662295,
+    "confusion_matrix_at_0_5": [
+      [
+        2892,
+        0
+      ],
+      [
+        981,
+        0
+      ]
+    ],
+    "descriptive_constant_probability_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.2532920216886135,
+      "precision_top_quarter": 0.2532920216886135,
+      "brier_score": 0.18913517343750846,
+      "log_loss": 0.5659229842719192,
+      "note": "Uses the evaluated sample prevalence as a descriptive no-skill reference."
+    },
+    "scenario": "segment_rate",
+    "model": "segment_rate_baseline",
+    "n": 3873,
+    "n_hosts": 1726,
+    "n_segments": 14,
+    "common_review_threshold": 30,
+    "predictors": [
+      "neighbourhood_cleansed",
+      "configuration"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "n_train": 3155,
+        "n_validation": 718,
+        "n_validation_hosts": 331,
+        "training_rate": 0.26148969889064977,
+        "smallest_training_segment": 37,
+        "validation_listings_in_unseen_segment": 0,
+        "roc_auc": 0.6838956565380053,
+        "average_precision": 0.326769850583859,
+        "brier_score": 0.1608048492033303
+      },
+      {
+        "fold": 1,
+        "n_train": 3059,
+        "n_validation": 814,
+        "n_validation_hosts": 376,
+        "training_rate": 0.2347172278522393,
+        "smallest_training_segment": 42,
+        "validation_listings_in_unseen_segment": 0,
+        "roc_auc": 0.5721191335490949,
+        "average_precision": 0.3741565654035447,
+        "brier_score": 0.22246639026961437
+      },
+      {
+        "fold": 2,
+        "n_train": 3113,
+        "n_validation": 760,
+        "n_validation_hosts": 329,
+        "training_rate": 0.24092515258592997,
+        "smallest_training_segment": 38,
+        "validation_listings_in_unseen_segment": 0,
+        "roc_auc": 0.6816626977307507,
+        "average_precision": 0.4277818865109586,
+        "brier_score": 0.20325991816008396
+      },
+      {
+        "fold": 3,
+        "n_train": 3124,
+        "n_validation": 749,
+        "n_validation_hosts": 332,
+        "training_rate": 0.2701664532650448,
+        "smallest_training_segment": 41,
+        "validation_listings_in_unseen_segment": 0,
+        "roc_auc": 0.5468012022327179,
+        "average_precision": 0.21210586176531954,
+        "brier_score": 0.16265702272463953
+      },
+      {
+        "fold": 4,
+        "n_train": 3041,
+        "n_validation": 832,
+        "n_validation_hosts": 358,
+        "training_rate": 0.25879644853666556,
+        "smallest_training_segment": 40,
+        "validation_listings_in_unseen_segment": 0,
+        "roc_auc": 0.5618031541867303,
+        "average_precision": 0.2560853366953991,
+        "brier_score": 0.18098597437690034
+      }
+    ],
+    "prior_weight": 10,
+    "rule": "Within each fold: (training positives in the segment + 10 x training-set rate) / (training listings in the segment + 10); a segment with no training listings receives the training-set rate. The prior weight was fixed before the run and not tuned.",
+    "unsmoothed_reference": {
+      "prior_weight": 0,
+      "roc_auc": 0.580595984846242,
+      "average_precision": 0.2849982132776723,
+      "brier_score": 0.18694924061314172,
+      "max_absolute_probability_difference": 0.02998025274003452,
+      "note": "Shown only to record how little the pre-specified prior weight changes the baseline."
+    }
+  },
+  "provenance": {
+    "n_primary_listings": 3873,
+    "n_primary_hosts": 1726,
+    "n_segments": 14,
+    "common_review_threshold": 30,
+    "reference_n": 906,
+    "prior_weight": 10,
+    "smallest_training_segment_across_folds": 37,
+    "validation_listings_in_unseen_segment": 0,
+    "frozen_inputs_sha256": {
+      "data/raw/listings_airbnb.csv": "3862a5dc66cfc7d852ea5bddc350466803cf8a1ab7cb3bc87f68ea352a5102c7",
+      "data/raw/calendar_airbnb.csv": "0db5b4d2fb58216536c738f0f960357676415e21642fbfafa1e77ff37386f24e",
+      "data/raw/reviews_airbnb.csv": "a56c6046cdd265b83657d493bc1e9b34bd4c8c62c418d971d432b9051726a913",
+      "config/review_analysis.json": "1b32d38a989a9888560d04269f054275d7a953b6b33850858ddab41ed784ffde",
+      "scripts/rq_scope_feasibility.py": "3fb32c7e7c3a2b1f600ec824ce2622ca44357049cd2d0618d9f05a3dceb5792a",
+      "reports/tables/rq_scope_summary.json": "cc81c745a24b5c9d7833c0c7c7584bf3bb982027397de421589ed48d1f47fe60",
+      "data/processed/cleaning_manifest.json": "03ed99ee6e243ceffc7e2b41fbad4586cb7e67f790ee9a0335771fde75c91a27",
+      "data/processed/rq_analysis_main_manifest.csv": "b236304538a321060ab6712788891abb0a0189245afd956a07d9d98c82c6ddf6",
+      "data/processed/rq_benchmark_reference.csv": "a1fa2fd96d795159d0041e1bf8543ea6f20e1d90a9021ff95efb7625565e2ae7",
+      "data/processed/rq_host_fold_manifest.csv": "bb338b03fb1ced898d357c2227a664dfcb0b3217879b31c157cc71fbefa8935a",
+      "reports/tables/rq_model_metrics.json": "97943a452a65950b286ad9241bafc86ef3aad697d86120a3a9247697f80a0e38",
+      "reports/tables/rq_oof_segment_ranking.csv": "b0fecd5c9cc0a56488525c410f2a050766893f7b4759ab07a9e87f5eb15cd847",
+      "reports/tables/rq_calibration.csv": "3d91a826dd9423604d3e1a5d8563e842c0c524211967d00e975a0be5cbd2b036",
+      "data/processed/rq_oof_all_review_histories_logistic.csv": "97559d54767a5965eabf54b4e0aa373855fc775c26d3399e15724de325a7292a",
+      "data/processed/rq_oof_all_review_histories_random_forest.csv": "d76219e2857de5b92a1d5e59fba2eddca21c4390950b3262a6335eb90f3b2095",
+      "data/processed/rq_oof_no_price_filter_logistic.csv": "48ea68f29dd4b680fb766c84da97f6a8ed3c151f04482f6835f12f8c955fab0e",
+      "data/processed/rq_oof_no_price_filter_random_forest.csv": "858549891367add9869e7738578d981a5063373564adbd6b5ac5adf95531084c",
+      "data/processed/rq_oof_operating_controls_logistic.csv": "61366f34ef57abe5e5da923942d889597b7c55f02298864d6485e2453336d610",
+      "data/processed/rq_oof_operating_controls_random_forest.csv": "5ccd902236c2b3127b2dc71f090a9e7ffbeec67d7d1c1c5f09d57f87c5cb417e",
+      "data/processed/rq_oof_property_only_logistic.csv": "2a2d6e5ac851a373a57e3447d72770daa6f9e60737a8940ba311a574e7d4252c",
+      "data/processed/rq_oof_property_only_random_forest.csv": "8593bb1f62b2d9ba5f2324907e15384ea7ee98c85e944e5cfa1f1291069b6bfc",
+      "reports/tables/rq_extension_metrics.json": "187a46a3c71a1b55f5e99c59ca03b4583c32b27f54afeac55881e561f9551bd8",
+      "reports/tables/rq_extension_ranking.csv": "e820420d361466e9ce0d6aad556ec0257409bc2e39d09d27b6570afd96fa4cd7",
+      "reports/tables/rq_extension_provenance.json": "67bf1a6c5e77d5a1ff5f510180eee1ba20040d3de67b3169349167f008b9b4d9",
+      "data/processed/rq_extension_oof_extended_property_only_logistic.csv": "3d8c0762f992805a22074e6b9ff9bd24e0cb780425594652d3e09cbb7db4e379",
+      "data/processed/rq_extension_oof_extended_property_only_random_forest.csv": "4b07c1a0bb35c974f07ff92f6f05959bd376e7c6a8dbf76741ae1a548ceed5af",
+      "data/processed/rq_extension_oof_extended_property_only_hist_gradient_boosting.csv": "262863c6f58803635ee345efc5053abb8a1c97a03a03c67e1206f43f6eaa63c5",
+      "data/processed/rq_extension_oof_extended_property_only_hist_gradient_boosting_sigmoid.csv": "2a07e997c43c6be4fc54039c19ed07b1a81b8c5bc72312db6ad56650b0d5f945",
+      "data/processed/rq_extension_oof_extended_operating_controls_hist_gradient_boosting.csv": "8ae355385a72d9eb164e0aef79c03af1bb9f3aa06f2f06d23c845d51cf6efda5",
+      "data/processed/rq_extension_oof_extended_operating_controls_hist_gradient_boosting_sigmoid.csv": "3a0dd196dbda9c945ad3836cb13fe540a912922759395441ab7a199f28baf8a4"
+    },
+    "script_sha256": "dacd8feb0e5abdff41c9321402cc99c9480aba69ccd6f9509e8e1fdada90477a",
+    "validation": "The five outer host folds are those of the primary run. The baseline uses training-host outcomes only; validation outcomes never enter its rates.",
+    "comparators": [
+      {
+        "scenario": "property_only",
+        "model": "logistic"
+      },
+      {
+        "scenario": "property_only",
+        "model": "random_forest"
+      },
+      {
+        "scenario": "operating_controls",
+        "model": "logistic"
+      },
+      {
+        "scenario": "operating_controls",
+        "model": "random_forest"
+      },
+      {
+        "scenario": "extended_property_only",
+        "model": "logistic"
+      },
+      {
+        "scenario": "extended_property_only",
+        "model": "random_forest"
+      },
+      {
+        "scenario": "extended_property_only",
+        "model": "hist_gradient_boosting"
+      },
+      {
+        "scenario": "extended_property_only",
+        "model": "hist_gradient_boosting_sigmoid"
+      },
+      {
+        "scenario": "extended_operating_controls",
+        "model": "hist_gradient_boosting"
+      },
+      {
+        "scenario": "extended_operating_controls",
+        "model": "hist_gradient_boosting_sigmoid"
+      }
+    ],
+    "repeated_partitions": {
+      "repeats": 20,
+      "models": [
+        {
+          "scenario": "segment_rate",
+          "model": "segment_rate_baseline"
+        },
+        {
+          "scenario": "property_only",
+          "model": "logistic"
+        },
+        {
+          "scenario": "extended_property_only",
+          "model": "random_forest"
+        }
+      ],
+      "partition": "Analysis hosts sorted by identifier, shuffled with numpy default_rng([30005, repeat]) for repeat = 1..20, then fold = position mod 5. Before the repeats, the primary assignment was reproduced from the stored host manifest with default_rng(30005) and verified.",
+      "held_fixed": "Listing sample, reconstructed outcome, the 30-review event, model settings and features. Only the assignment of hosts to folds changes.",
+      "ranking": "Mean out-of-fold probability by segment within each repeat; no host-cluster intervals are computed inside the repeats."
+    },
+    "exploratory_status": "The baseline and repeated splits were added after the model results had been examined. They do not create an untouched final test."
+  }
+}

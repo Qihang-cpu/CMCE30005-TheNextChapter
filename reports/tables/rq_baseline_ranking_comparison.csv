@@ -1,0 +1,11 @@
+scenario,model,spearman_rank_correlation,top_3_overlap,same_first_ranked_segment,largest_absolute_rank_change,baseline_comparison_note
+property_only,logistic,0.9076923076923077,3,True,4,Paired descriptive differences on the same validation rows and folds; these are not significance tests.
+property_only,random_forest,0.9912087912087912,3,True,1,Paired descriptive differences on the same validation rows and folds; these are not significance tests.
+operating_controls,logistic,0.956043956043956,3,True,2,Paired descriptive differences on the same validation rows and folds; these are not significance tests.
+operating_controls,random_forest,0.9824175824175824,2,True,2,Paired descriptive differences on the same validation rows and folds; these are not significance tests.
+extended_property_only,logistic,0.9208791208791209,3,True,4,Paired descriptive differences on the same validation rows and folds; these are not significance tests.
+extended_property_only,random_forest,0.9780219780219781,3,True,2,Paired descriptive differences on the same validation rows and folds; these are not significance tests.
+extended_property_only,hist_gradient_boosting,0.9516483516483516,3,True,3,Paired descriptive differences on the same validation rows and folds; these are not significance tests.
+extended_property_only,hist_gradient_boosting_sigmoid,0.9516483516483516,3,True,3,Paired descriptive differences on the same validation rows and folds; these are not significance tests.
+extended_operating_controls,hist_gradient_boosting,0.9296703296703297,2,True,3,Paired descriptive differences on the same validation rows and folds; these are not significance tests.
+extended_operating_controls,hist_gradient_boosting_sigmoid,0.9296703296703297,2,True,3,Paired descriptive differences on the same validation rows and folds; these are not significance tests.

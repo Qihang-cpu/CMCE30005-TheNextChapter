@@ -8,7 +8,7 @@ Eric Huang, Loc Le, Qihang Sun and Maksym Xu
 
 Repository: [Qihang-cpu/CMCE30005-TheNextChapter](https://github.com/Qihang-cpu/CMCE30005-TheNextChapter/tree/interim-report-2026-09-13)
 
-Report body including table: 1,254 words | Updated 16 September 2026
+Report body including table: 1,378 words | Updated 16 September 2026
 
 ## Introduction
 
@@ -55,7 +55,7 @@ Descriptive tables report listing and distinct-host counts, review quantiles, ob
 
 Baseline logistic regression and random forest use LGA, dwelling–bedroom configuration, capacity, bathrooms and amenity counts. Six fixed extensions add coordinates, beds and nine facilities and also test histogram gradient boosting. All comparisons use the same 3,873 listings and five test folds that keep each host in one fold. Each fold learns missing-value treatment and encoding only from its training data. Ratings, review-derived predictors and host badges are excluded; price and minimum stay appear only in labelled operating-controls variants.
 
-Model assessment uses four measures. AUC measures ranking ability; average precision measures how accurately the model identifies listings reaching the benchmark; the Brier score measures probability error, where lower is better; and calibration checks whether predicted probabilities agree with observed rates. Brier scores are also compared with a simple training-prevalence forecast. Two boosting variants adjust probabilities using three host-separated groups within each training fold, without using held-out outcomes. R supports cleaning and descriptive analysis; Python and scikit-learn support modelling.
+Model assessment uses four measures. AUC measures ranking ability; average precision measures how accurately the model identifies listings reaching the benchmark; the Brier score measures probability error, where lower is better; and calibration checks whether predicted probabilities agree with observed rates. Every model is also compared with two references on the same folds: a training-prevalence forecast, and a segment-rate baseline that gives each validation listing its segment’s attainment rate among training hosts, shrunk towards the training rate by a prior weight of ten fixed before the run. Two boosting variants adjust probabilities using three host-separated groups within each training fold, without using held-out outcomes. R supports cleaning and descriptive analysis; Python and scikit-learn support modelling.
 
 ## Analysis Plan and Progress to Date
 
@@ -63,7 +63,9 @@ The complete raw-data workflow and independent checks now agree on review counts
 
 The enhanced forest ranks Melbourne three-bedroom apartments first: mean probability 34.4%, observed attainment 36.6%, and 306 listings. Resampling hosts gives a conditional 95% interval of 33.0–35.8%; this interval holds the fitted model and review cutoff fixed. Removing the history restriction gives 6,675 analysis listings; removing the price filter gives 5,720. Adding current price and minimum stay to enhanced boosting raises AUC to 0.749. These contemporaneous settings provide useful context but do not establish a causal effect or a pre-opening forecast. Probability adjustment does not improve every metric.
 
-All six extensions are reported. Their comparison follows baseline inspection, so model preference is exploratory and there is no untouched final test. Next steps are to repeat the host partitions, choose models within the training data, and recalculate ranking intervals while refitting the model. Findings describe existing listings’ preceding-year review activity, not future income or profitability. The README reproduces this report and links the code, validation and outputs.
+The segment-rate baseline reaches AUC 0.581 and Brier score 0.187. Both original property-only models fall below it, exceeding its AUC in one of five folds; the enhanced forest exceeds it in every fold, by 0.059 AUC overall. Every model places the same three segments first, so the models add listing-level discrimination rather than a different segment order. Across 20 repeated host partitions the enhanced forest exceeds the baseline in all 20 (AUC 0.589–0.648); Melbourne three-bedroom apartments rank first in every partition and the same top three recur in 19.
+
+All six extensions and the baseline are reported. Their comparison follows baseline inspection, so model preference is exploratory and there is no untouched final test. Next steps are to choose models within the training data and recalculate ranking intervals while refitting the model. Findings describe existing listings’ preceding-year review activity, not future income or profitability. The README reproduces this report and links the code, validation and outputs.
 
 ## References
 
@@ -78,6 +80,7 @@ Scikit-learn developers. (n.d.). *Cross-validation* and *Probability calibration
 - [Raw-data validation](reports/data-validation-2026-09-15.md) · [Machine-readable checks](reports/validation/raw-rerun-2026-09-15.json)
 - [Sample funnel](reports/tables/rq_sample_funnel.csv) · [Descriptive segments](reports/tables/segment_ladder.csv)
 - [Baseline metrics](reports/tables/rq_model_metrics.json) · [Extension comparison](reports/tables/rq_extension_metrics.csv) · [Extension rankings](reports/tables/rq_extension_ranking.csv)
+- [Segment-rate baseline comparison](reports/tables/rq_baseline_comparison.csv) · [Per-fold differences](reports/tables/rq_baseline_fold_comparison.csv) · [Repeated host partitions](reports/tables/rq_repeated_split_top3.csv)
 
 ### Reproducing the analysis
 
@@ -97,9 +100,10 @@ python scripts/rq_scope_feasibility.py
 Rscript scripts/08_peer_ranking.R
 Rscript scripts/09_probability_calibration.R
 python scripts/10_model_extensions.py
+python scripts/11_segment_rate_baseline.py --repeats 20
 ```
 
-Script 01 stages cleaned files until all input checks pass and records their hashes. The supplied `number_of_reviews_ltm` matches a 366-date inclusive window; it is preserved. The primary `reviews_365d` outcome is reconstructed over `(last_scraped − 365 days, last_scraped]`. The Python workflow independently checks all source review counts and publishes results only after every baseline model finishes. Script 08 requires matching input and configuration hashes before ranking. Script 10 holds the primary sample, outcomes and outer host folds fixed while evaluating all six extensions in separate outputs.
+Script 01 stages cleaned files until all input checks pass and records their hashes. The supplied `number_of_reviews_ltm` matches a 366-date inclusive window; it is preserved. The primary `reviews_365d` outcome is reconstructed over `(last_scraped − 365 days, last_scraped]`. The Python workflow independently checks all source review counts and publishes results only after every baseline model finishes. Script 08 requires matching input and configuration hashes before ranking. Script 10 holds the primary sample, outcomes and outer host folds fixed while evaluating all six extensions in separate outputs. Script 11 scores a segment-rate baseline on those same folds, using training-host outcomes only, places it beside every model, and then reassigns hosts to folds under 20 further seeds to check how stable the metrics and the top-ranked segments are.
 
 The main screening model provisionally uses detailed property features and random forest. The original baselines remain available for comparison. Price/revenue scripts are supporting analyses of the supplied fields; they do not establish profit. All numerical inputs come from the school data. References concern methodology, and no external market or rent observations are added.
 

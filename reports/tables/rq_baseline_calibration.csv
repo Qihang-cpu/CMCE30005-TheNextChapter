@@ -1,0 +1,6 @@
+probability_bin,n,positive_n,mean_predicted_probability,observed_review_target_share,absolute_calibration_gap,fewer_than_50_listings,fewer_than_10_positive_listings,scenario,model
+"(-0.001, 0.1]",50,10,0.08852399561136352,0.2,0.11147600438863649,False,False,segment_rate,segment_rate_baseline
+"(0.1, 0.2]",995,146,0.1458695496749474,0.14673366834170853,0.0008641186667611434,False,False,segment_rate,segment_rate_baseline
+"(0.2, 0.3]",1543,424,0.2578576120948986,0.2747893713545042,0.016931759259605605,False,False,segment_rate,segment_rate_baseline
+"(0.3, 0.4]",1220,390,0.33646411390895714,0.319672131147541,0.016791982761416135,False,False,segment_rate,segment_rate_baseline
+"(0.4, 0.5]",65,11,0.41270105372656035,0.16923076923076924,0.2434702844957911,False,False,segment_rate,segment_rate_baseline
