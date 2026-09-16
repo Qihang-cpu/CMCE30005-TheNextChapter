@@ -52,7 +52,7 @@ A segment-rate baseline answers this directly on the same 3,873 listings, 30-rev
 
 | Predictor | ROC-AUC | Average precision | Brier score | Ten-bin calibration error | Folds with AUC above the segment rate |
 |---|---:|---:|---:|---:|---:|
-| Training-fold prevalence (constant) | 0.500 | 0.253 | 0.190719 | — | — |
+| Training-fold prevalence (one constant per fold) | 0.422 | 0.222 | 0.190719 | — | — |
 | **Segment rate, training hosts only** | **0.581** | **0.285** | **0.186789** | **1.78 pp** | — |
 | Baseline property-only logistic | 0.573 | 0.285 | 0.188559 | 3.92 pp | 1 of 5 |
 | Baseline property-only random forest | 0.560 | 0.280 | 0.191370 | 5.65 pp | 1 of 5 |
@@ -85,3 +85,9 @@ The original baseline logistic ranking places Melbourne 3BR Apartment/unit first
 Adding contemporaneous price and minimum stay gives logistic AUC 0.714 and forest AUC 0.713. This is a separate operating-controls sensitivity, not evidence of prediction from verified pre-opening information. Removing the history restriction yields 6,675 listings in 22 segments, with 17.51% meeting 30; removing the price filter while retaining history yields 5,720 in 19, with 18.29% meeting 30. Both samples have P75 23; the reference event remains unchanged.
 
 The next stage must examine further calibration assessment and broader dwelling mappings, choose models within training data, and report uncertainty with models and thresholds refitted. The design follows prior snapshot exploration; it creates no untouched final test. Current outputs have been rebuilt from raw files with full-listing review reconstruction and matching input hashes. Raw validation confirms the available identifiers, but cannot recover digits already rounded before delivery.
+
+## Screening interpretation update
+
+At the fixed 30-review target, removing the history rule gives 6,675 listings and 17.51% attainment; removing the price restriction gives 5,720 listings and 18.29%. These are different eligible populations. Wider-rule ranking stability remains to be tested. The forest reduces Brier by 0.0055 (2.9%) and raises AUC by 0.059 against segment rates. The unchanged main candidate set supports using transparent segment rates to start searches and forest scores as supplementary historical evidence. Better financial or investigation outcomes have not been measured.
+
+The fold-prevalence comparator previously assigned a theoretical constant AUC to pooled predictions that vary by fold. Its AUC and average precision have now been corrected using published validation-fold counts. This correction does not change the segment baseline or forest comparison.
