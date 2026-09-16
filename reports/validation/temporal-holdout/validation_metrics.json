@@ -1,0 +1,192 @@
+{
+  "purpose": "Out-of-time persistence check of the segment shortlist rule. Not a forecast of a new operator's future profit or revenue.",
+  "windows": {
+    "earlier": "(last_scraped - 730 days, last_scraped - 365 days]",
+    "recent": "(last_scraped - 365 days, last_scraped]",
+    "basis": "per-listing last_scraped; both windows rebuilt from raw review dates"
+  },
+  "eligibility": {
+    "room_type": "Entire home/apt",
+    "bedrooms": [
+      1,
+      2,
+      3
+    ],
+    "property_map": {
+      "Entire rental unit": "Apartment/unit",
+      "Entire condo": "Apartment/unit",
+      "Entire home": "House/townhouse",
+      "Entire townhouse": "House/townhouse"
+    },
+    "price": [
+      30,
+      1500
+    ],
+    "history_rule": "first_review <= last_scraped - 730 days",
+    "zero_review_listings": "kept in both windows; this does not prove continuous operation"
+  },
+  "sample": {
+    "analysis_listings": 2657,
+    "analysis_hosts": 1208,
+    "benchmark_listings": 613,
+    "benchmark_hosts": 299,
+    "segments_retained": 10,
+    "segments_before_support": 153,
+    "zero_reviews_earlier_analysis": 254,
+    "zero_reviews_recent_analysis": 257
+  },
+  "threshold": {
+    "value": 34,
+    "benchmark_earlier_p75": 34.0,
+    "derived_from": "ceil of the linear-interpolation P75 of EARLIER-window reviews among benchmark-development listings in the retained segments; fixed for both windows and every later step",
+    "benchmark_recent_p75_for_information_only": 30.0,
+    "primary_design_threshold_not_reused": true
+  },
+  "overall_attainment": {
+    "earlier": 0.2581859239744072,
+    "recent": 0.20135491155438465,
+    "change_pp": -5.683101242002256
+  },
+  "candidate_rule": "rank retained segments by EARLIER attainment among analysis listings, ties broken by more listings; top 3 are the candidates",
+  "prediction": {
+    "primary_score": "raw segment earlier attainment rate",
+    "outcome": "recent-window reviews >= 34",
+    "raw_segment_rate": {
+      "roc_auc": 0.6183101817188862,
+      "average_precision": 0.25478085436531905,
+      "brier": 0.15944619670673152,
+      "brier_skill_score_vs_reference": 0.02800935077859612
+    },
+    "smoothed_segment_rate": {
+      "roc_auc": 0.6183101817188862,
+      "average_precision": 0.25478085436531905,
+      "brier": 0.15946605658009363,
+      "brier_skill_score_vs_reference": 0.027888284164268473,
+      "prior_weight": 10,
+      "rule": "(segment earlier positives + 10 x overall earlier rate) / (segment listings + 10); secondary only"
+    },
+    "reference_constant_prediction": {
+      "value": 0.2581859239744072,
+      "brier": 0.16404087511999535,
+      "note": "Every listing receives the overall earlier rate; no segment information."
+    },
+    "constant_at_recent_prevalence_for_information": {
+      "value": 0.20135491155438465,
+      "brier": 0.1608111111473106,
+      "note": "Uses the recent outcome itself, so it is not a fair reference; shown to size the market-wide decline."
+    }
+  },
+  "top3_vs_rest_recent_window": {
+    "earlier_top3": [
+      "Melbourne | 3BR Apartment/unit",
+      "Melbourne | 2BR Apartment/unit",
+      "Yarra Ranges | 3BR House/townhouse"
+    ],
+    "listing_weighted": {
+      "top3_recent_rate": 0.27121609798775154,
+      "rest_recent_rate": 0.14861294583883752,
+      "difference_pp": 12.260315214891401
+    },
+    "host_weighted": {
+      "top3_recent_rate": 0.24427909293864966,
+      "rest_recent_rate": 0.15709762811838934,
+      "difference_pp": 8.718146482026032,
+      "hosts_with_listings_in_both_groups": 112,
+      "note": "A host counts once per group as the mean of its listings' recent outcomes in that group; a host with listings in both groups appears in both."
+    },
+    "top3_earlier_rate_listing_weighted": 0.3359580052493438,
+    "rest_earlier_rate_listing_weighted": 0.19947159841479525
+  },
+  "bootstrap": {
+    "replicates": 2000,
+    "seed": 30005,
+    "resampling_unit": "analysis hosts with replacement; every listing of a drawn host enters with the host's multiplicity",
+    "held_fixed": "threshold (34 reviews) and retained segment set (10 segments) held fixed at their point-estimate values inside every replicate",
+    "interval_A_fixed_candidates": {
+      "lower_95_pp": 5.1416538075964295,
+      "upper_95_pp": 20.056599335714765,
+      "bootstrap_mean_pp": 12.313028185747637,
+      "point_estimate_pp": 12.260315214891401,
+      "candidates": "point-estimate earlier top-3 held fixed; only attainment rates resampled",
+      "weighting": "listing",
+      "held_fixed": "threshold (34 reviews) and retained segment set (10 segments) held fixed at their point-estimate values inside every replicate"
+    },
+    "interval_B_reselected_candidates": {
+      "lower_95_pp": 5.437045046923105,
+      "upper_95_pp": 20.191761922256372,
+      "bootstrap_mean_pp": 12.867910377342207,
+      "point_estimate_pp": 12.260315214891401,
+      "candidates": "top-3 re-selected inside each replicate from its own earlier rates (selection uncertainty included)",
+      "weighting": "listing",
+      "held_fixed": "threshold (34 reviews) and retained segment set (10 segments) held fixed at their point-estimate values inside every replicate"
+    },
+    "interval_A_fixed_candidates_host_weighted": {
+      "lower_95_pp": 4.70366851789906,
+      "upper_95_pp": 13.020126208000926,
+      "bootstrap_mean_pp": 8.748962673361483,
+      "point_estimate_pp": 8.718146482026032,
+      "weighting": "host",
+      "held_fixed": "threshold (34 reviews) and retained segment set (10 segments) held fixed at their point-estimate values inside every replicate"
+    },
+    "interval_B_reselected_candidates_host_weighted": {
+      "lower_95_pp": 4.186339658042659,
+      "upper_95_pp": 14.904746046049022,
+      "bootstrap_mean_pp": 9.69781731431311,
+      "point_estimate_pp": 8.718146482026032,
+      "weighting": "host",
+      "held_fixed": "threshold (34 reviews) and retained segment set (10 segments) held fixed at their point-estimate values inside every replicate"
+    },
+    "share_replicates_reproducing_point_estimate_top3_set": 0.515,
+    "share_replicates_reselected_top3_beats_rest_recent": 0.9995,
+    "share_replicates_fixed_top3_beats_rest_recent": 1.0,
+    "per_segment_share_in_top3_and_rank_percentiles": "see segment_cross_period.csv"
+  },
+  "primary_design_self_check": {
+    "observed": {
+      "reference": 906,
+      "analysis": 3873,
+      "hosts": 1726,
+      "segments": 14,
+      "threshold": 30,
+      "benchmark_p75": 29.75
+    },
+    "expected": {
+      "reference": 906,
+      "analysis": 3873,
+      "hosts": 1726,
+      "segments": 14,
+      "threshold": 30
+    },
+    "matches": true
+  },
+  "primary_not_in_validation": {
+    "primary_analysis_listings": 3873,
+    "not_in_validation_sample": 1216,
+    "of_which_history_365_to_730_days": 1044,
+    "of_which_segment_below_support_in_validation": 172,
+    "validation_listings_not_in_primary": 0,
+    "note": "Listings with 365-730 days of review history are in the primary sample but cannot be scored in the earlier window; the validation says nothing about them."
+  },
+  "review_stream": {
+    "rows": 1026690,
+    "rows_with_unknown_listing_id": 0,
+    "invalid_dates": 0
+  },
+  "provenance": {
+    "source_sha256": {
+      "data/raw/listings_airbnb.csv": "3862a5dc66cfc7d852ea5bddc350466803cf8a1ab7cb3bc87f68ea352a5102c7",
+      "data/raw/calendar_airbnb.csv": "0db5b4d2fb58216536c738f0f960357676415e21642fbfafa1e77ff37386f24e",
+      "data/raw/reviews_airbnb.csv": "a56c6046cdd265b83657d493bc1e9b34bd4c8c62c418d971d432b9051726a913"
+    },
+    "config": "config/review_analysis.json",
+    "seed": 30005,
+    "versions": {
+      "python": "3.12.14",
+      "numpy": "2.3.5",
+      "pandas": "2.2.3",
+      "scipy": "1.18.1",
+      "scikit_learn": "1.7.2"
+    }
+  },
+  "runtime_seconds": 4.0
+}
