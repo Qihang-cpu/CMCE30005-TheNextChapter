@@ -189,7 +189,7 @@
         "n_validation_hosts": 331,
         "roc_auc": 0.6995905192079569,
         "average_precision": 0.38272508571494074,
-        "brier_score": 0.15776189208056854,
+        "brier_score": 0.15776189208056857,
         "inner_host_folds": 0
       },
       {

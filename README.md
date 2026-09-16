@@ -8,7 +8,7 @@ Eric Huang, Loc Le, Qihang Sun and Maksym Xu
 
 Repository: [Qihang-cpu/CMCE30005-TheNextChapter](https://github.com/Qihang-cpu/CMCE30005-TheNextChapter/tree/interim-report-2026-09-13)
 
-Report body including table: 1,206 words | Updated 15 September 2026
+Report body including table: 1,254 words | Updated 16 September 2026
 
 ## Introduction
 
@@ -20,7 +20,7 @@ The school-supplied Inside Airbnb snapshot shows substantial variation in quoted
 
 Our research question is: Among established standard entire-home listings with one to three bedrooms in Greater Melbourne, which LGA, dwelling-class and bedroom-count segments with at least 50 eligible analysis listings have the highest mean out-of-sample predicted probability of meeting a common upper-quartile review-count benchmark over the 365 days ending on each listing’s scrape date?
 
-The descriptive objective is to compare review distributions, observed benchmark attainment and property attributes across eligible segments. The predictive objective is to test whether information available about a property's location, dwelling configuration, capacity, bathrooms and amenities can distinguish higher-activity listings when evaluated on hosts excluded from model training.
+In practical terms, we compare similar Melbourne property segments to identify where strong recent review activity is most common. Descriptive analysis compares review distributions, benchmark attainment and property attributes. Predictive analysis tests whether location, dwelling configuration, capacity, bathrooms and amenities distinguish higher-activity listings when the model is evaluated on different hosts from those used for training.
 
 Established means the first observed review occurred at least 365 days before that listing’s scrape date. This indicates review history, not an opening date or continuous operation. We retain entire rental units, condos, homes and townhouses with one to three bedrooms and quoted prices of AUD30–1,500. Units and condos form the apartment class; homes and townhouses form the house class. These categories identify comparable residential stock without proving lease or subletting availability. Each reported segment needs at least 50 analysis listings after all restrictions.
 
@@ -53,24 +53,23 @@ A fixed hash of host identifiers reserves approximately 20% of hosts for benchma
 
 Descriptive tables report listing and distinct-host counts, review quantiles, observed attainment and attribute profiles. Pointwise 90% intervals resample hosts to account for properties sharing an operator. Wider dwelling definitions and unrestricted review histories assess how the chosen scope affects comparisons.
 
-Baseline logistic regression and random forest use LGA, dwelling–bedroom configuration, capacity, bathrooms and amenity counts. We then compare six fixed extensions adding coordinates, beds and nine specific facilities, including pool, parking and kitchen indicators; these also test histogram gradient boosting. These comparisons retain the same 3,873 listings and five host-disjoint outer folds. Preprocessing is learned within training folds. Ratings, review-derived predictors and host badges are excluded; price and minimum stay enter labelled operating-controls variants.
+Baseline logistic regression and random forest use LGA, dwelling–bedroom configuration, capacity, bathrooms and amenity counts. Six fixed extensions add coordinates, beds and nine facilities and also test histogram gradient boosting. All comparisons use the same 3,873 listings and five test folds that keep each host in one fold. Each fold learns missing-value treatment and encoding only from its training data. Ratings, review-derived predictors and host badges are excluded; price and minimum stay appear only in labelled operating-controls variants.
 
-ROC-AUC and average precision assess discrimination; Brier score and calibration assess probability quality against a training-prevalence baseline. Two boosting variants fit sigmoid calibration using three host-disjoint folds inside each outer training set. Thus no outer validation outcome enters calibration. R supports cleaning and descriptive analysis; Python and scikit-learn support modelling.
+Model assessment uses four measures. AUC measures ranking ability; average precision measures how accurately the model identifies listings reaching the benchmark; the Brier score measures probability error, where lower is better; and calibration checks whether predicted probabilities agree with observed rates. Brier scores are also compared with a simple training-prevalence forecast. Two boosting variants adjust probabilities using three host-separated groups within each training fold, without using held-out outcomes. R supports cleaning and descriptive analysis; Python and scikit-learn support modelling.
 
 ## Analysis Plan and Progress to Date
 
 The complete raw-data workflow and independent checks now agree on review counts, samples, benchmark and baseline metrics. Baseline logistic AUC is 0.573 and forest AUC is 0.560. Detailed property features improve forest AUC to 0.640, average precision to 0.350 and Brier score to 0.181, versus baseline logistic Brier 0.189. Its ten-bin calibration error is 1.63 percentage points. Boosting achieves AUC 0.647 but Brier 0.182. We provisionally prefer the enhanced forest for probability ranking because it has the lowest Brier score among the property-only extensions; discrimination remains moderate.
 
-The enhanced forest ranks Melbourne three-bedroom apartments first: mean probability 34.4%, observed attainment 36.6%, and 306 listings. Its conditional 95% host-bootstrap interval is 33.0–35.8%; fixed scores and cutoff omit model-refitting and benchmark-estimation uncertainty. Removing the history restriction gives 6,675 analysis listings; removing the price filter gives 5,720. Adding current price and minimum stay to enhanced boosting raises AUC to 0.749. These contemporaneous settings provide useful context but do not establish a causal effect or a pre-opening forecast. Sigmoid calibration does not improve every metric.
+The enhanced forest ranks Melbourne three-bedroom apartments first: mean probability 34.4%, observed attainment 36.6%, and 306 listings. Resampling hosts gives a conditional 95% interval of 33.0–35.8%; this interval holds the fitted model and review cutoff fixed. Removing the history restriction gives 6,675 analysis listings; removing the price filter gives 5,720. Adding current price and minimum stay to enhanced boosting raises AUC to 0.749. These contemporaneous settings provide useful context but do not establish a causal effect or a pre-opening forecast. Probability adjustment does not improve every metric.
 
-All six extensions are reported. Their comparison follows baseline inspection, so model preference is exploratory and there is no untouched final test. Next steps are repeated host partitions, model selection within nested grouped validation, and ranking intervals with model refitting. Findings describe existing listings’ preceding-year review activity, not future income or profitability. The README reproduces this report and links the code, validation and outputs.
+All six extensions are reported. Their comparison follows baseline inspection, so model preference is exploratory and there is no untouched final test. Next steps are to repeat the host partitions, choose models within the training data, and recalculate ranking intervals while refitting the model. Findings describe existing listings’ preceding-year review activity, not future income or profitability. The README reproduces this report and links the code, validation and outputs.
 
 ## References
 
 Inside Airbnb. (2026). Melbourne listings, calendar and reviews [June 2026 dataset supplied through CMCE30005 LMS].
 
 Scikit-learn developers. (n.d.). *Cross-validation* and *Probability calibration*. [Grouped validation](https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data); [Calibration guidance](https://scikit-learn.org/stable/modules/calibration.html).
-
 
 ## Project files
 
@@ -82,7 +81,7 @@ Scikit-learn developers. (n.d.). *Cross-validation* and *Probability calibration
 
 ### Reproducing the analysis
 
-Place the original school-supplied `listings_airbnb.csv`, `calendar_airbnb.csv` and `reviews_airbnb.csv` in `data/raw/`. The 15 September run used these restored original files; their hashes are recorded in the validation output. Raw data and listing-level predictions are excluded from Git.
+Place the original school-supplied `listings_airbnb.csv`, `calendar_airbnb.csv` and `reviews_airbnb.csv` in `data/raw/`. The source rebuild used these restored original files on 15 September, followed by a cross-platform compatibility rerun on 16 September; their hashes are recorded in the validation output. Raw data and listing-level predictions are excluded from Git.
 
 Install the R packages listed in `scripts/00_packages.R`, then run the following from the project root:
 
@@ -114,4 +113,4 @@ Rscript tests/test_cleaning_consistency.R
 Rscript tests/test_peer_inputs.R
 ```
 
-The dated 13–14 September validation records document the earlier cached-data analysis; the 15 September raw-data record is the current verification.
+The dated 13–14 September validation records document the earlier cached-data analysis. The 15 September raw-data record, including the 16 September compatibility rerun, is the current verification.

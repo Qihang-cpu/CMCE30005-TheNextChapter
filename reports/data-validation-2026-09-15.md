@@ -2,6 +2,8 @@
 
 The complete workflow was rerun from the three school-supplied CSVs. This record supersedes the cached-data checks of 13–14 September. [The machine-readable record](validation/raw-rerun-2026-09-15.json) contains input hashes, raw integrity results and the 132 independent baseline checks, all of which passed.
 
+On 16 September, repository-relative paths were normalised to forward-slash keys and Git line endings were fixed at LF for cross-platform reproducibility. The baseline and extension workflows were rerun after those changes. Samples, thresholds and reported metrics remained unchanged; all 132 baseline checks, 51 extension checks and 31 regression checks passed again.
+
 ## Source integrity and review window
 
 | Check | Result |

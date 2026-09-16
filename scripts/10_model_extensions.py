@@ -97,7 +97,7 @@ def load_frozen_sample():
                     PRIVATE / "rq_host_fold_manifest.csv", PUBLIC / "rq_model_metrics.json",
                     PUBLIC / "rq_oof_segment_ranking.csv", PUBLIC / "rq_calibration.csv"]
     frozen_paths.extend(sorted(PRIVATE.glob("rq_oof_*.csv")))
-    expected_hashes.update({str(path.relative_to(ROOT)): baseline.file_sha256(path)
+    expected_hashes.update({path.relative_to(ROOT).as_posix(): baseline.file_sha256(path)
                             for path in frozen_paths})
     sample = pd.read_csv(PRIVATE / "rq_analysis_main_manifest.csv", dtype={"id": "string", "host_id": "string"})
     reference = pd.read_csv(PRIVATE / "rq_benchmark_reference.csv", dtype={"id": "string", "host_id": "string"})

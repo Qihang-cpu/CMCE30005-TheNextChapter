@@ -28,7 +28,7 @@ Markdown makes it easy to format text. You can write in **bold**, *italic*, or ~
 
 ## Lists
 
-Unordered lists use dashes (`-`), asterisks (`*`), or plus signs (`+`): 
+Unordered lists use dashes (`-`), asterisks (`*`), or plus signs (`+`):
 
 - Import files from GitHub, Dropbox, or Google Drive
 * Export to Markdown, HTML, or PDF
@@ -66,7 +66,7 @@ Images use a similar syntax but start with an exclamation mark(`!`):
 
 ![Placeholder](https://placehold.co/600x200/2B2F36/35D7BB?text=Your+Image+Here)
 
-```markdown 
+```markdown
 use a relative path for locally hosted images or inside a github repository
 ![Alt Text](photo.jpg)
 ![Alt Text](images/photo.jpg)
@@ -74,9 +74,9 @@ use a relative path for locally hosted images or inside a github repository
 
 ## Blockquotes
 
-> Use `>` symbol in the bigining of a line for blockquotes  
-> The art of writing is the art of discovering what you believe.  
-> 
+> Use `>` symbol in the bigining of a line for blockquotes
+> The art of writing is the art of discovering what you believe.
+>
 
 [dillinger]: https://dillinger.io
 
@@ -89,5 +89,5 @@ use a relative path for locally hosted images or inside a github repository
 
 You can also use Quarto or R Markdown to create well-formatted, reproducible workflows for your analytics projects. Official tutorials are available at the links below.
 
-1 - [Quarto](https://quarto.org/docs/computations/r.html)  
-2 - [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html)  
+1 - [Quarto](https://quarto.org/docs/computations/r.html)
+2 - [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html)

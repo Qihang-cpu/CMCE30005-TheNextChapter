@@ -1,5 +1,6 @@
 {
   "validated_on": "2026-09-15",
+  "cross_platform_update_on": "2026-09-16",
   "passed": true,
   "source": "School-supplied Inside Airbnb Melbourne CSVs",
   "raw_files": {
@@ -653,7 +654,8 @@
   "script_hashes": {
     "scripts/01_data_cleaning.R": "698cea98f92deb33034ac13d9c65e416949c5b0c146aef02f6c2ca9d81a5012b",
     "scripts/08_peer_ranking.R": "01be0fdd5f5ab2be3248da713ecdbd5c86666341d2a75395b079b1c6a8cece27",
-    "scripts/rq_scope_feasibility.py": "6c913cc27a4c1d22bf1ab58fc6fd229de985c3253059951c83602e8fce778e61"
+    "scripts/rq_scope_feasibility.py": "3fb32c7e7c3a2b1f600ec824ce2622ca44357049cd2d0618d9f05a3dceb5792a",
+    "scripts/10_model_extensions.py": "24a948a8868d2fd4d6e09e3bdfffd57ea8118487553b94e7d548f17b89addac2"
   },
   "config_sha256": "1b32d38a989a9888560d04269f054275d7a953b6b33850858ddab41ed784ffde",
   "limitations": [

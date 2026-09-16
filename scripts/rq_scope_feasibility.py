@@ -101,7 +101,7 @@ def read_source():
     if missing:
         raise FileNotFoundError("Restore the school-supplied CSV files in data/raw: " + ", ".join(missing))
     raw_path = raw_paths[0]
-    source_hashes = {str(path.relative_to(ROOT)): file_sha256(path) for path in raw_paths}
+    source_hashes = {path.relative_to(ROOT).as_posix(): file_sha256(path) for path in raw_paths}
     frame = pd.read_csv(raw_path, dtype={"id": "string", "host_id": "string"}, low_memory=False)
     frame["price_num"] = pd.to_numeric(
         frame["price"].astype("string").str.replace(r"[$,]", "", regex=True), errors="coerce"

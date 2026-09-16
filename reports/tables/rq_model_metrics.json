@@ -96,10 +96,10 @@
     }
   },
   {
-    "mean_predicted_probability": 0.2479210858140066,
+    "mean_predicted_probability": 0.24792108581400663,
     "observed_target_share": 0.2532920216886135,
-    "mean_prediction_minus_observed": -0.00537093587460688,
-    "expected_calibration_error_10_equal_width_bins": 0.056471768813734384,
+    "mean_prediction_minus_observed": -0.0053709358746068525,
+    "expected_calibration_error_10_equal_width_bins": 0.05647176881373438,
     "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
     "high_score_at_least_0_5": {
       "n": 38,
@@ -109,7 +109,7 @@
     "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
     "roc_auc": 0.5596291502587898,
     "average_precision": 0.280042291457719,
-    "brier_score": 0.19137022006221774,
+    "brier_score": 0.1913702200622177,
     "log_loss": 0.5713636183205778,
     "precision_top_quarter": 0.2717578259373925,
     "confusion_matrix_at_0_5": [
@@ -293,12 +293,12 @@
     "mean_predicted_probability": 0.2513058791804073,
     "observed_target_share": 0.2532920216886135,
     "mean_prediction_minus_observed": -0.001986142508206168,
-    "expected_calibration_error_10_equal_width_bins": 0.041290952842035156,
+    "expected_calibration_error_10_equal_width_bins": 0.04129095284203515,
     "calibration_status": "Uncalibrated model scores; bin summaries are exploratory and no post-hoc probability calibration has been fitted.",
     "high_score_at_least_0_5": {
       "n": 174,
       "observed_target_share": 0.43103448275862066,
-      "mean_predicted_probability": 0.5590673165106681
+      "mean_predicted_probability": 0.559067316510668
     },
     "calibration_limitations": "High-score bins may be sparse; ECE and bin means are sample-dependent summaries, not evidence of reliable probabilities throughout the score range.",
     "roc_auc": 0.7125963852618846,
@@ -498,7 +498,7 @@
     "roc_auc": 0.5794357007535444,
     "average_precision": 0.20566174610761467,
     "brier_score": 0.14456368280414314,
-    "log_loss": 0.46077411207466035,
+    "log_loss": 0.4607741120746604,
     "precision_top_quarter": 0.1983223487118035,
     "confusion_matrix_at_0_5": [
       [
