@@ -6,7 +6,7 @@ CMCE30005 Business Analytics Challenge | Semester 2 2026 | TheNextChapter Group 
 
 Eric Huang, Loc Le, Qihang Sun and Maksym Xu
 
-Repository: https://github.com/Qihang-cpu/CMCE30005-TheNextChapter/tree/interim-report-2026-09-13
+Repository: https://github.com/Qihang-cpu/CMCE30005-TheNextChapter
 
 ## Introduction
 
@@ -20,7 +20,7 @@ Our final output will be a shortlist of property segments for further investigat
 
 Our research question is: Which LGA, dwelling-type and bedroom-count segments have the highest average predicted probability of reaching a common upper-quartile review benchmark among eligible Melbourne listings? Predictions are tested on hosts excluded from model training. The outcome covers the year before each listing's scrape date.
 
-We study standard entire homes with one to three bedrooms. Each segment needs at least 50 eligible analysis listings. We define established listings by a first review at least 365 days before the scrape date. This condition provides review history but cannot confirm continuous operation. Rental units and condos form the apartment group. Homes and townhouses form the house group. We retain quoted prices of AUD30–1,500. These rules define our comparison sample; they do not confirm lease availability.
+We study standard entire homes with one to three bedrooms. Rental units and condos form the apartment group; homes and townhouses form the house group. These broad residential groups match the client's search and reduce fragmented categories, although properties still differ within them. At least 50 eligible listings provides minimum comparison support. This is an analytical choice, so we also report independent host counts. A first review at least 365 days earlier limits short review histories without proving continuous operation. Quoted prices of AUD30–1,500 define an exploratory sample boundary. Sensitivity checks assess these restrictions; none establishes lease availability.
 
 The target records whether a listing reaches a common review-count threshold over the previous 365 days. Dated reviews give us an observable measure of guest-review activity across the supplied listings. This supports an initial comparison of areas and property types. The upper quartile defines relatively high activity within our reference sample. Short stays can generate more reviews than long stays with similar guest nights. Review willingness also varies. These differences limit comparisons and prevent estimates of bookings, occupancy or profit.
 
@@ -30,17 +30,17 @@ We will deliver a segment comparison table, a model-versus-baseline assessment a
 
 The school dataset contains 25,728 listings with 90 variables, 9,390,720 calendar records and 1,026,690 reviews (Inside Airbnb, 2026). Scrape dates range from 17 June to 1 July 2026. We use LGA, property type, bedrooms, guest capacity, bathrooms, amenities and review dates. Calendar unavailability can include dates blocked by hosts. The calendar also contains no prices, so it cannot establish realised seasonal cash flow.
 
-Cleaning converts price text into numbers, standardises missing values and extracts bathroom and amenity information. Price is missing for 6,553 listings and bedrooms for 4,679. We rebuild annual review counts from review dates. The supplied recent-review field covers 366 calendar dates. Using a strict 365-day window changes one analysis target. GitHub contains the detailed checks and sample-filtering table.
+Cleaning converts price text into numbers, standardises missing values and extracts bathroom and amenity information. Price is missing for 6,553 listings and bedrooms for 4,679. We rebuild review counts over the preceding 365 days. GitHub records date-window checks and the sample-filtering table.
 
 The separate reference sample contains 906 listings. Its 75th percentile is 29.75 reviews, giving an integer threshold of 30. The analysis sample contains 3,873 listings from 1,726 hosts in 14 segments. We keep 334 listings with zero annual reviews to include low-activity outcomes. Overall, 981 listings reach the threshold (25.33%).
 
-Segment attainment ranges from 8.25% to 36.60%. This variation supports comparing property segments. However, our supported sample covers only six LGAs. About 64% of listings are in Melbourne LGA. Missing prices and the history rule affect which listings enter the sample. Exited listings are absent. These limits reduce the relevance of results to other areas and new operators.
+Segment attainment ranges from 8.25% to 36.60%, supporting segment comparison. The sample covers six LGAs, with about 64% in Melbourne LGA. Holding the 30-review target fixed, removing the history rule gives 6,675 listings and 17.51% attainment. Removing the price restriction gives 5,720 listings and 18.29%. Both differ substantially from the primary 25.33%. Eligibility changes the population and its measured performance. These checks support limiting the shortlist to the stated sample; they have not established ranking stability under wider rules. Exited listings are absent.
 
 ## Methodology and Analytical Approach
 
 A fixed rule based on host identifiers reserves about 20% of hosts to set the benchmark. These reference hosts are kept separate from model training and evaluation. The threshold stays fixed across comparisons. We use five-fold validation and keep each host's properties in one fold. This prevents the same host appearing in training and validation (scikit-learn developers, n.d.). Each training fold learns its own missing-value treatment and category encoding.
 
-Logistic regression provides a simple reference model. Random forest and histogram gradient boosting can capture nonlinear relationships. Basic features include location, configuration, capacity, bathrooms and amenity counts. Six model extensions add coordinates, beds and nine facilities. We exclude review-based predictors, ratings and host badges. Current price and minimum stay enter separate operating-condition models. Their timing limits interpretation as pre-opening information.
+Logistic regression provides a simple reference model. Forest and boosting models capture nonlinear relationships. Basic features include location, configuration, capacity, bathrooms and amenity counts. Six extensions add coordinates, beds and nine facilities. We exclude review-based predictors, ratings and host badges. Separate operating-condition models include current price and minimum stay, whose timing limits pre-opening interpretation.
 
 We compare models with a simple segment-rate baseline. It uses each segment's attainment among training hosts, with a fixed smoothing weight of ten. AUC measures ranking ability. Average precision summarises identification of listings reaching the target. Brier score measures probability error; lower values are better. Calibration checks predicted probabilities against observed rates. R supports cleaning and tables. Python pipelines keep validation steps consistent across models.
 
@@ -48,7 +48,7 @@ We refit models under 20 further host splits to check split sensitivity. These r
 
 ## Analysis Plan and Progress to Date
 
-The original ROI and quarterly prediction design exceeded the available data. We revised the scope to historical review activity using the single school snapshot. Weak basic-model results prompted comparison with training-host segment rates. Cleaning, review reconstruction, descriptive analysis and grouped validation are complete. Table 1 compares predictions on the same sample and folds.
+We replaced the original ROI and quarterly design with historical review analysis from the school snapshot. Weak basic-model results prompted the segment baseline. Cleaning, review reconstruction, descriptive analysis and grouped validation are complete. Table 1 uses the same sample and folds.
 
 Table 1. Predictive performance
 
@@ -58,7 +58,7 @@ Table 1. Predictive performance
 | Original property-only logistic | 0.573 | 0.285 | 0.1886 |
 | Enhanced property-only forest | 0.640 | 0.350 | 0.1813 |
 
-The original logistic and forest models perform worse than segment rates on main-split AUC and Brier. The enhanced forest improves both measures in all five folds. We provisionally use it for probability scoring because it has the lowest Brier among property-only extensions. Boosting has a slightly higher AUC of 0.647. Across 20 further splits, forest AUC averages 0.626 and ranges from 0.589 to 0.648. It exceeds the segment baseline each time. Its overall predictive ability remains moderate.
+Basic logistic and forest models underperform segment rates. The enhanced forest raises AUC by 0.059 and reduces Brier by 0.0055, a 2.9% reduction in probability error. Both improve in all five folds. We provisionally select it for the lowest property-only Brier; boosting has higher AUC at 0.647. Across 20 further host splits, forest AUC averages 0.626 (range 0.589–0.648), exceeding the segment baseline each time. The consistent, moderate gain supports further validation.
 
 Table 2 answers the RQ using the enhanced forest's mean predictions. Each prediction comes from a model trained without that listing's host. All property-only models identify the same main top-three set as the segment baseline.
 
@@ -70,17 +70,21 @@ Table 2. Initial search candidates
 | Melbourne two-bedroom apartments | 1,235 / 482 | 32.79% | 31.41% |
 | Yarra Ranges three-bedroom houses/townhouses | 90 / 77 | 30.00% | 27.82% |
 
-Melbourne three-bedroom apartments rank first in all 20 further forest splits. The top-three set appears in 19. Yarra Ranges has fewer listings and hosts, giving a smaller evidence base. The forest improves overall prediction while keeping the principal candidates unchanged. Improvement within segments remains untested. These scores describe historical review attainment among existing listings; they are not new-operator success probabilities.
+Melbourne three-bedroom apartments rank first in all 20 further forest splits. The top-three set appears in 19. Yarra Ranges has a smaller evidence base. Split checks support the initial candidates, while wider-rule ranking sensitivity remains pending. Scores describe historical attainment among existing listings. Improvement within individual segments and future new-operator outcomes remain untested.
 
-The client can start property searches in these three segments and request lease quotations. Before signing, they must check permission, availability and actual costs. Our results cannot estimate address-level profit or ROI.
+Segment rates provide a transparent starting shortlist. The forest adds property-level scores based on recorded attributes and improves overall prediction, with no change to the main candidates. We have not measured better investigation decisions or financial returns. The client can prioritise searches and lease enquiries in these segments, then check permissions, availability and actual costs before signing.
 
-For the final report, model selection will use inner training folds. Outer folds will evaluate the full selection process. We will refit models when estimating ranking uncertainty and test wider dwelling definitions and minimum sample sizes. Success requires lower Brier than segment rates, no deterioration in calibration, and recurring candidates across splits and scope checks. We will report paired Brier differences, calibration-bin rates and top-three recurrence. If gains disappear, segment rates become the main screening evidence. Unstable rankings will lead to several candidates with explicit uncertainty. The README and outputs will record these decisions.
+Next, inner training folds will select models and outer folds will evaluate that process. Refitted uncertainty estimates and wider dwelling/support rules will test the shortlist. We will report paired Brier differences, calibration-bin rates and candidate recurrence. Confirmed gains require lower Brier without worse calibration. Stable candidates across scope checks support stronger search priorities. If gains disappear, segment rates lead the screening. Unstable rankings produce a broader candidate list. These tasks remain planned; repeated splits have already tested one source of uncertainty.
 
 ## References
+
+AI assistance is acknowledged in the accompanying AI Use Declaration, also available in the repository.
 
 Inside Airbnb. (2026). Melbourne listings, calendar and reviews [June 2026 dataset supplied through CMCE30005 LMS].
 
 Scikit-learn developers. (n.d.). Cross-validation and probability calibration. https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data ; https://scikit-learn.org/stable/modules/calibration.html
+
+[AI Use Declaration](reports/ai-use-declaration.md) accompanies the report.
 
 ## Project files
 

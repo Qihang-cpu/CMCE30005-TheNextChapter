@@ -279,14 +279,18 @@ def main():
 
         # 2. Side-by-side table, paired per-fold differences and ranking agreement.
         comparison = [compact(metrics, "segment_rate", "segment_rate_baseline", "training-fold segment attainment rates")]
-        comparison.append({
-            "scenario": "constant", "model": "training_prevalence_baseline", "predictor_source": "training-fold prevalence, one value per fold",
-            "roc_auc": 0.5, "average_precision": float(y.mean()),
-            "brier_score": stored[("property_only", "logistic")]["training_fold_prevalence_baseline"]["brier_score"],
-            "log_loss": stored[("property_only", "logistic")]["training_fold_prevalence_baseline"]["log_loss"],
-            "expected_calibration_error_10_equal_width_bins": None, "precision_top_quarter": float(y.mean()),
-            "mean_predicted_probability": None, "observed_target_share": float(y.mean()),
-        })
+        # Fold-specific constants differ across pooled validation rows; score them
+        # rather than assigning the theoretical AUC of a single uniform constant.
+        # AI-assisted correction: OpenAI (2026), ChatGPT/Codex project output,
+        # 16 September; acknowledged in reports/ai-use-declaration.md.
+        prevalence_probability = np.zeros(len(y), dtype=float)
+        for fold in sorted(folds.unique()):
+            validation = folds.to_numpy() == fold
+            prevalence_probability[validation] = float(y[~validation].mean())
+        comparison.append(compact(
+            baseline.score_predictions(y, prevalence_probability), "constant",
+            "training_prevalence_baseline", "training-fold prevalence, one value per fold",
+        ))
         baseline_by_fold = fold_metrics(y, probability, folds)
         fold_rows, agreement_rows = [], []
         all_rankings = pd.concat([pd.read_csv(PUBLIC / "rq_oof_segment_ranking.csv"), pd.read_csv(PUBLIC / "rq_extension_ranking.csv")], ignore_index=True)
