@@ -22,9 +22,9 @@ Our research question is: Which LGA, dwelling-type and bedroom-count segments ha
 
 We study standard entire homes with one to three bedrooms. Each segment needs at least 50 eligible analysis listings. We define established listings by a first review at least 365 days before the scrape date. This condition provides review history but cannot confirm continuous operation. Rental units and condos form the apartment group. Homes and townhouses form the house group. We retain quoted prices of AUD30–1,500. These rules define our comparison sample; they do not confirm lease availability.
 
-The target records whether a listing reaches a common review-count threshold over the previous 365 days. The upper-quartile rule is our analytical benchmark. Reviews provide a limited signal of guest activity. Review willingness and stay length can affect the count. We therefore cannot use it to measure bookings, occupancy or profit.
+The target records whether a listing reaches a common review-count threshold over the previous 365 days. Dated reviews give us an observable measure of guest-review activity across the supplied listings. This supports an initial comparison of areas and property types. The upper quartile defines relatively high activity within our reference sample. Short stays can generate more reviews than long stays with similar guest nights. Review willingness also varies. These differences limit comparisons and prevent estimates of bookings, occupancy or profit.
 
-We aim to compare segment performance, test the value of property features, and identify consistent search candidates. The results support further investigation before any lease commitment.
+We will deliver a segment comparison table, a model-versus-baseline assessment and a shortlist with evidence strength and uncertainty. These outputs guide property searches before lease commitment.
 
 ## Data Description
 
@@ -44,11 +44,13 @@ Logistic regression provides a simple reference model. Random forest and histogr
 
 We compare models with a simple segment-rate baseline. It uses each segment's attainment among training hosts, with a fixed smoothing weight of ten. AUC measures ranking ability. Average precision summarises identification of listings reaching the target. Brier score measures probability error; lower values are better. Calibration checks predicted probabilities against observed rates. R supports cleaning and tables. Python pipelines keep validation steps consistent across models.
 
-We refit models under 20 further host splits to check sensitivity to the split. These runs reuse the same data. Current intervals hold predictions fixed and omit model-selection and benchmark uncertainty. Model choice remains exploratory.
+We refit models under 20 further host splits to check split sensitivity. These runs reuse the same data. We assume current property details are relevant to preceding-year activity, although they may have changed during that year. Property-only models therefore remain historical comparisons. Current intervals hold predictions fixed and omit model-selection and benchmark uncertainty. Model choice remains exploratory, with no untouched final test.
 
 ## Analysis Plan and Progress to Date
 
-We have completed cleaning, review reconstruction, descriptive comparisons, grouped prediction and repeated-split checks. The table compares models on the same main sample and folds.
+The original ROI and quarterly prediction design exceeded the available data. We revised the scope to historical review activity using the single school snapshot. Weak basic-model results prompted comparison with training-host segment rates. Cleaning, review reconstruction, descriptive analysis and grouped validation are complete. Table 1 compares predictions on the same sample and folds.
+
+Table 1. Predictive performance
 
 | Predictor | AUC | Average precision | Brier score |
 | --- | --- | --- | --- |
@@ -58,11 +60,21 @@ We have completed cleaning, review reconstruction, descriptive comparisons, grou
 
 The original logistic and forest models perform worse than segment rates on main-split AUC and Brier. The enhanced forest improves both measures in all five folds. We provisionally use it for probability scoring because it has the lowest Brier among property-only extensions. Boosting has a slightly higher AUC of 0.647. Across 20 further splits, forest AUC averages 0.626 and ranges from 0.589 to 0.648. It exceeds the segment baseline each time. Its overall predictive ability remains moderate.
 
-All property-only models identify the same main top three: Melbourne three-bedroom apartments, Melbourne two-bedroom apartments and Yarra Ranges three-bedroom houses/townhouses. Their observed attainment is 36.6%, 32.8% and 30.0%, respectively. Under the enhanced forest, Melbourne three-bedroom apartments rank first in all 20 further splits. The same top-three set appears in 19 splits. Yarra Ranges has only 90 listings in this segment, so its evidence is thinner. The model improves overall prediction while keeping the principal search candidates unchanged. We have not separately tested prediction within segments.
+Table 2 answers the RQ using the enhanced forest's mean predictions. Each prediction comes from a model trained without that listing's host. All property-only models identify the same main top-three set as the segment baseline.
+
+Table 2. Initial search candidates
+
+| Segment | Listings / hosts | Observed attainment | Mean predicted probability |
+| --- | --- | --- | --- |
+| Melbourne three-bedroom apartments | 306 / 139 | 36.60% | 34.45% |
+| Melbourne two-bedroom apartments | 1,235 / 482 | 32.79% | 31.41% |
+| Yarra Ranges three-bedroom houses/townhouses | 90 / 77 | 30.00% | 27.82% |
+
+Melbourne three-bedroom apartments rank first in all 20 further forest splits. The top-three set appears in 19. Yarra Ranges has fewer listings and hosts, giving a smaller evidence base. The forest improves overall prediction while keeping the principal candidates unchanged. Improvement within segments remains untested. These scores describe historical review attainment among existing listings; they are not new-operator success probabilities.
 
 The client can start property searches in these three segments and request lease quotations. Before signing, they must check permission, availability and actual costs. Our results cannot estimate address-level profit or ROI.
 
-For the final report, we will select models within training data and recalculate ranking intervals while refitting models. We will also test wider dwelling definitions and different minimum sample sizes. We will assess success through lower probability error, calibration and candidate stability. If model gains disappear, we will use segment rates as the main screening evidence. If rankings change substantially, we will present several candidates and explain the uncertainty. The README and outputs will record these decisions.
+For the final report, model selection will use inner training folds. Outer folds will evaluate the full selection process. We will refit models when estimating ranking uncertainty and test wider dwelling definitions and minimum sample sizes. Success requires lower Brier than segment rates, no deterioration in calibration, and recurring candidates across splits and scope checks. We will report paired Brier differences, calibration-bin rates and top-three recurrence. If gains disappear, segment rates become the main screening evidence. Unstable rankings will lead to several candidates with explicit uncertainty. The README and outputs will record these decisions.
 
 ## References
 

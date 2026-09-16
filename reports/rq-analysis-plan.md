@@ -6,7 +6,7 @@ The date rules below were implemented and rerun from the three school-supplied r
 
 Among established standard entire-home listings with one to three bedrooms in Greater Melbourne, which LGA × dwelling-class × bedroom-count segments with at least 50 eligible analysis listings have the highest mean out-of-sample predicted probability of meeting a common upper-quartile review-count benchmark over the 365 days ending on each listing's scrape date?
 
-The intended use is to screen comparable property segments for a prospective multi-property operator. The outcome concerns the 365-day period ending on each listing's scrape date. Validation on hosts excluded from model training does not establish a new operator's future performance, lease availability or profit.
+The client is a legally authorised rental-arbitrage operator with limited start-up funds. The intended use is to prioritise property searches, lease quotations and due diligence in comparable segments. The outcome concerns the 365-day period ending on each listing's scrape date. Validation on hosts excluded from model training does not establish a new operator's future performance, lease availability or profit.
 
 ## Eligibility and reference date
 
@@ -65,7 +65,7 @@ The extended property-only random forest is provisionally selected for probabili
 - Remove the first-review restriction, exclude the same benchmark hosts and reapply minimum support.
 - Remove the price filter while retaining the history condition, exclude the same benchmark hosts and reapply minimum support.
 
-Both scope sensitivities use the primary reference's 30-review cutoff. Removing the history restriction yields 6,675 analysis listings in 22 segments, with 1,169 meeting the event. Removing the price filter yields 5,720 in 19 segments, with 1,046 meeting it. The different samples have different prevalences; their metrics are not a like-for-like competition between scope definitions. Wider dwelling summaries assess composition under the whitelist. Repeated host splits, further calibration assessment, nested model selection and ranking intervals with refitted models and reference thresholds remain future work.
+Both scope sensitivities use the primary reference's 30-review cutoff. Removing the history restriction yields 6,675 analysis listings in 22 segments, with 1,169 meeting the event. Removing the price filter yields 5,720 in 19 segments, with 1,046 meeting it. The different samples have different prevalences; their metrics are not a like-for-like competition between scope definitions. Wider dwelling summaries assess composition under the whitelist. Twenty further host splits are complete; the enhanced forest exceeds the segment-rate baseline on AUC in all twenty. Further calibration assessment, nested model selection, rule sensitivity and ranking intervals with refitted models and reference thresholds remain future work. These checks will determine whether models remain useful screening supplements and whether the candidate set is stable. Current attributes may have changed during the outcome year, so their historical relevance remains an assumption.
 
 ## Reproducibility and methodological sources
 
