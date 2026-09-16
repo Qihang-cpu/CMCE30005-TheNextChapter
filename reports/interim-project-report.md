@@ -78,8 +78,14 @@ Next, inner training folds will select models and outer folds will evaluate that
 
 ## References
 
-AI assistance is acknowledged in the accompanying AI Use Declaration, also available in the repository.
-
 Inside Airbnb. (2026). Melbourne listings, calendar and reviews [June 2026 dataset supplied through CMCE30005 LMS].
 
 Scikit-learn developers. (n.d.). Cross-validation and probability calibration. https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data ; https://scikit-learn.org/stable/modules/calibration.html
+
+OpenAI. (2026). ChatGPT/Codex assistance with project planning, report drafting and code review [Generative AI outputs, September 2026].
+
+Anthropic. (2026). Claude Code assistance with analysis-code development [Generative AI outputs, September 2026].
+
+## AI Use Acknowledgement
+
+We used OpenAI ChatGPT/Codex and Anthropic Claude Code to support project planning, analysis-code development, interpretation of results, report drafting and English editing. This included refining the research question and reviewing the validation approach. AI-assisted text and code are included in the project. The group is responsible for the accuracy and content of the final submission.

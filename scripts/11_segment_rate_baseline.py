@@ -282,7 +282,8 @@ def main():
         # Fold-specific constants differ across pooled validation rows; score them
         # rather than assigning the theoretical AUC of a single uniform constant.
         # AI-assisted correction: OpenAI (2026), ChatGPT/Codex project output,
-        # 16 September; acknowledged in reports/ai-use-declaration.md.
+        # 16 September; see AI Use Acknowledgement and references in
+        # reports/interim-project-report.md.
         prevalence_probability = np.zeros(len(y), dtype=float)
         for fold in sorted(folds.unique()):
             validation = folds.to_numpy() == fold
