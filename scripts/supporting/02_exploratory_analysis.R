@@ -1,6 +1,7 @@
 # ============================================================
 # CMCE30005 Business Analytics Challenge
-# Script: 02_exploratory_analysis.R
+# Script: scripts/supporting/02_exploratory_analysis.R
+# Supporting analysis of Inside Airbnb's modelled price/revenue fields; not used in the interim report.
 # Purpose: Describe supply, price, demand seasonality and the revenue
 #          segments of the Melbourne Airbnb market
 # Author: TheNextChapter (Group 2)
@@ -8,15 +9,15 @@
 # ============================================================
 #
 # Input : data/processed/*.rds (from 01_data_cleaning.R)
-# Output: reports/figures/*.png, reports/tables/*.csv
+# Output: reports/supporting/figures/*.png, reports/supporting/tables/*.csv
 # ============================================================
 
 library(data.table)
 library(ggplot2)
 library(scales)
 
-dir.create("reports/figures", showWarnings = FALSE, recursive = TRUE)
-dir.create("reports/tables", showWarnings = FALSE, recursive = TRUE)
+dir.create("reports/supporting/figures", showWarnings = FALSE, recursive = TRUE)
+dir.create("reports/supporting/tables", showWarnings = FALSE, recursive = TRUE)
 
 listings <- readRDS("data/processed/listings_clean.rds")
 calendar_monthly <- readRDS("data/processed/calendar_monthly.rds")
@@ -34,7 +35,7 @@ p <- ggplot(priced, aes(price_num)) +
   labs(title = "Nightly price distribution (log scale)",
        subtitle = sprintf("n = %s priced listings, $30-$1,500", comma(nrow(priced))),
        x = "Price per night (AUD)", y = "Listings")
-ggsave("reports/figures/01_price_distribution.png", p, width = 8, height = 5, dpi = 150)
+ggsave("reports/supporting/figures/01_price_distribution.png", p, width = 8, height = 5, dpi = 150)
 
 # ---- 2. Price and supply by local government area ---------------------------
 
@@ -43,7 +44,7 @@ area_stats <- priced[, .(n = .N,
                          median_occ = median(estimated_occupancy_l365d, na.rm = TRUE),
                          median_rev = median(estimated_revenue_l365d, na.rm = TRUE)),
                      by = neighbourhood_cleansed][order(-n)]
-fwrite(area_stats, "reports/tables/area_summary.csv")
+fwrite(area_stats, "reports/supporting/tables/area_summary.csv")
 
 top_areas <- area_stats[1:15]
 top_areas[, neighbourhood_cleansed := factor(neighbourhood_cleansed,
@@ -55,7 +56,7 @@ p <- ggplot(top_areas, aes(median_price, neighbourhood_cleansed)) +
   labs(title = "Median nightly price by local government area",
        subtitle = "Top 15 LGAs by listing count",
        x = "Median price (AUD)", y = NULL)
-ggsave("reports/figures/02_price_by_area.png", p, width = 8, height = 6, dpi = 150)
+ggsave("reports/supporting/figures/02_price_by_area.png", p, width = 8, height = 6, dpi = 150)
 
 # ---- 3. Price by capacity and room type -------------------------------------
 
@@ -66,7 +67,7 @@ p <- ggplot(priced[accommodates %between% c(1, 8)],
   labs(title = "Price by capacity and room type",
        x = "Accommodates (guests)", y = "Price per night (log scale)", fill = NULL) +
   theme(legend.position = "bottom")
-ggsave("reports/figures/03_price_capacity_roomtype.png", p, width = 9, height = 6, dpi = 150)
+ggsave("reports/supporting/figures/03_price_capacity_roomtype.png", p, width = 9, height = 6, dpi = 150)
 
 # ---- 4. Demand seasonality ---------------------------------------------------
 
@@ -90,14 +91,14 @@ p <- ggplot(rm3, aes(date, N)) +
                      "to", format(window_end, "%b %Y")),
        x = NULL, y = "Reviews posted") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-ggsave("reports/figures/04_demand_seasonality.png", p, width = 9, height = 5, dpi = 150)
+ggsave("reports/supporting/figures/04_demand_seasonality.png", p, width = 9, height = 5, dpi = 150)
 
 # Descriptive index of review volume; changes in listing coverage may also affect it.
 rm3[, m := substr(month, 6, 7)]
 rm3[, yr := substr(month, 1, 4)]
 seas <- rm3[, .(n = sum(N)), by = .(m, yr)][, .(idx = mean(n)), by = m][order(m)]
 seas[, idx := idx / mean(idx)]
-fwrite(seas, "reports/tables/seasonality_index.csv")
+fwrite(seas, "reports/supporting/tables/seasonality_index.csv")
 
 # ---- 5. Price against occupancy ---------------------------------------------
 
@@ -112,7 +113,7 @@ p <- ggplot(rev_data, aes(price_num, estimated_occupancy_l365d / 365)) +
        subtitle = paste("Each point is a listing. Occupancy is an Inside Airbnb construct",
                         "derived from review counts - see reports/data-notes.md"),
        x = "Price per night (log scale)", y = "Estimated occupancy")
-ggsave("reports/figures/05_price_vs_occupancy.png", p, width = 8, height = 6, dpi = 150)
+ggsave("reports/supporting/figures/05_price_vs_occupancy.png", p, width = 8, height = 6, dpi = 150)
 
 # ---- 6. Revenue by segment ---------------------------------------------------
 
@@ -127,7 +128,7 @@ seg <- priced[room_type %in% c("Entire home/apt", "Private room") &
                      size = fifelse(accommodates <= 2, "1-2 guests",
                             fifelse(accommodates <= 4, "3-4 guests", "5+ guests")))]
 seg <- seg[n >= 30][order(-median_revenue)]
-fwrite(seg, "reports/tables/segment_revenue.csv")
+fwrite(seg, "reports/supporting/tables/segment_revenue.csv")
 
 cat("Top revenue segments (n >= 30 listings):\n")
 print(head(seg, 12))
@@ -160,6 +161,6 @@ sh_active[, scope := "active listings only"]
 sh <- rbind(sh, sh_active)
 setcolorder(sh, "scope")
 print(sh)
-fwrite(sh, "reports/tables/superhost_comparison.csv")
+fwrite(sh, "reports/supporting/tables/superhost_comparison.csv")
 
-cat("Figures written to reports/figures/, tables to reports/tables/\n")
+cat("Figures written to reports/supporting/figures/, tables to reports/supporting/tables/\n")

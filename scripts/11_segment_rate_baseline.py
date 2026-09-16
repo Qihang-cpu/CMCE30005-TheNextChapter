@@ -326,6 +326,14 @@ def main():
         agreement = pd.DataFrame(agreement_rows)
         for frame in (comparison, fold_table, agreement):
             frame["baseline_comparison_note"] = "Paired descriptive differences on the same validation rows and folds; these are not significance tests."
+        # The constant comparator is one value per fold, so calibration bins, the
+        # top-quarter cut and a mean prediction are not meaningful for it.
+        constant = comparison["scenario"].eq("constant")
+        comparison.loc[constant, ["expected_calibration_error_10_equal_width_bins", "precision_top_quarter", "mean_predicted_probability"]] = np.nan
+        comparison.loc[constant, "baseline_comparison_note"] = (
+            "Pooled AUC and AP corrected from published fold counts on 16 September; no model refit. "
+            "Top-quarter precision omitted because tie ordering is arbitrary."
+        )
         comparison.to_csv(public_stage / "rq_baseline_comparison.csv", index=False)
         fold_table.to_csv(public_stage / "rq_baseline_fold_comparison.csv", index=False)
         agreement.to_csv(public_stage / "rq_baseline_ranking_comparison.csv", index=False)

@@ -1,6 +1,7 @@
 # ============================================================
 # CMCE30005 Business Analytics Challenge
-# Script: 03_price_model.R
+# Script: scripts/supporting/03_price_model.R
+# Supporting analysis of Inside Airbnb's modelled price/revenue fields; not used in the interim report.
 # Purpose: Hedonic regression of nightly price - which listing, host and
 #          location attributes drive price variation across Melbourne
 # Author: TheNextChapter (Group 2)
@@ -8,12 +9,14 @@
 # ============================================================
 #
 # Input : data/processed/listings_clean.rds (from 01_data_cleaning.R)
-# Output: reports/tables/price_model_coefficients.csv
+# Output: reports/supporting/tables/price_model_coefficients.csv
 #         data/processed/price_model.rds
 # ============================================================
 
 library(data.table)
 library(broom)
+
+dir.create("reports/supporting/tables", showWarnings = FALSE, recursive = TRUE)
 
 listings <- readRDS("data/processed/listings_clean.rds")
 
@@ -46,7 +49,7 @@ cat(sprintf("Adjusted R-squared: %.3f\n", summary(m1)$adj.r.squared))
 
 coefs <- as.data.table(tidy(m1))
 coefs[, pct_effect := round(100 * (exp(estimate) - 1), 1)]   # exp(beta) - 1
-fwrite(coefs, "reports/tables/price_model_coefficients.csv")
+fwrite(coefs, "reports/supporting/tables/price_model_coefficients.csv")
 
 cat("\nLargest effects (|effect| > 10%, p < 0.001):\n")
 print(coefs[p.value < 0.001 & abs(pct_effect) > 10 & term != "(Intercept)",

@@ -1,6 +1,8 @@
-# Analysis validation record
+# Analysis validation record (archived)
 
-Historical record of the 13–14 September cached-data analysis. The [15 September raw-data verification](data-validation-2026-09-15.md) supersedes its source availability, date-window and primary sample results.
+**Superseded on 15 September 2026 by [data-validation-2026-09-15.md](../../data-validation-2026-09-15.md).** The counts below (3,810 listings, 1,699 hosts, 957 outcomes, 333 zero-review) describe the 13 September build and are no longer current; the current analysis sample is 3,873 listings, 1,726 hosts, 981 outcomes and 334 zero-review listings.
+
+Historical record of the 13–14 September cached-data analysis. The [15 September raw-data verification](../../data-validation-2026-09-15.md) supersedes its source availability, date-window and primary sample results.
 
 Updated 14 September 2026 after the established-history and reference-benchmark revision.
 
@@ -55,11 +57,11 @@ Repeated host splits, nested tuning, broader property mappings, sparse-positive 
 
 ## Evidence
 
-- [Revised design verification](validation/review-design-2026-09-14.json)
-- [Scope, source status, versions and hashes](tables/rq_scope_summary.json)
-- [Predictive metrics](tables/rq_model_metrics.json)
-- [Calibration summaries](tables/rq_calibration.csv)
-- [OOF segment scores](tables/rq_oof_segment_ranking.csv)
-- [Descriptive segment results](tables/segment_ladder.csv)
-- [Review-history sensitivity](tables/review_exposure_sensitivity.csv)
-- [Saved-data integrity checks](validation/processed-integrity-2026-09-13.json)
+- [Revised design verification](../review-design-2026-09-14.json)
+- [Scope, source status, versions and hashes](../../tables/rq_scope_summary.json)
+- [Predictive metrics](../../tables/rq_model_metrics.json)
+- [Calibration summaries](../../tables/rq_calibration.csv)
+- [OOF segment scores](../../tables/rq_oof_segment_ranking.csv)
+- [Descriptive segment results](../../tables/segment_ladder.csv)
+- [Review-history sensitivity](../../tables/review_exposure_sensitivity.csv)
+- [Saved-data integrity checks](processed-integrity-2026-09-13.json)

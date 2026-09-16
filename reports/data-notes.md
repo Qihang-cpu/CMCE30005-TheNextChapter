@@ -49,6 +49,6 @@ The [model extensions](methodology.md#property-features-and-model-extensions) us
 
 ## Limits of the financial fields
 
-The supplied occupancy estimate matches a review-based formula for all 25,719 comparable records. Revenue matches price multiplied by supplied modelled nights within AUD0.50 for all 19,175 comparable records. These checks preserve the supplied 366-date review field used in that construction. [The supporting diagnostic note](revenue-analysis.md) explains why these constructed fields are excluded from the primary outcome.
+The supplied occupancy estimate matches a review-based formula for all 25,719 comparable records. Revenue matches price multiplied by supplied modelled nights within AUD0.50 for all 19,175 comparable records. These checks preserve the supplied 366-date review field used in that construction. [The supporting diagnostic note](supporting/revenue-analysis.md) explains why these constructed fields are excluded from the primary outcome.
 
 The data do not establish property ownership, lease availability, subletting permission, or actual rental and operating costs. The current workflow uses only the supplied internal data and cannot calculate observed profit. Historic external-rent and ROI work is outside the current analysis.

@@ -1,6 +1,6 @@
 # Review activity and the limits of modelled revenue
 
-[Script 04](../scripts/04_revenue_analysis.R) provides supporting diagnostics for the decision to use recorded review activity as the primary outcome. Its broader priced sample differs from the 3,873-listing established residential analysis cohort used in the main classification analysis. This script preserves the source `number_of_reviews_ltm` field to inspect the supplied estimates; the primary descriptive ranking and classification use reconstructed `reviews_365d`.
+[Script 04](../../scripts/supporting/04_revenue_analysis.R) provides supporting diagnostics for the decision to use recorded review activity as the primary outcome. Its broader priced sample differs from the 3,873-listing established residential analysis cohort used in the main classification analysis. This script preserves the source `number_of_reviews_ltm` field to inspect the supplied estimates; the primary descriptive ranking and classification use reconstructed `reviews_365d`.
 
 ## Reconstruction of the supplied estimates
 
@@ -29,6 +29,6 @@ Script 04 estimates a logistic model for any recent review and an OLS model of l
 
 The history variable in this supporting analysis is elapsed time since first review, calculated relative to the latest review date, **28 June 2026**. It is named `review_history_years`; it does not measure listing launch or continuous exposure. History plots use the supplied trailing-review counts without annualising them by assumed operating months. This exploratory reference date is separate from the listing-specific scrape dates used in primary eligibility and `reviews_365d`.
 
-Current price, minimum stay, ratings and host status may reflect the same activity period as the response. Their associations do not establish the effect of changing a price, earning a badge or adding capacity. The primary predictive workflow instead reports a property-only model and separately labelled operating-control sensitivity; see [methodology](methodology.md).
+Current price, minimum stay, ratings and host status may reflect the same activity period as the response. Their associations do not establish the effect of changing a price, earning a badge or adding capacity. The primary predictive workflow instead reports a property-only model and separately labelled operating-control sensitivity; see [methodology](../methodology.md).
 
 No rent, platform-fee, cleaning, utility or furnishing cost data are available for an observed profit calculation. The project therefore reports review activity rather than a revenue-to-rent or ROI recommendation.

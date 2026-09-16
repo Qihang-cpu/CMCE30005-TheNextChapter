@@ -8,33 +8,49 @@
 
 The report includes the short AI Use Acknowledgement and references. No separate declaration attachment is required for this version.
 
-## Current research design and findings
+## Used in the interim report
 
-- [Research question and analysis plan](rq-analysis-plan.md)
-- [Methodology](methodology.md)
-- [Current findings](findings.md)
-- [Data description and limitations](data-notes.md)
-- [Descriptive analysis and sample definitions](descriptive-analytics.md)
+Every number in the report comes from one of these files; each file names the script that writes it.
 
-The primary outcome is preceding-year guest-review activity. The supported shortlist concerns established residential listings in the specified sample.
+| Report element | File | Script |
+| --- | --- | --- |
+| Table 1 sample funnel | `tables/rq_sample_funnel.csv` | `rq_scope_feasibility.py` |
+| Reference-group P75 (29.75 → 30), segment and LGA counts | `tables/rq_scope_summary.json` | `rq_scope_feasibility.py` |
+| Missing price and bedroom counts | `tables/desc_numeric_summary.csv` | `07_descriptive_analytics.R` |
+| 366-date field and the 365-day recount | [data-validation-2026-09-15.md](data-validation-2026-09-15.md), `validation/raw-rerun-2026-09-15.json` | `rq_scope_feasibility.py` |
+| Figure 1 segment ladder; attainment range 8.25–36.60% | `figures/16_segment_ladder.png`, `tables/segment_ladder.csv` | `08_peer_ranking.R` |
+| Sensitivity without the history or price rule (17.51%, 18.29%) | `tables/review_scope_summary.csv` | `08_peer_ranking.R` |
+| Share of unpriced listings with no recent review (82%) | `supporting/tables/revenue_sample_censoring.csv` | `supporting/04_revenue_analysis.R` |
+| Table 2 model comparison; boosting AUC 0.647; price/minimum-stay models AUC 0.749 | `tables/rq_baseline_comparison.csv`, `tables/rq_baseline_fold_comparison.csv` | `11_segment_rate_baseline.py` |
+| Twenty further host splits (mean AUC 0.626, range 0.589–0.648; top-three recurrence) | `tables/rq_repeated_split_summary.csv`, `tables/rq_repeated_split_top3.csv` | `11_segment_rate_baseline.py` |
+| Table 3 candidates, predicted probabilities and 95% ranges | `tables/rq_extension_ranking.csv` | `10_model_extensions.py` |
 
-## Current numerical evidence
+Design and method notes behind the report: [research question and analysis plan](rq-analysis-plan.md), [methodology](methodology.md), [current findings](findings.md), [data description and limitations](data-notes.md), [descriptive analysis and sample definitions](descriptive-analytics.md).
 
-The `tables/` folder contains aggregate outputs. Main report evidence includes:
+## Supporting outputs (not cited in the report)
 
-- `rq_sample_funnel.csv` and `rq_scope_summary.json`: eligible sample and benchmark.
-- `segment_ladder.csv`: descriptive segment comparison.
-- `rq_baseline_comparison.csv` and `rq_baseline_fold_comparison.csv`: models compared with training-host segment rates.
-- `rq_extension_metrics.csv` and `rq_extension_ranking.csv`: enhanced model performance and candidate scores.
-- `rq_repeated_split_summary.csv` and `rq_repeated_split_top3.csv`: repeated host-split checks.
-- `rq_extension_calibration.csv`: probability-bin observations.
+Written by the same pipeline; kept so results can be checked without re-running it.
 
-The `figures/` folder contains both current and supporting charts; filenames alone do not identify the primary analysis population. Use the relevant methods document and source table.
+- `rq_scope_feasibility.py`: `tables/rq_model_metrics.json` (baseline model metrics), `rq_benchmark_scope.csv` (reference-group scope), `rq_eligible_lga_configurations.csv` (segment eligibility), `rq_observed_segment_outcomes.csv`, `rq_oof_segment_ranking.csv` (out-of-fold segment scores), `rq_property_type_counts.csv`, `rq_calibration.csv` (probability bins).
+- `08_peer_ranking.R`: `tables/benchmark_partition_summary.csv` (reference-host partition), `benchmark_map_by_segment.csv` and `benchmark_map_citywide.csv` (where the 30-review target sits in each segment's review distribution), `excluded_dwelling_types.csv`, `type_whitelist_sensitivity.csv` and `type_whitelist_lga_bedrooms_comparison.csv` (dwelling-type rule checks), `review_exposure_sensitivity.csv`, `segment_ladder_all_histories_sensitivity.csv`, `segment_ladder_no_price_sensitivity.csv`, `segment_ladder_bedroom_class_citywide.csv`, `tier_profile.csv` (what top-quartile listings look like); `figures/17_top_quartile_profile.png`.
+- `07_descriptive_analytics.R`: `tables/desc_by_lga.csv`, `desc_by_room_type.csv`, `desc_by_superhost.csv`, `desc_categorical_summary.csv`; `figures/11_price_distribution_raw_log.png`, `12_categorical_composition.png`, `13_price_by_lga_roomtype.png`, `14_numeric_distributions.png`, `15_price_vs_reviews.png`.
+- `09_probability_calibration.R`: `figures/18_probability_calibration.png`.
+- `10_model_extensions.py`: `tables/rq_extension_metrics.csv` and `rq_extension_metrics.json` (all six model variants), `rq_extension_calibration.csv`, `rq_extension_provenance.json` (input hashes and package versions).
+- `11_segment_rate_baseline.py`: `tables/rq_baseline_calibration.csv`, `rq_baseline_ranking_comparison.csv`, `rq_baseline_segment_ranking.csv`, `rq_repeated_split_metrics.csv`, `rq_segment_rate_baseline.json`.
+- `validation/review-design-2026-09-14.json`: machine-readable check of the review-window and partition rules.
 
-## Supporting analyses and validation history
+## Supporting analyses of the modelled price and revenue fields
 
-[Revenue diagnostics](revenue-analysis.md) explain limitations of the supplied modelled revenue fields. Their broader sample differs from the primary cohort. Revenue, occupancy, price and seasonality outputs are supporting diagnostics, not profit estimates or current investment recommendations.
+`supporting/` holds the earlier descriptive work on Inside Airbnb's modelled price, occupancy and revenue fields. It is not used in the interim report and establishes nothing about bookings, occupancy or profit: those fields are constructed from price, minimum stay and review counts, as [supporting/revenue-analysis.md](supporting/revenue-analysis.md) explains.
 
-[Raw-data validation](data-validation-2026-09-15.md) and `validation/raw-rerun-2026-09-15.json` document the current rebuild and compatibility checks. Dated 13–14 September records preserve earlier validation history.
+- `scripts/supporting/02_exploratory_analysis.R`: `supporting/tables/area_summary.csv`, `segment_revenue.csv`, `superhost_comparison.csv`, `seasonality_index.csv`; `supporting/figures/01_price_distribution.png`, `02_price_by_area.png`, `03_price_capacity_roomtype.png`, `04_demand_seasonality.png`, `05_price_vs_occupancy.png`.
+- `scripts/supporting/03_price_model.R`: `supporting/tables/price_model_coefficients.csv` (hedonic price regression).
+- `scripts/supporting/04_revenue_analysis.R`: `supporting/tables/revenue_sample_censoring.csv`, `revenue_variance_decomposition.csv`, `revenue_extensive_margin.csv`, `revenue_intensive_margin.csv`, `revenue_price_association_robustness.csv`, `revenue_superhost_gap.csv`, `revenue_by_listing_age.csv`; `supporting/figures/06_revenue_variance_decomposition.png`, `07_sample_censoring.png`, `08_revenue_price_activity_grid.png`, `09_activity_by_listing_age.png`.
 
-Older files are retained to preserve the analysis record. Formal submission and current conclusions should be read from the submission files and current findings above.
+## Work in preparation (not in the interim submission)
+
+`validation/temporal-holdout/` and `scripts/validation/temporal_holdout.py` test whether a segment's earlier-year review advantage persists in the following year, using two non-overlapping 365-day windows per listing. Its [method note](validation/temporal-holdout/method-note.md) lists the limitations, and `sample_flow.csv`, `segment_cross_period.csv`, `validation_metrics.json` and `bootstrap_replicates.csv` hold the results; none of it is cited in the interim report.
+
+## Archive
+
+`validation/archive/` keeps the 13 September build record ([data-validation-2026-09-13.md](validation/archive/data-validation-2026-09-13.md) and its integrity JSON). Its counts are superseded by the 15 September verification above.

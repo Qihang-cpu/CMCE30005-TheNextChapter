@@ -78,5 +78,6 @@ data/processed/*
 __pycache__/
 *.py[cod]
 
-# Official reference tables (small, versioned)
-!data/external/*.csv
+
+# Word lock files
+~$*

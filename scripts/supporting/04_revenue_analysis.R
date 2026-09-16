@@ -1,6 +1,7 @@
 # ============================================================
 # CMCE30005 Business Analytics Challenge
-# Script: 04_revenue_analysis.R
+# Script: scripts/supporting/04_revenue_analysis.R
+# Supporting analysis of Inside Airbnb's modelled price/revenue fields; not used in the interim report.
 # Purpose: Decompose Inside Airbnb's modelled listing revenue into price and
 #          review-derived activity, and identify what is associated with
 #          achieving any recent activity and with sustaining it
@@ -9,7 +10,7 @@
 # ============================================================
 #
 # Input : data/processed/listings_clean.rds (from 01_data_cleaning.R)
-# Output: reports/tables/revenue_*.csv, reports/figures/06-09_*.png
+# Output: reports/supporting/tables/revenue_*.csv, reports/supporting/figures/06-09_*.png
 #
 # TERMINOLOGY. This dataset observes reviews, not bookings. Every quantity
 # below is named for what is actually measured:
@@ -23,6 +24,9 @@ library(data.table)
 library(ggplot2)
 library(scales)
 library(sandwich)
+
+dir.create("reports/supporting/figures", showWarnings = FALSE, recursive = TRUE)
+dir.create("reports/supporting/tables", showWarnings = FALSE, recursive = TRUE)
 
 listings <- readRDS("data/processed/listings_clean.rds")
 
@@ -97,7 +101,7 @@ print(cens)
 cat("\nExcluded listings are overwhelmingly inactive, so this is not random\n")
 cat("censoring. Activity rates below describe priced listings only and\n")
 cat("understate inactivity across the market as a whole.\n\n")
-fwrite(cens, "reports/tables/revenue_sample_censoring.csv")
+fwrite(cens, "reports/supporting/tables/revenue_sample_censoring.csv")
 
 # ============================================================
 # 3. Where the variation in modelled revenue sits
@@ -133,7 +137,7 @@ cat(sprintf("\nRestricted to the %.1f%% of active listings below the 255-night c
             100 * mean(dec$uncapped)))
 cat("the identity is exactly additive. These are shares of cross-sectional\n")
 cat("dispersion in a modelled quantity, not a statement about what causes revenue.\n\n")
-fwrite(var_decomp, "reports/tables/revenue_variance_decomposition.csv")
+fwrite(var_decomp, "reports/supporting/tables/revenue_variance_decomposition.csv")
 
 # ============================================================
 # 4. Review history and review activity
@@ -154,7 +158,7 @@ setorder(age_tab, age_band)
 
 cat("=== 4. Review activity by time since first review (active listings) ===\n")
 print(age_tab)
-fwrite(age_tab, "reports/tables/revenue_by_listing_age.csv")
+fwrite(age_tab, "reports/supporting/tables/revenue_by_listing_age.csv")
 
 # ============================================================
 # 5. Achieving any recent review activity
@@ -183,7 +187,7 @@ m_active <- glm(has_recent_activity ~ log(price_num) + room_type + accommodates 
 # listings of the same host are not independent observations
 act <- coef_table(m_active, cluster_vcov(m_active, m_sample$host_id))
 act[, odds_ratio := round(exp(estimate), 3)]
-fwrite(act, "reports/tables/revenue_extensive_margin.csv")
+fwrite(act, "reports/supporting/tables/revenue_extensive_margin.csv")
 
 cat("Odds ratios, host-clustered standard errors, p < 0.001:\n")
 print(act[p_value < 0.001 & term != "(Intercept)",
@@ -205,7 +209,7 @@ m_volume <- lm(log(number_of_reviews_ltm) ~ log(price_num) + room_type + accommo
 
 vol_cl <- coef_table(m_volume, cluster_vcov(m_volume, act_sample$host_id))
 vol_cl[, pct_difference := round(100 * (exp(estimate) - 1), 1)]
-fwrite(vol_cl, "reports/tables/revenue_intensive_margin.csv")
+fwrite(vol_cl, "reports/supporting/tables/revenue_intensive_margin.csv")
 
 cat("\n=== 6. Review intensity among active listings ===\n")
 cat(sprintf("n = %s, adjusted R-squared = %.3f, %s host clusters\n",
@@ -259,7 +263,7 @@ cat("Stability across specifications (host-clustered SEs):\n")
 print(robust)
 cat("Stability speaks to the choice of controls only. It does not address the\n")
 cat("timing mismatch, reverse causation or unobserved quality.\n\n")
-fwrite(robust, "reports/tables/revenue_price_association_robustness.csv")
+fwrite(robust, "reports/supporting/tables/revenue_price_association_robustness.csv")
 
 # ============================================================
 # 8. Superhost comparison
@@ -289,7 +293,7 @@ cat(sprintf("\nModelled revenue ratio, active listings only: %.1fx\n",
             sh_act[superhost == FALSE, median_modelled_revenue]))
 cat("Superhost status is awarded partly on booking performance, so this compares\n")
 cat("two outcomes and is not an effect of the badge.\n\n")
-fwrite(sh, "reports/tables/revenue_superhost_gap.csv")
+fwrite(sh, "reports/supporting/tables/revenue_superhost_gap.csv")
 
 # ============================================================
 # Figures
@@ -317,7 +321,7 @@ p <- ggplot(vd, aes(share, sample, fill = component)) +
        subtitle = "Shares of cross-sectional variance in log modelled revenue, uncapped listings",
        x = NULL, y = NULL, fill = NULL) +
   theme(legend.position = "bottom")
-ggsave("reports/figures/06_revenue_variance_decomposition.png", p,
+ggsave("reports/supporting/figures/06_revenue_variance_decomposition.png", p,
        width = 9.5, height = 4, dpi = 150)
 
 cens_plot <- cens[sample != "All listings"]
@@ -329,7 +333,7 @@ p <- ggplot(cens_plot, aes(reorder(sample, pct_no_recent_reviews), pct_no_recent
   labs(title = "The price filter removes mostly inactive listings",
        subtitle = "Share with no reviews in the trailing 12 months",
        x = NULL, y = NULL)
-ggsave("reports/figures/07_sample_censoring.png", p, width = 8, height = 3.2, dpi = 150)
+ggsave("reports/supporting/figures/07_sample_censoring.png", p, width = 8, height = 3.2, dpi = 150)
 
 rev_plot <- d[estimated_occupancy_l365d > 0]
 rev_plot[, price_band := cut(price_num, quantile(price_num, 0:4 / 4), include.lowest = TRUE,
@@ -348,7 +352,7 @@ p <- ggplot(grid, aes(price_band, activity_band, fill = median_revenue)) +
        subtitle = "Cells with at least 20 listings",
        x = "Price quartile", y = "Reviews in trailing 12 months",
        fill = "Modelled revenue")
-ggsave("reports/figures/08_revenue_price_activity_grid.png", p, width = 8.5, height = 5, dpi = 150)
+ggsave("reports/supporting/figures/08_revenue_price_activity_grid.png", p, width = 8.5, height = 5, dpi = 150)
 
 age_plot <- d[number_of_reviews_ltm > 0 & !is.na(review_history_years) & review_history_years <= 10]
 age_plot[, band := cut(review_history_years, seq(0, 10, 0.5), include.lowest = TRUE)]
@@ -361,6 +365,6 @@ p <- ggplot(age_curve, aes(age_mid, median_reviews)) +
   labs(title = "Recent review activity by time since first review",
        subtitle = "Active listings; history is measured from the latest observed review date",
        x = "Years since first review", y = "Median reviews in the preceding 12 months")
-ggsave("reports/figures/09_activity_by_listing_age.png", p, width = 8, height = 5, dpi = 150)
+ggsave("reports/supporting/figures/09_activity_by_listing_age.png", p, width = 8, height = 5, dpi = 150)
 
-cat("Tables written to reports/tables/, figures to reports/figures/\n")
+cat("Tables written to reports/supporting/tables/, figures to reports/supporting/figures/\n")
