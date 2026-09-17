@@ -108,7 +108,7 @@ We used OpenAI ChatGPT/Codex and Anthropic Claude Code to support project planni
 
 ## Project files
 
-The submission files are `reports/The%20interim%20report.docx` and its PDF. Both include the AI Use Acknowledgement. `reports/interim-project-report.md` is the matching text version. See the [report directory guide](reports/README.md) for current evidence and supporting analyses.
+The submission files are `reports/The interim report.docx` and its PDF. Both include the AI Use Acknowledgement. `reports/interim-project-report.md` is the matching text version. See the [report directory guide](reports/README.md) for current evidence and supporting analyses.
 
 - [Interim report Word](reports/The%20interim%20report.docx) · [PDF](reports/The%20interim%20report.pdf)
 - [Research design](reports/rq-analysis-plan.md) · [Methodology](reports/methodology.md) · [Data notes](reports/data-notes.md)
