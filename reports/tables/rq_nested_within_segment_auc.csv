@@ -1,0 +1,15 @@
+neighbourhood_cleansed,configuration,n,positive_n,within_segment_auc
+Melbourne,2BR Apartment/unit,1235,405,0.6004670533987803
+Melbourne,1BR Apartment/unit,936,237,0.5505091661988495
+Melbourne,3BR Apartment/unit,306,112,0.5712214653902797
+Port Phillip,1BR Apartment/unit,305,35,0.5395767195767196
+Port Phillip,2BR Apartment/unit,219,37,0.44728244728244726
+Stonnington,1BR Apartment/unit,185,25,0.56425
+Yarra,1BR Apartment/unit,177,39,0.5423634336677814
+Yarra,2BR Apartment/unit,102,15,0.4888888888888888
+Stonnington,2BR Apartment/unit,97,8,0.30758426966292135
+Yarra Ranges,3BR House/townhouse,90,27,0.6143445032333921
+Yarra,2BR House/townhouse,60,14,0.48757763975155277
+Port Phillip,3BR House/townhouse,56,7,0.5830903790087463
+Merri-bek,1BR Apartment/unit,54,9,0.5925925925925926
+Yarra Ranges,2BR House/townhouse,51,11,0.4909090909090909

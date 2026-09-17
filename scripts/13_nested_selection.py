@@ -18,8 +18,8 @@ selection process inside each outer training fold:
 Run from the project root after scripts 10 and 11:
     python scripts/13_nested_selection.py
 Writes reports/tables/rq_nested_selection_folds.csv,
-rq_nested_selection_summary.json, rq_nested_calibration.csv and
-rq_nested_segment_calibration.csv. Listing-level predictions stay in
+rq_nested_selection_summary.json, rq_nested_calibration.csv,
+rq_nested_segment_calibration.csv and rq_nested_within_segment_auc.csv. Listing-level predictions stay in
 data/processed (ignored).
 """
 from __future__ import annotations
@@ -159,6 +159,22 @@ def main():
         diffs.append((roc_auc_score(yb, nb) - roc_auc_score(yb, bb), brier_score_loss(yb, nb) - brier_score_loss(yb, bb)))
     diffs = np.array(diffs)
 
+    # Within-segment discrimination of the selected process: AUC computed inside each
+    # segment (both outcome classes present) and listing-weighted. The baseline takes
+    # one value per segment and fold, so no within-segment AUC is reported for it.
+    within_rows = []
+    for (lga, configuration), g in pd.DataFrame({"y": y_all, "p": nested, "fold": sample["fold"],
+                                                 "lga": sample[KEYS[0]], "configuration": sample[KEYS[1]]}).groupby(["lga", "configuration"]):
+        if g["y"].nunique() == 2:
+            within_rows.append({"neighbourhood_cleansed": lga, "configuration": configuration, "n": int(len(g)),
+                                "positive_n": int(g["y"].sum()), "within_segment_auc": float(roc_auc_score(g["y"], g["p"]))})
+    within = pd.DataFrame(within_rows)
+    within_weighted = float(np.average(within["within_segment_auc"], weights=within["n"]))
+    within_by_fold = {}
+    for fold, g in pd.DataFrame({"y": y_all, "p": nested, "fold": sample["fold"], "lga": sample[KEYS[0]], "configuration": sample[KEYS[1]]}).groupby("fold"):
+        parts = [(len(x), roc_auc_score(x["y"], x["p"])) for _, x in g.groupby(["lga", "configuration"]) if x["y"].nunique() == 2]
+        within_by_fold[int(fold)] = float(np.average([a for _, a in parts], weights=[n for n, _ in parts]))
+
     selection = folds["selected_candidate"].value_counts().to_dict()
     result = {
         "design": "Outer: five frozen host-grouped folds (evaluation only). Inner: three host-grouped folds within each outer training fold; the candidate with the lowest pooled inner Brier score is selected, refitted on the whole outer training fold and scored on the outer test fold. Baseline: training-fold segment attainment with prior weight 10 on the same outer folds.",
@@ -183,6 +199,11 @@ def main():
             "brier_difference_95": [float(np.percentile(diffs[:, 1], 2.5)), float(np.percentile(diffs[:, 1], 97.5))],
             "share_replicates_auc_above_baseline": float((diffs[:, 0] > 0).mean()),
             "share_replicates_brier_below_baseline": float((diffs[:, 1] < 0).mean()),
+        },
+        "within_segment": {
+            "definition": "AUC of the selected process computed inside each segment with both outcome classes, then listing-weighted; the segment-rate baseline is constant within a segment and fold, so no within-segment AUC is reported for it.",
+            "listing_weighted_auc": within_weighted, "by_outer_fold": within_by_fold,
+            "segments_above_0_5": int((within["within_segment_auc"] > 0.5).sum()), "segments_evaluated": int(len(within)),
         },
         "reference_from_script_11": "extended_property_only random_forest chosen after inspection: pooled AUC 0.6396, Brier 0.1813 (rq_baseline_comparison.csv)",
         "n": int(len(sample)), "n_hosts": int(sample["host_id"].nunique()),
@@ -216,6 +237,7 @@ def main():
     (PUBLIC / "rq_nested_selection_summary.json").write_text(json.dumps(result, indent=2))
     calibration.to_csv(PUBLIC / "rq_nested_calibration.csv", index=False)
     seg_cal.to_csv(PUBLIC / "rq_nested_segment_calibration.csv", index=False)
+    within.sort_values("n", ascending=False).to_csv(PUBLIC / "rq_nested_within_segment_auc.csv", index=False)
     keys = ["id", "host_id", "fold", *KEYS, "reviews_365d", "review_target_met"]
     sample[keys].assign(nested_probability=nested, baseline_probability=base).to_csv(PRIVATE / "rq_nested_oof_predictions.csv", index=False)
 
@@ -225,6 +247,7 @@ def main():
     print(f"difference AUC {result['pooled']['auc_difference']:+.4f} (95% {result['host_bootstrap']['auc_difference_95']}), "
           f"Brier {result['pooled']['brier_difference']:+.5f} (95% {result['host_bootstrap']['brier_difference_95']}); "
           f"folds AUC above {result['per_fold']['folds_auc_above_baseline']}/5, Brier below {result['per_fold']['folds_brier_below_baseline']}/5")
+    print(f"within-segment AUC (listing-weighted) {within_weighted:.3f}; by fold {within_by_fold}")
     print("\ncalibration (five equal-count bins):")
     print(calibration.to_string(index=False))
     print("\ntop segments by nested prediction:")

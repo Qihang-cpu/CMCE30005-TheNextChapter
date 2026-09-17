@@ -57,6 +57,19 @@
     "share_replicates_auc_above_baseline": 1.0,
     "share_replicates_brier_below_baseline": 0.991
   },
+  "within_segment": {
+    "definition": "AUC of the selected process computed inside each segment with both outcome classes, then listing-weighted; the segment-rate baseline is constant within a segment and fold, so no within-segment AUC is reported for it.",
+    "listing_weighted_auc": 0.5547366179873269,
+    "by_outer_fold": {
+      "0": 0.6184437754113778,
+      "1": 0.5633545527990063,
+      "2": 0.5880740466368026,
+      "3": 0.5748736415113497,
+      "4": 0.60898646392898
+    },
+    "segments_above_0_5": 9,
+    "segments_evaluated": 14
+  },
   "reference_from_script_11": "extended_property_only random_forest chosen after inspection: pooled AUC 0.6396, Brier 0.1813 (rq_baseline_comparison.csv)",
   "n": 3873,
   "n_hosts": 1726,

@@ -37,7 +37,7 @@ Cleaning converts price text to numbers and extracts bathroom and amenity counts
 Table 1. Sample funnel
 
 | Stage | Listings |
-| --- | --- |
+| ---------------------------------------- | ---------- |
 | All listings in the dataset | 25,728 |
 | Entire homes, 1–3 bedrooms | 16,576 |
 | Standard dwelling types | 14,895 |
@@ -60,7 +60,7 @@ Logistic regression is the simple reference; random forest and gradient boosting
 
 Every model is compared with a segment-average baseline: each listing gets its segment's attainment among training hosts. AUC is how well the model orders listings that reach the target above those that do not; 0.5 is a coin toss. Average precision summarises precision across prediction thresholds. Brier score is how far its percentages are from what happened; lower is better. R handles cleaning and tables; Python (scikit-learn 1.7.2) runs the models.
 
-Because candidates were compared after seeing fold results, selection is repeated inside each outer training fold (nested, host-grouped) so outer folds never influence it; property details may also have changed during the outcome year.
+Because candidates were compared after seeing fold results, selection is repeated in a nested check where models are selected using only each outer training fold; property details may also have changed during the outcome year.
 
 ## Analysis Plan and Progress to Date
 
@@ -74,17 +74,17 @@ Table 2. Predictive performance
 | Basic property-only logistic | 0.573 | 0.285 | 0.1886 |
 | Enhanced property-only random forest | 0.640 | 0.350 | 0.1813 |
 
-The enhanced random forest beats the segment average in all five folds and, across 20 further host splits, on AUC every time and on Brier in 16. A nested check that re-selects the model inside each outer training fold chooses the forest every time: AUC +0.059 (host-resampled 95% range +0.02 to +0.10), Brier −0.0055 (−0.010 to −0.001). Predicted rates track observed rates within two points across five bins.
+The enhanced random forest beats the segment average in all five folds and, across 20 further host splits, on AUC every time and on Brier in 16. A nested check that re-selects the model inside each outer training fold chooses the forest every time: AUC +0.059 (host-resampled 95% range +0.02 to +0.10), Brier −0.0055 (−0.010 to −0.001). Across five probability bins, predicted and observed rates differ by about two percentage points.
 
 Table 3. Initial search candidates (forest predictions from host-grouped validation)
 
 | Segment | Listings / hosts | Observed attainment | Predicted probability | 95% range |
-| --- | --- | --- | --- | --- |
+| ---------------------------- | ------------ | ------------ | ------------ | ------------ |
 | Melbourne 3BR apartments | 306 / 139 | 36.60% | 34.45% | 33.0–35.8% |
 | Melbourne 2BR apartments | 1,235 / 482 | 32.79% | 31.41% | 29.6–33.0% |
 | Yarra Ranges 3BR houses/townhouses | 90 / 77 | 30.00% | 27.82% | 26.1–29.3% |
 
-The ranges resample hosts with predictions held fixed, exclude refitting, selection and threshold uncertainty, and are much narrower than Figure 1's observed-rate ranges. Descriptive evidence supports H1: segments differ (8.25% to 36.60%), though neighbours overlap. H2 is supported by nested host-grouped validation on ranking metrics but not on the shortlist: the model changes no candidate; its value lies within segments, where it separates listings that reached the target from those that did not better than the segment rate (AUC 0.64 versus 0.58), and can score a specific property once found. Descriptively, the same three segments lead under support rules of 30, 50 and 75 listings, without the history or price rule, and for review targets from 25 to 35 (the top two swap at 34 or more); the forest's top three recur in 19 of 20 host splits.
+All reported host-resampled ranges hold predictions fixed and exclude refitting, selection and threshold uncertainty; Table 3's are much narrower than Figure 1's observed-rate ranges. Descriptive evidence supports H1: segments differ (8.25% to 36.60%), though neighbours overlap. H2 is supported by nested host-grouped validation on ranking metrics but not on the shortlist: the model improves overall listing-level prediction but leaves the shortlist unchanged. Segment rates guide the search, while the model provides a supplementary historical score for individual listings (within-segment AUC 0.56). Descriptively, the same three segments lead under support rules of 30, 50 and 75 listings, without the history or price rule, and at review targets of 25, 30, 34 and 35 (the top two swap at 34 and 35); the forest's top three recur in 19 of 20 host splits.
 
 An out-of-time check (2,657 listings, 1,208 hosts, 10 segments) uses two non-overlapping 365-day windows and a 34-review target set from the reference hosts' earlier window. The earlier year's top three segments reached it in 27.1% of listings the following year against 14.9% elsewhere, a 12.3-point lead (host-resampled 95% range 5.1–20.1); the exact top-three set recurred in 51.5% of resamples. This is a persisting historical advantage, not a new operator's profit.
 
