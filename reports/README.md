@@ -21,11 +21,11 @@ Every number in the report comes from one of these files; each file names the sc
 | Figure 1 segment ladder; attainment range 8.25–36.60% | `figures/16_segment_ladder.png`, `tables/segment_ladder.csv` | `08_peer_ranking.R` |
 | Sensitivity without the history or price rule (17.51%, 18.29%) | `tables/review_scope_summary.csv` | `08_peer_ranking.R` |
 | Share of unpriced listings with no recent review (82%) | `supporting/tables/revenue_sample_censoring.csv` | `supporting/04_revenue_analysis.R` |
-| Table 2 model comparison; boosting AUC 0.647; price/minimum-stay models AUC 0.749 | `tables/rq_baseline_comparison.csv`, `tables/rq_baseline_fold_comparison.csv` | `11_segment_rate_baseline.py` |
+| Table 2 model comparison (the price/minimum-stay variants are in the same table) | `tables/rq_baseline_comparison.csv`, `tables/rq_baseline_fold_comparison.csv` | `11_segment_rate_baseline.py` |
 | Twenty further host splits (mean AUC 0.626, range 0.589–0.648; top-three recurrence) | `tables/rq_repeated_split_summary.csv`, `tables/rq_repeated_split_top3.csv` | `11_segment_rate_baseline.py` |
 | Table 3 candidates, predicted probabilities and 95% ranges | `tables/rq_extension_ranking.csv` | `10_model_extensions.py` |
 | Nested model selection (forest chosen in all five outer folds; AUC +0.059, Brier −0.0055 with host-resampled ranges) and probability-bin calibration | `tables/rq_nested_selection_summary.json`, `rq_nested_selection_folds.csv`, `rq_nested_selection_inner.csv`, `rq_nested_calibration.csv`, `rq_nested_segment_calibration.csv` | `13_nested_selection.py` |
-| Same candidates under support rules of 30, 50 and 75 and without the history or price rule | `tables/rq_support_rule_sensitivity.csv`, `tables/rq_support_rule_top3.csv` | `12_support_rule_sensitivity.py` |
+| Same candidates under support rules of 30, 50 and 75, without the history or price rule, and for review targets 25–35 | `tables/rq_support_rule_sensitivity.csv`, `tables/rq_support_rule_top3.csv`, `tables/rq_threshold_sensitivity.csv` | `12_support_rule_sensitivity.py` |
 | Out-of-time check (2,657 listings; 34-review target; 27.1% vs 14.9%; 95% range 5.1–20.1; top-three set recurs in 51.5%) | `validation/temporal-holdout/validation_metrics.json`, `segment_cross_period.csv`, `sample_flow.csv`, `bootstrap_replicates.csv`, [method note](validation/temporal-holdout/method-note.md) | `scripts/validation/temporal_holdout.py` |
 
 Design and method notes behind the report: [research question and analysis plan](rq-analysis-plan.md), [methodology](methodology.md), [current findings](findings.md), [data description and limitations](data-notes.md), [descriptive analysis and sample definitions](descriptive-analytics.md).

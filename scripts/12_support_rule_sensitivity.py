@@ -5,11 +5,13 @@ analysis listings, holding everything else fixed: the primary eligibility
 rules, the host partition and the common 30-review target from the primary
 analysis. The two existing scope sensitivities (no history rule, no price
 rule) are read from the segment-ladder tables written by script 08 so all
-five variants can be compared on one page.
+five variants can be compared on one page. A second table repeats the primary
+ranking under alternative review targets (25, 35, and the reference group's P70
+and P80 rounded up) with everything else fixed.
 
 Run from the project root: python scripts/12_support_rule_sensitivity.py
-Writes reports/tables/rq_support_rule_sensitivity.csv and
-reports/tables/rq_support_rule_top3.csv. Listing-level data stay in
+Writes reports/tables/rq_support_rule_sensitivity.csv,
+reports/tables/rq_support_rule_top3.csv and reports/tables/rq_threshold_sensitivity.csv. Listing-level data stay in
 data/processed (ignored).
 """
 from __future__ import annotations
@@ -18,6 +20,7 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,6 +91,34 @@ def main():
                 raise ValueError(f"{label}: {len(sample)} listings here but {ladder_total} in {fname}")
         record(label, sample, note + "; listing total matches " + fname)
 
+    # Review-target sensitivity: primary sample and support rule, alternative targets.
+    reference = pd.read_csv(ROOT / "data" / "processed" / "rq_benchmark_reference.csv")
+    counts = base.groupby(KEYS).size().rename("n").reset_index()
+    keep = counts.loc[counts["n"] >= rq.MINIMUM_SEGMENT_LISTINGS, KEYS]
+    primary_sample = base.merge(keep, on=KEYS, how="inner")
+    targets = {"reference P70": int(np.ceil(reference["reviews_365d"].quantile(0.70, interpolation="linear"))),
+               "fixed 25": 25, "primary (reference P75)": threshold, "fixed 35": 35,
+               "reference P80": int(np.ceil(reference["reviews_365d"].quantile(0.80, interpolation="linear")))}
+    threshold_rows = []
+    for label, target in targets.items():
+        met = primary_sample["reviews_365d"].ge(target).astype(int)
+        seg = primary_sample.assign(met=met).groupby(KEYS).agg(n=("id", "size"), rate=("met", "mean")).reset_index()
+        seg = seg.sort_values(["rate", "n"], ascending=[False, False]).reset_index(drop=True)
+        seg["rank"] = seg.index + 1
+        top3 = seg.head(3)
+        ranks = {f"{r.neighbourhood_cleansed} {r.configuration}": int(r.rank) for r in seg.itertuples()
+                 if (r.neighbourhood_cleansed, r.configuration) in primary_set}
+        threshold_rows.append({
+            "target_rule": label, "review_target": int(target), "listings": int(len(primary_sample)),
+            "attainment": float(met.mean()),
+            "top3": "; ".join(f"{r.neighbourhood_cleansed} {r.configuration} ({r.rate:.1%})" for r in top3.itertuples()),
+            "top3_overlap_with_primary": len(primary_set & set(map(tuple, top3[KEYS].to_numpy()))),
+            "primary_candidate_ranks": "; ".join(f"{k}: {v}" for k, v in ranks.items()),
+            "note": "primary eligibility, host partition and 50-listing support rule held fixed; descriptive ranking by observed attainment",
+        })
+    thresholds = pd.DataFrame(threshold_rows)
+    thresholds.to_csv(OUTPUT / "rq_threshold_sensitivity.csv", index=False)
+
     summary = pd.DataFrame(summary_rows)
     tops = pd.DataFrame(top_rows)
     summary.to_csv(OUTPUT / "rq_support_rule_sensitivity.csv", index=False)
@@ -96,6 +127,9 @@ def main():
     print(summary[["variant", "listings", "hosts", "segments", "attainment", "top3_overlap_with_primary", "top3"]].to_string(index=False))
     print()
     print(tops.pivot(index="segment", columns="variant", values="rank").to_string())
+    print()
+    print(thresholds[["target_rule", "review_target", "attainment", "top3_overlap_with_primary", "top3"]].to_string(index=False))
+    print(thresholds[["target_rule", "primary_candidate_ranks"]].to_string(index=False))
 
 
 if __name__ == "__main__":
