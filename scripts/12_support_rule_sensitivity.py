@@ -69,31 +69,24 @@ def main():
         record(f"support >= {min_n}", sample, "primary eligibility, primary host partition, fixed 30-review target"
                + (" (primary analysis)" if min_n == rq.MINIMUM_SEGMENT_LISTINGS else ""))
 
-    # existing scope sensitivities from script 08 (segment level, same fixed target)
-    for label, fname, note in [
-        ("no history rule (support >= 50)", "segment_ladder_all_histories_sensitivity.csv", "first-review history rule removed; from script 08"),
-        ("no price rule (support >= 50)", "segment_ladder_no_price_sensitivity.csv", "price boundary removed; from script 08"),
+    # Scope sensitivities: recompute from the same frame so listing and host counts
+    # use one definition (unique hosts). Listing totals are checked against the
+    # segment-ladder tables written by script 08.
+    for label, fname, kwargs, note in [
+        ("no history rule (support >= 50)", "segment_ladder_all_histories_sensitivity.csv", {"established": False}, "first-review history rule removed"),
+        ("no price rule (support >= 50)", "segment_ladder_no_price_sensitivity.csv", {"price_filter": False}, "price boundary removed"),
     ]:
+        variant = rq.eligible_base(frame[frame["host_role"].eq("analysis")], **kwargs)
+        variant["met"] = variant["reviews_365d"].ge(threshold).astype(int)
+        counts = variant.groupby(KEYS).size().rename("n").reset_index()
+        keep = counts.loc[counts["n"] >= rq.MINIMUM_SEGMENT_LISTINGS, KEYS]
+        sample = variant.merge(keep, on=KEYS, how="inner")
         path = OUTPUT / fname
-        if not path.is_file():
-            continue
-        ladder = pd.read_csv(path)
-        ladder["configuration"] = ladder["bedrooms"].astype(int).astype(str) + "BR " + ladder["dwelling_class"]
-        ladder = ladder.rename(columns={"lga": "neighbourhood_cleansed"})
-        ladder = ladder.sort_values(["observed_target_rate", "n_listings"], ascending=[False, False]).reset_index(drop=True)
-        ladder["rank"] = ladder.index + 1
-        top3 = ladder.head(3)
-        overlap = len(primary_set & set(map(tuple, top3[KEYS].to_numpy())))
-        summary_rows.append({
-            "variant": label, "listings": int(ladder["n_listings"].sum()), "hosts": int(ladder["n_hosts"].sum()),
-            "segments": int(len(ladder)), "attainment": float(ladder["n_meeting_target"].sum() / ladder["n_listings"].sum()),
-            "top3": "; ".join(f"{r.neighbourhood_cleansed} {r.configuration} ({r.observed_target_rate:.1%})" for r in top3.itertuples()),
-            "top3_overlap_with_primary": overlap, "review_target": threshold, "note": note + "; host total sums segment host counts",
-        })
-        for r in ladder.itertuples():
-            if (r.neighbourhood_cleansed, r.configuration) in primary_set:
-                top_rows.append({"variant": label, "segment": f"{r.neighbourhood_cleansed} {r.configuration}",
-                                 "n": int(r.n_listings), "hosts": int(r.n_hosts), "attainment": float(r.observed_target_rate), "rank": int(r.rank)})
+        if path.is_file():
+            ladder_total = int(pd.read_csv(path)["n_listings"].sum())
+            if ladder_total != len(sample):
+                raise ValueError(f"{label}: {len(sample)} listings here but {ladder_total} in {fname}")
+        record(label, sample, note + "; listing total matches " + fname)
 
     summary = pd.DataFrame(summary_rows)
     tops = pd.DataFrame(top_rows)
