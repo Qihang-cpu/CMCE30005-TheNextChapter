@@ -87,19 +87,19 @@ For the works in the next stage, inner training folds will select models and out
 ## References
 
 Anthropic. (2026). Claude Code assistance with analysis-code development
-　　　[Generative AI output].
+[Generative AI output].
 
 Inside Airbnb. (2026). Melbourne listings, calendar and reviews [June
-　　　2026 dataset supplied through CMCE30005 LMS].
+2026 dataset supplied through CMCE30005 LMS].
 
 OpenAI. (2026). ChatGPT/Codex assistance with project planning, report
-　　　drafting, and code review [Generative AI output].
+drafting, and code review [Generative AI output].
 
 Scikit-learn developers. (n.d.). Cross-validation: Evaluating estimator
-　　　performance. https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data
+performance. https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data
 
 Scikit-learn developers. (n.d.). Probability calibration.
-　　　https://scikit-learn.org/stable/modules/calibration.html
+https://scikit-learn.org/stable/modules/calibration.html
 
 
 ## AI Use Acknowledgement
@@ -108,9 +108,9 @@ We used OpenAI ChatGPT/Codex and Anthropic Claude Code to support project planni
 
 ## Project files
 
-The submission files are `reports/The interim report.docx` and its PDF. Both include the AI Use Acknowledgement. `reports/interim-project-report.md` is the matching text version. See the [report directory guide](reports/README.md) for current evidence and supporting analyses.
+The submission files are `reports/The%20interim%20report.docx` and its PDF. Both include the AI Use Acknowledgement. `reports/interim-project-report.md` is the matching text version. See the [report directory guide](reports/README.md) for current evidence and supporting analyses.
 
-- [Interim report Word](reports/The interim report.docx) · [PDF](reports/The interim report.pdf)
+- [Interim report Word](reports/The%20interim%20report.docx) · [PDF](reports/The%20interim%20report.pdf)
 - [Research design](reports/rq-analysis-plan.md) · [Methodology](reports/methodology.md) · [Data notes](reports/data-notes.md)
 - [Raw-data validation](reports/data-validation-2026-09-15.md) · [Machine-readable checks](reports/validation/raw-rerun-2026-09-15.json) · [Figure 1](reports/figures/16_segment_ladder.png)
 - [Sample funnel](reports/tables/rq_sample_funnel.csv) · [Descriptive segments](reports/tables/segment_ladder.csv)
