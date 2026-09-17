@@ -1,0 +1,16 @@
+variant,segment,n,hosts,attainment,rank
+support >= 30,Melbourne 3BR Apartment/unit,306,139,0.3660130718954248,1
+support >= 30,Melbourne 2BR Apartment/unit,1235,482,0.32793522267206476,2
+support >= 30,Yarra Ranges 3BR House/townhouse,90,77,0.3,3
+support >= 50,Melbourne 3BR Apartment/unit,306,139,0.3660130718954248,1
+support >= 50,Melbourne 2BR Apartment/unit,1235,482,0.32793522267206476,2
+support >= 50,Yarra Ranges 3BR House/townhouse,90,77,0.3,3
+support >= 75,Melbourne 3BR Apartment/unit,306,139,0.3660130718954248,1
+support >= 75,Melbourne 2BR Apartment/unit,1235,482,0.32793522267206476,2
+support >= 75,Yarra Ranges 3BR House/townhouse,90,77,0.3,3
+no history rule (support >= 50),Melbourne 3BR Apartment/unit,468,207,0.27991452991453,1
+no history rule (support >= 50),Yarra Ranges 3BR House/townhouse,117,96,0.230769230769231,2
+no history rule (support >= 50),Melbourne 2BR Apartment/unit,2154,841,0.221448467966574,3
+no price rule (support >= 50),Melbourne 3BR Apartment/unit,379,170,0.306068601583113,1
+no price rule (support >= 50),Yarra Ranges 3BR House/townhouse,102,88,0.264705882352941,2
+no price rule (support >= 50),Melbourne 2BR Apartment/unit,1608,714,0.26181592039801,3

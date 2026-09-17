@@ -12,7 +12,7 @@ Approximately 20% of hosts are assigned to benchmark development using a fixed h
 
 Benchmark-host listings must satisfy the primary eligibility rules and belong to the supported primary cells. Their pooled P75, calculated by linear interpolation and rounded upward to an integer, defines one common event for all segments and models. The reference comprises **906 listings from 426 hosts**, with **P75 = 29.75 reviews**, giving an integer cutoff of **30**. No validation-host outcomes enter that calculation.
 
-The primary analysis contains **3,873 listings, 1,726 hosts and 14 segments**. It retains **334 zero-review listings**. The fixed event `reviews_365d >= 30` occurs for **981 listings (25.3292%)**. Threshold ties are retained; neither the reference nor the analysis is forced into an exact 25% positive class. The count of 30 is a computed result, not part of the wording of the research question. [The analysis plan](rq-analysis-plan.md) records the full partition algorithm.
+The primary analysis contains **3,873 listings, 1,726 hosts and 14 segments**. It retains **334 zero-review listings**. The fixed event `reviews_365d >= 30` occurs for **981 listings (25.3292%)**. Threshold ties are retained; neither the reference nor the analysis is forced into an exact 25% positive class. The count of 30 in the research question is the computed reference-group cutoff, not an externally chosen number. [The analysis plan](rq-analysis-plan.md) records the full partition algorithm.
 
 ## Descriptive comparison and composition checks
 

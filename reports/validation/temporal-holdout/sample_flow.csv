@@ -1,0 +1,10 @@
+step,listings,hosts,note
+source_listings,25728,14113,all rows in data/raw/listings_airbnb.csv
+entire_home_1_to_3_bedrooms,16576,9296,room_type and bedrooms rules from config
+standard_dwelling_types,14895,8286,property_type in the four-type map
+quoted_price_range,11099,5410,price 30-1500
+review_history_730_days,4967,2628,first_review <= last_scraped - 730 days; both windows inside recorded history
+analysis_hosts,3997,2113,sha256 host bucket != 0
+benchmark_hosts,970,515,sha256 host bucket == 0; threshold development only
+analysis_retained_segments,2657,1208,"10 of 153 segments with >= 50 analysis listings, fixed before ranking"
+benchmark_retained_segments,613,299,benchmark listings inside the retained segments

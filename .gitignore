@@ -55,6 +55,7 @@ rsconnect/
 
 # Summary tables produced by scripts/02 and 03 are small and worth committing
 !reports/tables/*.csv
+!reports/validation/temporal-holdout/*.csv
 
 # Serialized R outputs
 *.RData

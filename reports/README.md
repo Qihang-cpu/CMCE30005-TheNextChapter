@@ -24,6 +24,8 @@ Every number in the report comes from one of these files; each file names the sc
 | Table 2 model comparison; boosting AUC 0.647; price/minimum-stay models AUC 0.749 | `tables/rq_baseline_comparison.csv`, `tables/rq_baseline_fold_comparison.csv` | `11_segment_rate_baseline.py` |
 | Twenty further host splits (mean AUC 0.626, range 0.589–0.648; top-three recurrence) | `tables/rq_repeated_split_summary.csv`, `tables/rq_repeated_split_top3.csv` | `11_segment_rate_baseline.py` |
 | Table 3 candidates, predicted probabilities and 95% ranges | `tables/rq_extension_ranking.csv` | `10_model_extensions.py` |
+| Same candidates under support rules of 30, 50 and 75 and without the history or price rule | `tables/rq_support_rule_sensitivity.csv`, `tables/rq_support_rule_top3.csv` | `12_support_rule_sensitivity.py` |
+| Out-of-time check (2,657 listings; 34-review target; 27.1% vs 14.9%; 95% range 5.1–20.1; top-three set recurs in 51.5%) | `validation/temporal-holdout/validation_metrics.json`, `segment_cross_period.csv`, `sample_flow.csv`, `bootstrap_replicates.csv`, [method note](validation/temporal-holdout/method-note.md) | `scripts/validation/temporal_holdout.py` |
 
 Design and method notes behind the report: [research question and analysis plan](rq-analysis-plan.md), [methodology](methodology.md), [current findings](findings.md), [data description and limitations](data-notes.md), [descriptive analysis and sample definitions](descriptive-analytics.md).
 
@@ -41,15 +43,11 @@ Written by the same pipeline; kept so results can be checked without re-running 
 
 ## Supporting analyses of the modelled price and revenue fields
 
-`supporting/` holds the earlier descriptive work on Inside Airbnb's modelled price, occupancy and revenue fields. It is not used in the interim report and establishes nothing about bookings, occupancy or profit: those fields are constructed from price, minimum stay and review counts, as [supporting/revenue-analysis.md](supporting/revenue-analysis.md) explains.
+`supporting/` holds the earlier descriptive work on Inside Airbnb's modelled price, occupancy and revenue fields. It supplies data-quality diagnostics only — the report cites one figure from it, the 82% share above — and establishes nothing about bookings, occupancy or profit: those fields are constructed from price, minimum stay and review counts, as [supporting/revenue-analysis.md](supporting/revenue-analysis.md) explains.
 
 - `scripts/supporting/02_exploratory_analysis.R`: `supporting/tables/area_summary.csv`, `segment_revenue.csv`, `superhost_comparison.csv`, `seasonality_index.csv`; `supporting/figures/01_price_distribution.png`, `02_price_by_area.png`, `03_price_capacity_roomtype.png`, `04_demand_seasonality.png`, `05_price_vs_occupancy.png`.
 - `scripts/supporting/03_price_model.R`: `supporting/tables/price_model_coefficients.csv` (hedonic price regression).
 - `scripts/supporting/04_revenue_analysis.R`: `supporting/tables/revenue_sample_censoring.csv`, `revenue_variance_decomposition.csv`, `revenue_extensive_margin.csv`, `revenue_intensive_margin.csv`, `revenue_price_association_robustness.csv`, `revenue_superhost_gap.csv`, `revenue_by_listing_age.csv`; `supporting/figures/06_revenue_variance_decomposition.png`, `07_sample_censoring.png`, `08_revenue_price_activity_grid.png`, `09_activity_by_listing_age.png`.
-
-## Work in preparation (not in the interim submission)
-
-`validation/temporal-holdout/` and `scripts/validation/temporal_holdout.py` test whether a segment's earlier-year review advantage persists in the following year, using two non-overlapping 365-day windows per listing. Its [method note](validation/temporal-holdout/method-note.md) lists the limitations, and `sample_flow.csv`, `segment_cross_period.csv`, `validation_metrics.json` and `bootstrap_replicates.csv` hold the results; none of it is cited in the interim report.
 
 ## Archive
 
