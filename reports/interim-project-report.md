@@ -10,7 +10,7 @@ Repository: <https://github.com/Qihang-cpu/CMCE30005-TheNextChapter>
 
 ## Introduction
 
-Our client leases residential properties and runs them as Airbnb accommodation ("rental arbitrage"), which needs lease and council permission. With limited start-up funds, the client must choose which Melbourne areas and property types to investigate before signing leases; a poor choice ties up money and delays the business.
+Our client leases residential properties and runs them as Airbnb accommodation ("rental arbitrage"), which needs lease and council permission. With limited start-up funds, the client must choose which Melbourne areas and property types to investigate before signing leases; a poor choice ties up money.
 
 We use the Inside Airbnb Melbourne snapshot of June 2026 supplied through the subject's LMS (Inside Airbnb, 2026): property details, locations and dated guest reviews. Dated reviews are a countable record of past guest activity; the calendar cannot separate bookings from host-blocked dates.
 
@@ -18,7 +18,7 @@ The shortlist helps the client decide where to spend limited search and due-dili
 
 ## Problem Definition and Objectives
 
-Research questions: (1) Which Melbourne property segments — defined by council area (LGA), apartment or house, and number of bedrooms — show the strongest historical guest-review activity? (2) Can listing attributes improve prediction of high review activity beyond segment averages? "High" means at least 30 reviews in the year before the data were collected, the top quarter of a separate reference group of comparable listings.
+Research questions: (1) Which Melbourne property segments, defined by council area (LGA), apartment or house, and number of bedrooms, show the strongest historical guest-review activity? (2) Can listing attributes improve prediction of high review activity beyond segment averages? "High" means at least 30 reviews in the year before the data were collected, the top quarter of a separate reference group of comparable listings.
 
 Hypotheses: (H1) segments differ materially in the share of listings reaching that level; (H2) a model using listing attributes ranks listings better than the segment average alone.
 
@@ -64,7 +64,7 @@ Because candidates were compared after seeing fold results, selection is repeate
 
 ## Analysis Plan and Progress to Date
 
-Following Week 5 feedback, we dropped the earlier rent-versus-revenue (ROI) design, which needed external rental data, and now compare only within the snapshot.
+Following Week 5 feedback, we dropped the earlier rent-versus-revenue (ROI) design, which needed external rental data, and now compare within the snapshot.
 
 Table 2. Predictive performance
 
@@ -76,7 +76,7 @@ Table 2. Predictive performance
 
 The enhanced random forest beats the segment average in all five folds and, across 20 further host splits, on AUC every time and on Brier in 16. A nested check that re-selects the model inside each outer training fold chooses the forest every time: AUC +0.059 (host-resampled 95% range +0.02 to +0.10), Brier −0.0055 (−0.010 to −0.001). Across five probability bins, predicted and observed rates differ by about two percentage points.
 
-Table 3. Initial search candidates (forest predictions from host-grouped validation)
+Table 3. Initial search candidates (host-grouped forest predictions)
 
 | Segment | Listings / hosts | Observed attainment | Predicted probability | 95% range |
 | ---------------------------- | ------------ | ------------ | ------------ | ------------ |
@@ -84,17 +84,17 @@ Table 3. Initial search candidates (forest predictions from host-grouped validat
 | Melbourne 2BR apartments | 1,235 / 482 | 32.79% | 31.41% | 29.6–33.0% |
 | Yarra Ranges 3BR houses/townhouses | 90 / 77 | 30.00% | 27.82% | 26.1–29.3% |
 
-All reported host-resampled ranges hold predictions fixed and exclude refitting, selection and threshold uncertainty; Table 3's are much narrower than Figure 1's observed-rate ranges. Descriptive evidence supports H1: segments differ (8.25% to 36.60%), though neighbours overlap. H2 is supported by nested host-grouped validation on ranking metrics but not on the shortlist: the model improves overall listing-level prediction but leaves the shortlist unchanged. Segment rates guide the search, while the model provides a supplementary historical score for individual listings (within-segment AUC 0.56). Descriptively, the same three segments lead under support rules of 30, 50 and 75 listings, without the history or price rule, and at review targets of 25, 30, 34 and 35 (the top two swap at 34 and 35); the forest's top three recur in 19 of 20 host splits.
+All reported host-resampled ranges hold predictions fixed and exclude refitting, selection and threshold uncertainty; Table 3's are much narrower than Figure 1's observed-rate ranges. Descriptive evidence supports H1: segments differ (8.25% to 36.60%), though neighbours overlap. H2 is supported by nested host-grouped validation on ranking metrics but not on the shortlist: the model improves overall listing-level prediction but leaves the shortlist unchanged. Segment rates guide the search, while the model provides a supplementary historical score for individual listings (within-segment AUC 0.555). Descriptively, the same three segments lead under support rules of 30, 50 and 75 listings, without the history or price rule, and at review targets of 25, 30, 34 and 35 (the top two swap at 34 and 35); the forest's top three recur in 19 of 20 host splits.
 
-An out-of-time check (2,657 listings, 1,208 hosts, 10 segments) uses two non-overlapping 365-day windows and a 34-review target set from the reference hosts' earlier window. The earlier year's top three segments reached it in 27.1% of listings the following year against 14.9% elsewhere, a 12.3-point lead (host-resampled 95% range 5.1–20.1); the exact top-three set recurred in 51.5% of resamples. This is a persisting historical advantage, not a new operator's profit.
+An out-of-time check (2,657 listings, 1,208 hosts, 10 segments) uses two non-overlapping 365-day windows and a 34-review target set from the reference hosts' earlier window. The earlier year's top three segments reached it in 27.1% of listings the following year against 14.9% elsewhere, a 12.3-point lead (host-resampled 95% range 5.1–20.1); the exact top-three set recurred in 51.5% of resamples: a persisting historical advantage, not a new operator's profit.
 
-Before signing, the client must still verify permissions, rent, costs and availability.
+Before signing, the client must verify permissions, rent, costs and availability.
 
 Remaining work:
 
-1. Refit the fixed forest and re-rank under wider property-type and history rules — Eric Huang (modelling lead) and Maksym Xu (data lead), Weeks 9–10 (by 2 Oct).
-2. One-page client brief with search priorities and pre-lease checklist — Loc Le (report lead), Week 11 (by 13 Oct).
-3. Final report and presentation — all, Qihang Sun coordinating, Weeks 11–12.
+1. Refit the fixed forest and re-rank under wider property-type and history rules: Eric Huang (modelling lead) and Maksym Xu (data lead), Weeks 9–10 (by 2 Oct).
+2. One-page client brief with search priorities and pre-lease checklist: Loc Le (report lead), Week 11 (by 13 Oct).
+3. Final report and presentation: all, Qihang Sun coordinating, Weeks 11–12.
 
 If the gain does not persist under wider rules, segment rates remain the main screening tool; if rankings change, we will present a broader candidate set.
 
