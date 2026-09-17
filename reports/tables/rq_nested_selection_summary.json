@@ -1,0 +1,65 @@
+{
+  "design": "Outer: five frozen host-grouped folds (evaluation only). Inner: three host-grouped folds within each outer training fold; the candidate with the lowest pooled inner Brier score is selected, refitted on the whole outer training fold and scored on the outer test fold. Baseline: training-fold segment attainment with prior weight 10 on the same outer folds.",
+  "candidates": [
+    "logistic",
+    "random_forest",
+    "hist_gradient_boosting",
+    "hist_gradient_boosting_sigmoid"
+  ],
+  "selection_rule": "lowest pooled inner-fold Brier score (fixed before the run)",
+  "selected_per_fold": {
+    "0": "random_forest",
+    "1": "random_forest",
+    "2": "random_forest",
+    "3": "random_forest",
+    "4": "random_forest"
+  },
+  "selection_frequency": {
+    "random_forest": 5
+  },
+  "pooled": {
+    "selected_process": {
+      "roc_auc": 0.6395887350672458,
+      "average_precision": 0.3499323114109318,
+      "brier_score": 0.18131594811274154
+    },
+    "segment_rate_baseline": {
+      "roc_auc": 0.5810323533019487,
+      "average_precision": 0.28530535014818226,
+      "brier_score": 0.18678892380879344
+    },
+    "auc_difference": 0.058556381765297094,
+    "average_precision_difference": 0.06462696126274953,
+    "brier_difference": -0.005472975696051902
+  },
+  "per_fold": {
+    "folds_auc_above_baseline": 5,
+    "folds_brier_below_baseline": 5,
+    "mean_auc_difference": 0.03624474311534531,
+    "min_auc_difference": 0.01569486266995157,
+    "max_auc_difference": 0.05349756002973227,
+    "mean_brier_difference": -0.0055116735675326215
+  },
+  "host_bootstrap": {
+    "replicates": 1000,
+    "seed": 30005,
+    "unit": "hosts resampled with replacement; all of a host's listings enter together",
+    "predictions_held_fixed": true,
+    "note": "Intervals describe sampling variation of the pooled comparison with the nested predictions held fixed; they do not include refitting, inner re-selection or threshold estimation.",
+    "auc_difference_95": [
+      0.022409224567020172,
+      0.0962407128823106
+    ],
+    "brier_difference_95": [
+      -0.010144422178544058,
+      -0.0011066713824114604
+    ],
+    "share_replicates_auc_above_baseline": 1.0,
+    "share_replicates_brier_below_baseline": 0.991
+  },
+  "reference_from_script_11": "extended_property_only random_forest chosen after inspection: pooled AUC 0.6396, Brier 0.1813 (rq_baseline_comparison.csv)",
+  "n": 3873,
+  "n_hosts": 1726,
+  "common_review_threshold": 30,
+  "note": "Selection is exploratory in the sense that the four candidates were defined after the baseline results were seen; the nested procedure removes the outer-fold selection effect only."
+}
